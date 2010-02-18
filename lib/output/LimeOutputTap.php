@@ -10,23 +10,15 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeOutputTap implements LimeOutputInterface
+class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 {
   protected
     $configuration  = null,
-    $result         = null,
-    $expected       = null,
-    $passed         = 0,
-    $actual         = 0,
-    $warnings       = 0,
-    $errors         = 0,
-    $file           = null,
     $printer        = null;
 
   public function __construct(LimePrinter $printer, LimeConfiguration $configuration)
   {
     $this->printer = $printer;
-    $this->result = new LimeOutputResult();
     $this->configuration = $configuration;
   }
 
@@ -49,49 +41,44 @@ class LimeOutputTap implements LimeOutputInterface
 
   public function focus($file)
   {
-    if ($this->file !== $file)
+    if ($this->getCurrentFile() !== $file)
     {
       $this->printer->printLine('# '.$this->stripBaseDir($file), LimePrinter::INFO);
-
-      $this->file = $file;
     }
+
+    parent::focus($file);
   }
 
   public function close()
   {
   }
 
-  public function plan($amount)
-  {
-    $this->result->addPlan($amount);
-  }
-
   public function pass($message, $file, $line)
   {
-    $this->result->addPassed();
+    parent::pass($message, $file, $line);
 
     if (empty($message))
     {
-      $this->printer->printLine('ok '.$this->result->getNbActual(), LimePrinter::OK);
+      $this->printer->printLine('ok '.$this->getActual(), LimePrinter::OK);
     }
     else
     {
-      $this->printer->printText('ok '.$this->result->getNbActual(), LimePrinter::OK);
+      $this->printer->printText('ok '.$this->getActual(), LimePrinter::OK);
       $this->printer->printLine(' - '.$message);
     }
   }
 
   public function fail($message, $file, $line, $error = null)
   {
-    $this->result->addFailure(array($message, $file, $line, $error));
+    parent::fail($message, $file, $line, $error);
 
     if (empty($message))
     {
-      $this->printer->printLine('not ok '.$this->result->getNbActual(), LimePrinter::NOT_OK);
+      $this->printer->printLine('not ok '.$this->getActual(), LimePrinter::NOT_OK);
     }
     else
     {
-      $this->printer->printText('not ok '.$this->result->getNbActual(), LimePrinter::NOT_OK);
+      $this->printer->printText('not ok '.$this->getActual(), LimePrinter::NOT_OK);
       $this->printer->printLine(' - '.$message);
     }
 
@@ -108,16 +95,16 @@ class LimeOutputTap implements LimeOutputInterface
 
   public function skip($message, $file, $line)
   {
-    $this->result->addSkipped();
+    parent::skip($message, $file, $line);
 
     if (empty($message))
     {
-      $this->printer->printText('ok '.$this->result->getNbActual(), LimePrinter::SKIP);
+      $this->printer->printText('ok '.$this->getActual(), LimePrinter::SKIP);
       $this->printer->printText(' ');
     }
     else
     {
-      $this->printer->printText('ok '.$this->result->getNbActual(), LimePrinter::SKIP);
+      $this->printer->printText('ok '.$this->getActual(), LimePrinter::SKIP);
       $this->printer->printText(' - '.$message.' ');
     }
 
@@ -126,16 +113,16 @@ class LimeOutputTap implements LimeOutputInterface
 
   public function todo($message, $file, $line)
   {
-    $this->result->addTodo($message);
+    parent::todo($message, $file, $line);
 
     if (empty($message))
     {
-      $this->printer->printText('not ok '.$this->result->getNbActual(), LimePrinter::TODO);
+      $this->printer->printText('not ok '.$this->getActual(), LimePrinter::TODO);
       $this->printer->printText(' ');
     }
     else
     {
-      $this->printer->printText('not ok '.$this->result->getNbActual(), LimePrinter::TODO);
+      $this->printer->printText('not ok '.$this->getActual(), LimePrinter::TODO);
       $this->printer->printText(' - '.$message.' ');
     }
 
@@ -144,7 +131,7 @@ class LimeOutputTap implements LimeOutputInterface
 
   public function warning($message, $file, $line)
   {
-    $this->result->addWarning(array($message, $file, $line));
+    parent::warning($message, $file, $line);
 
     $message .= sprintf("\n(in %s on line %s)", $this->stripBaseDir($file), $line);
 
@@ -153,7 +140,7 @@ class LimeOutputTap implements LimeOutputInterface
 
   public function error(LimeError $error)
   {
-    $this->result->addError($error);
+    parent::error($error);
 
     $message = sprintf("%s: %s\n(in %s on line %s)", $error->getType(),
         $error->getMessage(), $this->stripBaseDir($error->getFile()), $error->getLine());
@@ -226,7 +213,7 @@ class LimeOutputTap implements LimeOutputInterface
     $this->printer->printLine('# '.$message, LimePrinter::COMMENT);
   }
 
-  public static function getMessages($actual, $expected, $passed, $errors, $warnings)
+  public function getMessages($actual, $expected, $passed, $errors, $warnings)
   {
     $messages = array();
 
@@ -264,10 +251,9 @@ class LimeOutputTap implements LimeOutputInterface
 
   public function flush()
   {
-    $result = $this->result;
-    $this->printer->printLine('1..'.$result->getNbExpected());
+    $this->printer->printLine('1..'.$this->getExpected());
 
-    $messages = self::getMessages($result->getNbActual(), $result->getNbExpected(), $result->getNbPassed(), $result->getNbErrors(), $result->getNbWarnings());
+    $messages = $this->getMessages($this->getActual(), $this->getExpected(), $this->getPassed(), $this->getErrors(), $this->getWarnings());
 
     foreach ($messages as $message)
     {

@@ -357,7 +357,7 @@ class lime_harness extends LimeHarness
 
   public function get_failed_files()
   {
-    return $this->output->getFailedFiles();
+    return $this->output->getDubiousFiles();
   }
 }
 

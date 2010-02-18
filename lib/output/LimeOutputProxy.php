@@ -10,16 +10,14 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeOutputProxy implements LimeOutputInterface
+class LimeOutputProxy extends LimeOutput
 {
   private
-    $output       = null,
-    $result       = null;
+    $output       = null;
 
   public function __construct(LimeOutputInterface $output = null)
   {
     $this->output = is_null($output) ? new LimeOutputNone() : $output;
-    $this->result = new LimeOutputResult();
   }
 
   public function supportsThreading()
@@ -27,24 +25,10 @@ class LimeOutputProxy implements LimeOutputInterface
     return $this->output->supportsThreading();
   }
 
-  public function getResult()
-  {
-    return $this->result;
-  }
-
-  /**
-   * For BC with lime_harness.
-   *
-   * @deprecated
-   * @return array
-   */
-  public function getFailedFiles()
-  {
-    return $this->failedFiles;
-  }
-
   public function focus($file)
   {
+    parent::focus($file);
+
     $this->output->focus($file);
   }
 
@@ -55,46 +39,50 @@ class LimeOutputProxy implements LimeOutputInterface
 
   public function plan($amount)
   {
-    $this->result->addPlan($amount);
+    parent::plan($amount);
+
     $this->output->plan($amount);
   }
 
   public function pass($message, $file, $line)
   {
-    $this->result->addPassed();
+    parent::pass($message, $file, $line);
+
     $this->output->pass($message, $file, $line);
   }
 
   public function fail($message, $file, $line, $error = null)
   {
-    $this->result->addFailure(array($message, $file, $line, $error));
-    $this->failedFiles[] = $file;
+    parent::fail($message, $file, $line, $error);
+
     $this->output->fail($message, $file, $line, $error);
   }
 
   public function skip($message, $file, $line)
   {
-    $this->result->addSkipped();
+    parent::skip($message, $file, $line);
+
     $this->output->skip($message, $file, $line);
   }
 
   public function todo($message, $file, $line)
   {
-    $this->result->addTodo($message);
+    parent::todo($message, $file, $line);
+
     $this->output->todo($message, $file, $line);
   }
 
   public function warning($message, $file, $line)
   {
-    $this->result->addWarning(array($message, $file, $line));
-    $this->failedFiles[] = $file;
+    parent::warning($message, $file, $line);
+
     $this->output->warning($message, $file, $line);
   }
 
   public function error(LimeError $error)
   {
-    $this->result->addError($error);
-    $this->failedFiles[] = $error->getFile();
+    parent::error($error);
+
     $this->output->error($error);
   }
 
@@ -106,5 +94,20 @@ class LimeOutputProxy implements LimeOutputInterface
   public function flush()
   {
     $this->output->flush();
+  }
+
+  public function getDubiousFiles()
+  {
+    $files = array();
+
+    foreach ($this as $file => $logic)
+    {
+      if (!$logic->isSuccessful() || $logic->getWarnings())
+      {
+        $files[] = $file;
+      }
+    }
+
+    return $files;
   }
 }
