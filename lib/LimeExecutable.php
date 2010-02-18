@@ -14,7 +14,7 @@
  * An executable used to execute test files.
  *
  * Executables know about the programm that is used to execute the test files,
- * the parser that is used to read their output and optionally some arguments
+ * the input that is used to read their output and optionally some arguments
  * that are passed to the test file execution.
  *
  * This class offers two factory method for creating new executables:
@@ -39,7 +39,7 @@ class LimeExecutable
   protected
     $executable      = null,
     $arguments       = array(),
-    $parserName      = null;
+    $inputName      = null;
 
   /**
    * Creates a new executable executed with the PHP binary.
@@ -49,13 +49,13 @@ class LimeExecutable
    * test file is launched directly with PHP.
    *
    * @param  string $executable  The name of the executable PHP script
-   * @param  string $parserName  The parser used to parse the test file output
+   * @param  string $inputName  The input used to parse the test file output
    * @param  array $arguments    The default arguments passed to the script
    * @return LimeExecutable
    */
-  public static function php($executable = null, $parserName = null, array $arguments = array())
+  public static function php($executable = null, $inputName = null, array $arguments = array())
   {
-    return new LimeExecutable(trim(self::findPhp().' '.$executable), $parserName, $arguments);
+    return new LimeExecutable(trim(self::findPhp().' '.$executable), $inputName, $arguments);
   }
 
   /**
@@ -66,13 +66,13 @@ class LimeExecutable
    * directly.
    *
    * @param  string $executable  The name of the executable
-   * @param  string $parserName  The parser used to parse the test file output
+   * @param  string $inputName  The input used to parse the test file output
    * @param  array $arguments    The default arguments passed to the executable
    * @return LimeExecutable
    */
-  public static function shell($executable = null, $parserName = null, array $arguments = array())
+  public static function shell($executable = null, $inputName = null, array $arguments = array())
   {
-    return new LimeExecutable($executable, $parserName, $arguments);
+    return new LimeExecutable($executable, $inputName, $arguments);
   }
 
   /**
@@ -82,14 +82,14 @@ class LimeExecutable
    * shell() instead.
    *
    * @param string $executable
-   * @param string $parserName
+   * @param string $inputName
    * @param array $arguments
    */
-  private function __construct($executable = null, $parserName = null, array $arguments = array())
+  private function __construct($executable = null, $inputName = null, array $arguments = array())
   {
     $this->executable = $executable;
     $this->arguments = $arguments;
-    $this->parserName = $parserName;
+    $this->inputName = $inputName;
   }
 
   /**
@@ -113,16 +113,16 @@ class LimeExecutable
   }
 
   /**
-   * Returns the name of the parser used to read test file output.
+   * Returns the name of the input used to read test file output.
    *
-   * This name should be known to the used parser factory configured in
-   * LimeConfiguration (LimeParserFactory by default).
+   * This name should be known to the used input factory configured in
+   * LimeConfiguration (LimeInputFactory by default).
    *
    * @return string
    */
   public function getParserName()
   {
-    return $this->parserName;
+    return $this->inputName;
   }
 
   /**

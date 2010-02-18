@@ -116,6 +116,6 @@ $config->setSuiteOutput('suite');
 $config->setTestOutput('tap');
 
 /*
- * Sets the factory used for creating parser instances.
+ * Sets the factory used for creating input instances.
  */
-$config->setParserFactory(new LimeParserFactory());
+$config->setParserFactory(new LimeInputFactory());

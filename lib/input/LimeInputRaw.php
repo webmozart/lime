@@ -10,7 +10,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeParserRaw extends LimeParser
+class LimeInputRaw extends LimeInput
 {
   protected static
     $suppressedMethods = array('focus', 'close', 'flush');

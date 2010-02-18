@@ -18,13 +18,13 @@
 class LimeLauncher
 {
   protected
-    $parserFactory      = null,
+    $inputFactory      = null,
     $output             = null,
     $errors             = '',
     $file               = null,
     $process            = null,
     $done               = true,
-    $parser             = null;
+    $input             = null;
 
   /**
    * Constructor.
@@ -32,10 +32,10 @@ class LimeLauncher
    * @param LimeOutputInterface $output
    * @param array $suppressedMethods
    */
-  public function __construct(LimeOutputInterface $output, LimeParserFactoryInterface $parserFactory)
+  public function __construct(LimeOutputInterface $output, LimeInputFactoryInterface $inputFactory)
   {
     $this->output = $output;
-    $this->parserFactory = $parserFactory;
+    $this->inputFactory = $inputFactory;
   }
 
   /**
@@ -50,7 +50,7 @@ class LimeLauncher
 
     $this->file = $file;
     $this->done = false;
-    $this->parser =  $this->parserFactory->create($executable->getParserName(), $this->output);
+    $this->input =  $this->inputFactory->create($executable->getParserName(), $this->output);
     $this->process = new LimeProcess($file->getPath(), $executable, $arguments);
     $this->process->execute();
   }
@@ -72,7 +72,7 @@ class LimeLauncher
   {
     $data = $this->process->getOutput();
 
-    $this->parser->parse($data);
+    $this->input->parse($data);
 
     $this->errors .= $this->process->getErrors();
 
@@ -84,10 +84,10 @@ class LimeLauncher
 
     if ($this->process->isClosed())
     {
-      if (!$this->parser->done())
+      if (!$this->input->done())
       {
         // FIXME: Should be handled in a better way
-        $buffer = substr($this->parser->buffer, 0, strpos($this->parser->buffer, "\n"));
+        $buffer = substr($this->input->buffer, 0, strpos($this->input->buffer, "\n"));
         $this->output->warning(sprintf('Could not parse test output: "%s"', $buffer), $this->file->getPath(), 1);
       }
 

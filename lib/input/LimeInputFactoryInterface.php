@@ -15,10 +15,10 @@
  *
  * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
-interface LimeParserFactoryInterface
+interface LimeInputFactoryInterface
 {
   /**
-   * Creates a new LimeParserInterface instance for the given name.
+   * Creates a new LimeInputInterface instance for the given name.
    *
    * Names can be defined by the concrete factory implementation.
    *

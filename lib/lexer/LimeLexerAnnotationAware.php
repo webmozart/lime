@@ -105,7 +105,7 @@ abstract class LimeLexerAnnotationAware extends LimeLexer
   }
 
   /**
-   * Returns whether the parser currently is within any annotation.
+   * Returns whether the input currently is within any annotation.
    *
    * All the code following an annotation declaration is considered to be
    * inside this annotation's block. In annotated script, this method will thus
@@ -120,7 +120,7 @@ abstract class LimeLexerAnnotationAware extends LimeLexer
   }
 
   /**
-   * Returns whether the parser is currently inside an annotation declaration.
+   * Returns whether the input is currently inside an annotation declaration.
    *
    * An annotation declaration is any single line comment with a word that
    * starts with "@" and any optional following comments. Annotations and

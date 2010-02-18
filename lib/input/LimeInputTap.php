@@ -1,6 +1,6 @@
 <?php
 
-class LimeParserTap extends LimeParser
+class LimeInputTap extends LimeInput
 {
   public function __construct(LimeOutputInterface $output)
   {

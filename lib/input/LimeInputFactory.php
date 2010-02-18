@@ -11,7 +11,7 @@
  */
 
 /**
- * Factory class for creating LimeParserInterface instances.
+ * Factory class for creating LimeInputInterface instances.
  *
  * The available instance names are:
  *
@@ -20,21 +20,21 @@
  *
  * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
-class LimeParserFactory implements LimeParserFactoryInterface
+class LimeInputFactory implements LimeInputFactoryInterface
 {
   /**
    * (non-PHPdoc)
-   * @see output/LimeParserFactoryInterface#create($name)
+   * @see output/LimeInputFactoryInterface#create($name)
    */
   public function create($name, LimeOutputInterface $output)
   {
     switch ($name)
     {
       case 'raw':
-        return new LimeParserRaw($output);
+        return new LimeInputRaw($output);
       case 'tap':
       default:
-        return new LimeParserTap($output);
+        return new LimeInputTap($output);
     }
   }
 }

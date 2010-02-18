@@ -1,6 +1,6 @@
 <?php
 
-interface LimeParserInterface
+interface LimeInputInterface
 {
   public function parse($data);
 

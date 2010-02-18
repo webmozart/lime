@@ -97,17 +97,13 @@ class LimeAutoloader
     {
       $file = dirname(__FILE__).'/';
 
-      if (0 === strpos($class, 'LimeExpectation'))
-      {
-        $file .= 'expectation/';
-      }
-      else if (0 === strpos($class, 'LimeLexer'))
+      if (0 === strpos($class, 'LimeLexer'))
       {
         $file .= 'lexer/';
       }
-      else if (0 === strpos($class, 'LimeParser'))
+      else if (0 === strpos($class, 'LimeInput'))
       {
-        $file .= 'parser/';
+        $file .= 'input/';
       }
       else if (0 === strpos($class, 'LimeOutput'))
       {
@@ -124,10 +120,6 @@ class LimeAutoloader
       else if (0 === strpos($class, 'LimeTester'))
       {
         $file .= 'tester/';
-      }
-      else if (0 === strpos($class, 'LimeShell'))
-      {
-        $file .= 'shell/';
       }
       else if (0 === strpos($class, 'LimeConstraint'))
       {

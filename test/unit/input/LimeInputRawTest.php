@@ -22,14 +22,14 @@ $t = new LimeTest(10);
   $executable = LimeExecutable::php();
   $file = tempnam(sys_get_temp_dir(), 'lime');
   $output = $t->mock('LimeOutputInterface');
-  $parser = new LimeParserRaw($output);
+  $input = new LimeInputRaw($output);
 
 
 // @After
 
   $file = null;
   $output = null;
-  $parser = null;
+  $input = null;
 
 
 // @Test: The call to plan() is passed
@@ -38,7 +38,7 @@ $t = new LimeTest(10);
   $output->plan(1, '/test/file');
   $output->replay();
   // test
-  $parser->parse(serialize(array("plan", array(1, "/test/file")))."\n");
+  $input->parse(serialize(array("plan", array(1, "/test/file")))."\n");
   // assertions
   $output->verify();
 
@@ -49,7 +49,7 @@ $t = new LimeTest(10);
   $output->error(new LimeError("An error", "/test/file", 11));
   $output->replay();
   // test
-  $parser->parse(serialize(array("error", array(new LimeError("An error", "/test/file", 11))))."\n");
+  $input->parse(serialize(array("error", array(new LimeError("An error", "/test/file", 11))))."\n");
   // assertions
   $output->verify();
 
@@ -60,7 +60,7 @@ $t = new LimeTest(10);
   $output->pass('A passed test', '/test/file', 11);
   $output->replay();
   // test
-  $parser->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n");
+  $input->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n");
   // assertions
   $output->verify();
 
@@ -72,7 +72,7 @@ $t = new LimeTest(10);
   $output->pass('Another passed test', '/test/file', 11);
   $output->replay();
   // test
-  $parser->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n".serialize(array("pass", array("Another passed test", "/test/file", 11)))."\n");
+  $input->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n".serialize(array("pass", array("Another passed test", "/test/file", 11)))."\n");
   // assertions
   $output->verify();
 
@@ -85,8 +85,8 @@ $t = new LimeTest(10);
   // test
   $serialized = serialize(array("pass", array("A passed test", "/test/file", 11)))."\n";
   $strings =  str_split($serialized, strlen($serialized)/2 + 1);
-  $parser->parse($strings[0]);
-  $parser->parse($strings[1]);
+  $input->parse($strings[0]);
+  $input->parse($strings[1]);
   // assertions
   $output->verify();
 
@@ -97,7 +97,7 @@ $t = new LimeTest(10);
   $output->comment("A \\n\\r comment \n with line \r breaks");
   $output->replay();
   // test
-  $parser->parse(addcslashes(serialize(array("comment", array("A \\\\n\\\\r comment \\n with line \\r breaks"))), '//')."\n");
+  $input->parse(addcslashes(serialize(array("comment", array("A \\\\n\\\\r comment \\n with line \\r breaks"))), '//')."\n");
   // assertions
   $output->verify();
 
@@ -113,7 +113,7 @@ $t = new LimeTest(10);
   $command = new LimeCommand($file, $executable);
   $command->execute();
   // test
-  $parser->parse($command->getOutput());
+  $input->parse($command->getOutput());
   // assertions
   $output->verify();
 
@@ -128,6 +128,6 @@ $t = new LimeTest(10);
   $command = new LimeCommand($file, $executable);
   $command->execute();
   // test
-  $parser->parse($command->getOutput());
+  $input->parse($command->getOutput());
   // assertions
   $output->verify();

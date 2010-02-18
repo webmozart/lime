@@ -1,6 +1,6 @@
 <?php
 
-abstract class LimeParser implements LimeParserInterface
+abstract class LimeInput implements LimeInputInterface
 {
   public
     $buffer = '',

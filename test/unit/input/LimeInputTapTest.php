@@ -22,14 +22,14 @@ $t = new LimeTest(34);
   $executable = LimeExecutable::php();
   $file = tempnam(sys_get_temp_dir(), 'lime');
   $output = $t->mock('LimeOutputInterface');
-  $parser = new LimeParserTap($output);
+  $input = new LimeInputTap($output);
 
 
 // @After
 
   $file = null;
   $output = null;
-  $parser = null;
+  $input = null;
 
 
 // @Test: Successful tests are passed to pass()
@@ -38,9 +38,9 @@ $t = new LimeTest(34);
   $output->pass('A passed test', '', '');
   $output->replay();
   // test
-  $parser->parse("ok 1 - A passed test\n");
+  $input->parse("ok 1 - A passed test\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -50,9 +50,9 @@ $t = new LimeTest(34);
   $output->pass('', '', '');
   $output->replay();
   // test
-  $parser->parse("ok 1\n");
+  $input->parse("ok 1\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -62,9 +62,9 @@ $t = new LimeTest(34);
   $output->fail('A failed test', '', '');
   $output->replay();
   // test
-  $parser->parse("not ok 1 - A failed test\n");
+  $input->parse("not ok 1 - A failed test\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -74,9 +74,9 @@ $t = new LimeTest(34);
   $output->fail('', '', '');
   $output->replay();
   // test
-  $parser->parse("not ok 1\n");
+  $input->parse("not ok 1\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -86,9 +86,9 @@ $t = new LimeTest(34);
   $output->skip('A skipped test', '', '');
   $output->replay();
   // test
-  $parser->parse("ok 1 - A skipped test # SKIP Skip reason\n");
+  $input->parse("ok 1 - A skipped test # SKIP Skip reason\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -98,9 +98,9 @@ $t = new LimeTest(34);
   $output->skip('A skipped test', '', '');
   $output->replay();
   // test
-  $parser->parse("ok 1 - A skipped test # SKIP\n");
+  $input->parse("ok 1 - A skipped test # SKIP\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -110,9 +110,9 @@ $t = new LimeTest(34);
   $output->skip('', '', '');
   $output->replay();
   // test
-  $parser->parse("ok 1 # SKIP\n");
+  $input->parse("ok 1 # SKIP\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -123,9 +123,9 @@ $t = new LimeTest(34);
   $output->warning('Skipped tests are expected to have status "ok"', '', '');
   $output->replay();
   // test
-  $parser->parse("not ok 1 - A skipped test # SKIP Skip reason\n");
+  $input->parse("not ok 1 - A skipped test # SKIP Skip reason\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -135,9 +135,9 @@ $t = new LimeTest(34);
   $output->todo('A todo', '', '');
   $output->replay();
   // test
-  $parser->parse("not ok 1 - A todo # TODO Todo reason\n");
+  $input->parse("not ok 1 - A todo # TODO Todo reason\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -147,9 +147,9 @@ $t = new LimeTest(34);
   $output->todo('A todo', '', '');
   $output->replay();
   // test
-  $parser->parse("not ok 1 - A todo # TODO\n");
+  $input->parse("not ok 1 - A todo # TODO\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -159,9 +159,9 @@ $t = new LimeTest(34);
   $output->todo('', '', '');
   $output->replay();
   // test
-  $parser->parse("not ok 1 # TODO\n");
+  $input->parse("not ok 1 # TODO\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -172,9 +172,9 @@ $t = new LimeTest(34);
   $output->warning('TODOs are expected to have status "not ok"', '', '');
   $output->replay();
   // test
-  $parser->parse("ok 1 - A todo # TODO Todo reason\n");
+  $input->parse("ok 1 - A todo # TODO Todo reason\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -184,9 +184,9 @@ $t = new LimeTest(34);
   $output->plan(10);
   $output->replay();
   // test
-  $parser->parse("1..10\n");
+  $input->parse("1..10\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -196,10 +196,10 @@ $t = new LimeTest(34);
   $output->pass('A passed test', '', '');
   $output->replay();
   // test
-  $parser->parse("ok 1 - A p");
-  $parser->parse("assed test\n");
+  $input->parse("ok 1 - A p");
+  $input->parse("assed test\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -209,10 +209,10 @@ $t = new LimeTest(34);
   $output->setExpectNothing();
   $output->replay();
   // test
-  $parser->parse("Some foobar text\n");
-  $parser->parse("# Some comment\n");
+  $input->parse("Some foobar text\n");
+  $input->parse("# Some comment\n");
   // assertions
-  $t->ok($parser->done(), 'The parser is done');
+  $t->ok($input->done(), 'The input is done');
   $output->verify();
 
 
@@ -227,7 +227,7 @@ $t = new LimeTest(34);
   $command = new LimeCommand($file, $executable);
   $command->execute();
   // test
-  $parser->parse($command->getOutput());
+  $input->parse($command->getOutput());
   // assertions
   $output->verify();
 
@@ -242,6 +242,6 @@ $t = new LimeTest(34);
   $command = new LimeCommand($file, $executable);
   $command->execute();
   // test
-  $parser->parse($command->getOutput());
+  $input->parse($command->getOutput());
   // assertions
   $output->verify();

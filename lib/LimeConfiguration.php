@@ -174,23 +174,23 @@ class LimeConfiguration
   }
 
   /**
-   * Sets the factory used for creating parser instances.
+   * Sets the factory used for creating input instances.
    *
-   * @param LimeParserFactoryInterface $factory
+   * @param LimeInputFactoryInterface $factory
    */
-  public function setParserFactory(LimeParserFactoryInterface $factory)
+  public function setParserFactory(LimeInputFactoryInterface $factory)
   {
-    $this->parserFactory = $factory;
+    $this->inputFactory = $factory;
   }
 
   /**
-   * Returns the factory used for creating parser instances.
+   * Returns the factory used for creating input instances.
    *
-   * @return LimeParserFactoryInterface
+   * @return LimeInputFactoryInterface
    */
   public function getParserFactory()
   {
-    return $this->parserFactory;
+    return $this->inputFactory;
   }
 
   /**

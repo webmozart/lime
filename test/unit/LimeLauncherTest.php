@@ -20,10 +20,10 @@ $t = new LimeTest(6);
 // @Before
 
   $output = $t->mock('LimeOutputInterface');
-  $parserFactory = new LimeParserFactory();
+  $inputFactory = new LimeInputFactory();
   $executable = LimeExecutable::php(null, 'raw');
   $file = tempnam(sys_get_temp_dir(), 'lime');
-  $launcher = new LimeLauncher($output, $parserFactory);
+  $launcher = new LimeLauncher($output, $inputFactory);
 
 
 // @After
