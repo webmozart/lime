@@ -115,3 +115,8 @@ $config->setSuiteOutput('suite');
  * and "raw".
  */
 $config->setTestOutput('tap');
+
+/*
+ * Sets the factory used for creating input instances.
+ */
+$config->setInputFactory(new LimeInputFactory());
