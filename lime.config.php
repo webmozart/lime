@@ -118,4 +118,4 @@ $config->setTestOutput('tap');
 /*
  * Sets the factory used for creating input instances.
  */
-$config->setParserFactory(new LimeInputFactory());
+$config->setInputFactory(new LimeInputFactory());

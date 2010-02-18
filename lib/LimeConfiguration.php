@@ -178,7 +178,7 @@ class LimeConfiguration
    *
    * @param LimeInputFactoryInterface $factory
    */
-  public function setParserFactory(LimeInputFactoryInterface $factory)
+  public function setInputFactory(LimeInputFactoryInterface $factory)
   {
     $this->inputFactory = $factory;
   }
@@ -188,7 +188,7 @@ class LimeConfiguration
    *
    * @return LimeInputFactoryInterface
    */
-  public function getParserFactory()
+  public function getInputFactory()
   {
     return $this->inputFactory;
   }

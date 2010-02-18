@@ -48,7 +48,7 @@ class LimeHarness
 
     for ($i = 0; $i < $this->configuration->getProcesses(); ++$i)
     {
-      $launchers[] = new LimeLauncher($this->output, $this->configuration->getParserFactory());
+      $launchers[] = new LimeLauncher($this->output, $this->configuration->getInputFactory());
     }
 
     do
