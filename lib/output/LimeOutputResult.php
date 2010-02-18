@@ -77,6 +77,7 @@ class LimeOutputResult
   public function addTodo($text)
   {
     $this->nbActual++;
+    $this->nbPassed++;
     $this->todos[] = $text;
   }
 
