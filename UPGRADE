@@ -1,0 +1,48 @@
+Upgrade from 1.0 to 2.0
+=======================
+
+Lime 2 is (nearly) entirely backwards compatible the first version. If you
+want to upgrade a project that is already using Lime 1, you have to follow
+only a few steps to replace it by the new release.
+
+
+Installing Lime 2.0
+-------------------
+
+To install Lime 2 in a project, you simply need to download or checkout the
+source into a directory of your project.
+
+With Subversion:
+
+    > svn co http://svn.symfony-project.com/tools/lime/tags/RELEASE_2_0_0_ALPHA1 lib/vendor/Lime2
+    
+This command will checkout a copy of Lime 2 into the directory `lib/vendor/Lime2`.
+You can also install Lime in a different directory, just make sure that you
+use the right path in the next steps.
+
+
+Replacing Lime 1.0 by 2.0
+-------------------------
+
+If you use symfony, Lime 1 is usually installed in the directory 
+`path/to/symfony/lib/vendor/lime`. To use Lime 2 instead, you need to replace 
+its `lime.php` file by a link to `path/to/Lime2/lib/lime.php`.
+
+The next commands assume that:
+
+  * symfony is installed in `lib/vendor/symfony`
+  * Lime 2 is installed in `lib/vendor/Lime2`
+  
+Adjust the paths to match your project's paths if necessary.
+
+On Linux:
+
+    > cd lib/vendor/symfony/lib/vendor/lime
+    > mv lime.php lime.php.1.0
+    > ln -s ../../../../Lime2/lib/lime.php lime.php
+    
+On Windows:
+
+Not tested yet. Please contact me if you found a working solution.
+
+Now symfony will always use Lime 2 when running any tests.
