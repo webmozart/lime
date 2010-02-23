@@ -156,9 +156,9 @@ EOF;
     $skeletonDir = $limeDir.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'skeleton';
     $projectDir = realpath(getcwd());
 
-    if (!file_exists($path = $projectDir.DIRECTORY_SEPARATOR.self::CONFIG_FILE))
+    if (!file_exists($path = $projectDir.DIRECTORY_SEPARATOR.LimeConfiguration::FILENAME))
     {
-      copy($skeletonDir.DIRECTORY_SEPARATOR.self::CONFIG_FILE, $path);
+      copy($skeletonDir.DIRECTORY_SEPARATOR.LimeConfiguration::FILENAME, $path);
     }
 
     if (!file_exists($path = $projectDir.DIRECTORY_SEPARATOR.'lime'))
