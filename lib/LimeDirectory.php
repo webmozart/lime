@@ -51,9 +51,9 @@ class LimeDirectory implements LimeLoadable
    */
   public function loadFiles()
   {
-    $directoryIterator = new RecursiveDirectoryIterator($path);
-    $recursiveIterator = new RecursiveIteratorIterator($iterator);
-    $filteredIterator = new RegexIterator($iterator, $this->pattern);
+    $directoryIterator = new RecursiveDirectoryIterator($this->path);
+    $recursiveIterator = new RecursiveIteratorIterator($directoryIterator);
+    $filteredIterator = new RegexIterator($recursiveIterator, $this->pattern);
 
     $files = array();
 
