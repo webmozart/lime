@@ -69,20 +69,18 @@ class LimeConfiguration
     {
       $config = new LimeConfiguration();
 
-      include $path;
-
       self::$instances[$directory] = $config;
 
-      return $config;
+      include $path;
     }
     else
     {
       $config = self::getInstance(dirname($directory));
 
       self::$instances[$directory] = $config;
-
-      return $config;
     }
+
+    return $config;
   }
 
   /**
