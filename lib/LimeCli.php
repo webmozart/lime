@@ -224,9 +224,7 @@ EOF;
     // test is given as absolute path
     if (count($labels) == 1 && is_readable($labels[0]))
     {
-      LimeAnnotationSupport::setScriptPath($labels[0]);
-
-      return include $labels[0];
+      return $this->includeTest($labels[0]);
     }
     else
     {
@@ -248,9 +246,7 @@ EOF;
           throw new Exception(sprintf("The name \"%s\" is ambiguous:\n  - %s\nPlease launch the test with the full file path.", $labels[0], implode("\n  - ", $paths)));
         }
 
-        LimeAnnotationSupport::setScriptPath($files[0]->getPath());
-
-        return include $files[0]->getPath();
+        return $this->includeTest($files[0]->getPath());
       }
       // labels are given
       else
@@ -260,6 +256,22 @@ EOF;
         return $harness->run($loader->getFilesByLabels($labels)) ? 0 : 1;
       }
     }
+  }
+
+  protected function includeTest($__lime_path)
+  {
+  	LimeAnnotationSupport::setScriptPath($__lime_path);
+
+  	$lexer = new LimeLexerVariables(array('Test', 'Before', 'After', 'BeforeAll', 'AfterAll'), array('Before'));
+
+  	// make global variables _really_ global (in case someone uses "global" statements)
+  	foreach ($lexer->parse(file_get_contents($__lime_path)) as $__lime_variable)
+  	{
+  	  $__lime_variable = substr($__lime_variable, 1); // strip '$'
+  	  global $$__lime_variable;
+  	}
+
+  	return include $__lime_path;
   }
 
   /**
