@@ -198,8 +198,7 @@ Support
 
 Support questions and enhancements can be discussed on the [mailing-list] [6].
 
-If you find a bug, you can create a ticket at the [symfony trac] [7] under the 
-*lime2* component.
+If you find a bug, you can create a ticket in the [GitHub issue tracker] [7].
 
 License
 -------
@@ -233,4 +232,4 @@ Lime 2 is licensed under the *MIT license*:
   [4]: http://github.com/bschussek/lime/zipball/master
   [5]: http://github.com/bschussek/lime/tarball/master
   [6]: http://groups.google.com/group/lime-user
-  [7]: http://trac.symfony-project.org
+  [7]: http://github.com/bschussek/lime/issues
