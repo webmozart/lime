@@ -1,0 +1,11 @@
+Lime Testing Framework
+======================
+
+Lime is a usable testing framework for PHP 5 created by Bernhard Schussek
+and Fabien Potencier. See the documentation in the `doc/` directory or on the 
+[GitHub wiki] [1] for more information about how to use Lime.
+
+The library is released under the MIT license. See the attached LICENSE
+file for the license text.
+
+    [1] http://wiki.github.com/bschussek/lime
