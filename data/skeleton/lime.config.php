@@ -60,7 +60,7 @@ $config->setBaseDir(dirname(__FILE__));
 
 $lime = LimeExecutable::php('lime', 'raw', array('--output' => 'raw'));
 
-//$config->registerDir('test', $lime);
+$config->registerDir('test', $lime);
 
 /*
  * If you set verbose to true, some test outputs will output additional

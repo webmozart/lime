@@ -22,7 +22,7 @@ class LimeCli
     'init',
     'processes',
     'suffix',
-    'force-colors',
+    'color',
     'verbose',
     'serialize',
     'output',
@@ -38,6 +38,8 @@ class LimeCli
   {
     try
     {
+      echo "Lime 2.0.0 by Bernhard Schussek\n";
+
       list($options, $labels) = $this->parseArguments($arguments);
 
       if ($diff = array_diff(array_keys($options), self::$allowedOptions))
@@ -102,7 +104,7 @@ Usage:
 
 
 Options:
-  --force-colors          Enforces colorization in the console output.
+  --color                 Enforces colorization in the console output.
   --help                  This help
   --init                  Initializes the current working directory for
                           use with Lime 2. You should adapt the generated
@@ -152,14 +154,30 @@ EOF;
    */
   protected function init(array $options)
   {
-    $limeDir = realpath(dirname(__FILE__).'/..');
-    $skeletonDir = $limeDir.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'skeleton';
+    $absoluteLimeDir = realpath(dirname(__FILE__).'/..');
+    $skeletonDir = $absoluteLimeDir.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'skeleton';
     $projectDir = realpath(getcwd());
+
+    if (strpos($absoluteLimeDir, $projectDir.DIRECTORY_SEPARATOR) === 0)
+    {
+      $relativeLimeDir = substr($absoluteLimeDir, strlen($projectDir.DIRECTORY_SEPARATOR));
+    }
+
+    echo "Creating lime.config.php...";
 
     if (!file_exists($path = $projectDir.DIRECTORY_SEPARATOR.LimeConfiguration::FILENAME))
     {
-      copy($skeletonDir.DIRECTORY_SEPARATOR.LimeConfiguration::FILENAME, $path);
+      $content = file_get_contents($skeletonDir.DIRECTORY_SEPARATOR.LimeConfiguration::FILENAME);
+
+      file_put_contents($path, str_replace("\n", PHP_EOL, $content));
+
     }
+    else
+    {
+      echo " exists already!";
+    }
+
+    echo "\nCreating lime executable...";
 
     if (!file_exists($path = $projectDir.DIRECTORY_SEPARATOR.'lime'))
     {
@@ -167,9 +185,25 @@ EOF;
       include $skeletonDir.DIRECTORY_SEPARATOR.'lime';
       $content = ob_get_clean();
 
-      file_put_contents($path, str_replace('[?php', '<?php', $content));
+      file_put_contents($path, str_replace(array('[?php', "\n"), array('<?php', PHP_EOL), $content));
       chmod($path, 0777);
     }
+    else
+    {
+      echo " exists already!";
+    }
+
+    echo <<<EOF
+
+Initialized Lime project in $projectDir.
+
+Please add your test files to lime.config.php.
+You can find out more about Lime by running
+
+    php lime --help
+
+
+EOF;
 
     return 0;
   }
@@ -206,7 +240,7 @@ EOF;
       $configuration->setSuiteOutput($options['output']);
     }
 
-    if (isset($options['force-colors']))
+    if (isset($options['color']))
     {
       $configuration->setForceColors(true);
     }
@@ -235,7 +269,11 @@ EOF;
       {
         $files = $loader->getFilesByName($labels[0]);
 
-        if (count($files) > 1)
+        if (count($files) == 0)
+        {
+          throw new Exception("No tests are registered in the test suite! Please add your tests in lime.config.php.");
+        }
+        else if (count($files) > 1)
         {
           $paths = array();
           foreach ($files as $file)
@@ -252,8 +290,14 @@ EOF;
       else
       {
         $harness = new LimeHarness($configuration, $loader);
+        $files = $loader->getFilesByLabels($labels);
 
-        return $harness->run($loader->getFilesByLabels($labels)) ? 0 : 1;
+        if (count($files) == 0)
+        {
+          throw new Exception("No tests are registered in the test suite! Please add your tests in lime.config.php.");
+        }
+
+        return $harness->run($files) ? 0 : 1;
       }
     }
   }

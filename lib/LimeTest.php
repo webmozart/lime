@@ -268,7 +268,7 @@ class LimeTest
    *
    * @return void
    */
-  public function skip($message = '', $nbTests = 1)
+  public function skip($nbTests = 1, $message = '')
   {
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
 

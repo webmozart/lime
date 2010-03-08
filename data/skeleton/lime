@@ -11,7 +11,11 @@
  * with this source code in the file LICENSE.
  */
 
-require_once '<?php echo $limeDir.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR ?>LimeAutoloader.php';
+<?php if (isset($relativeLimeDir)): ?>
+require_once dirname(__FILE__).'<?php echo DIRECTORY_SEPARATOR.$relativeLimeDir.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR ?>LimeAutoloader.php';
+<?php else: ?>
+require_once '<?php echo $absoluteLimeDir.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR ?>LimeAutoloader.php';
+<?php endif ?>
 LimeAutoloader::register();
 
 $cli = new LimeCli();
