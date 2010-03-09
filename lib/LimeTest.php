@@ -295,7 +295,7 @@ class LimeTest
 
   public function mock($class, array $options = array())
   {
-    $mock = LimeMock::create($class, $this->output, $options);
+    $mock = LimeMock::create($class, $options);
 
     $this->mocks[] = $mock;
 
@@ -309,7 +309,7 @@ class LimeTest
       'default_count'   =>  'any',
     ), $options);
 
-    return LimeMock::create($class, new LimeOutputNone(), $options);
+    return LimeMock::create($class, $options);
   }
 
   public function extendMock($class, array $options = array())

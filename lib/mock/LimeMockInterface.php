@@ -29,7 +29,7 @@ interface LimeMockInterface
    * @param  LimeOutputInterface        $output     The output for displaying
    *                                                the comparison results.
    */
-  public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output);
+  public function __construct($class, LimeMockBehaviourInterface $behaviour);
 
   /**
    * Invokes the given method.
@@ -70,4 +70,11 @@ interface LimeMockInterface
    * @return LimeMockStateInterface
    */
   public function __lime_getState();
+
+  /**
+   * Returns the trace of the called invocations.
+   *
+   * @return LimeMockInvocationTrace
+   */
+  public function __lime_getInvocationTrace();
 }

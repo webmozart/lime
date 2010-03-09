@@ -186,12 +186,58 @@ $t = new LimeTest();
 
   // fixtures
   $printer->printLargeBox("Error: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
-  $printer->printLine('Exception trace:', LimePrinter::COMMENT);
-  $printer->method('printText')->atLeastOnce();
-  $printer->method('printLine')->atLeastOnce();
   $printer->replay();
   // test
   $output->error(new LimeError('A very important error', '/test/file', 11));
+
+
+// @Test: error() prints the error traces if available
+
+  // fixtures
+  $printer->printLargeBox("MyException: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
+  $printer->printLine('Exception trace:', LimePrinter::COMMENT);
+  $printer->printText('  at ');
+  $printer->printText('/test/file', LimePrinter::TRACE);
+  $printer->printText(':');
+  $printer->printLine(11, LimePrinter::TRACE);
+  $printer->printText('  my_function_1() at ');
+  $printer->printLine('[internal function]');
+  $printer->printText('  my_function_2() at ');
+  $printer->printText('file_2', LimePrinter::TRACE);
+  $printer->printText(':');
+  $printer->printLine(20, LimePrinter::TRACE);
+  $printer->printText('  Class3->my_function_3() at ');
+  $printer->printLine('[internal function]');
+  $printer->printText('  Class4->my_function_4() at ');
+  $printer->printText('file_4', LimePrinter::TRACE);
+  $printer->printText(':');
+  $printer->printLine(40, LimePrinter::TRACE);
+  $printer->printLine('');
+  $printer->replay();
+  // test
+  $trace = array(
+    array('function' => 'my_function_1'),
+    array('function' => 'my_function_2', 'file' => 'file_2', 'line' => 20),
+    array('class' => 'Class3', 'type' => '->', 'function' => 'my_function_3'),
+    array('class' => 'Class4', 'type' => '->', 'function' => 'my_function_4', 'file' => 'file_4', 'line' => 40),
+  );
+  $output->error(new LimeError('A very important error', '/test/file', 11, 'MyException', $trace));
+
+
+// @Test: error() prints the invocation traces if available
+
+  $printer->printLargeBox("MyException: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
+  $printer->printLine('Invocation trace:', LimePrinter::COMMENT);
+  $printer->printLine('  1) printLine("Foo", 2) was called once');
+  $printer->printLine('  2) printLine("Bar") was called never');
+  $printer->printLine('');
+  $printer->replay();
+  // test
+  $trace = array(
+    'printLine("Foo", 2) was called once',
+    'printLine("Bar") was called never',
+  );
+  $output->error(new LimeError('A very important error', '/test/file', 11, 'MyException', array(), $trace));
 
 
 // @Test: error() truncates the file path
@@ -201,9 +247,6 @@ $t = new LimeTest();
   $configuration->getBaseDir()->returns('/test');
   $configuration->replay();
   $printer->printLargeBox("Error: A very important error\n(in /file on line 11)", LimePrinter::ERROR);
-  $printer->printLine('Exception trace:', LimePrinter::COMMENT);
-  $printer->method('printText')->atLeastOnce();
-  $printer->method('printLine')->atLeastOnce();
   $printer->replay();
   // test
   $output->error(new LimeError('A very important error', '/test/file', 11));

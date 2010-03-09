@@ -128,7 +128,7 @@ class LimeMock
    *                                      description for more information.
    * @return LimeMockInterface            The mock object
    */
-  public static function create($classOrInterface, LimeOutputInterface $output, array $options = array())
+  public static function create($classOrInterface, array $options = array())
   {
     $options = array_merge(array(
       'strict'              =>  false,
@@ -147,7 +147,7 @@ class LimeMock
 
     $name = self::generateClass($classOrInterface, $options['generate_controls']);
 
-    return new $name($classOrInterface, $behaviour, $output, $options['stub_methods']);
+    return new $name($classOrInterface, $behaviour, $options['stub_methods']);
   }
 
   /**

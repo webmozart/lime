@@ -11,18 +11,18 @@
 <?php echo $class_declaration ?>  
 {
   private
-    $class        = null,
-    $state        = null,
-    $output       = null,
-    $behaviour    = null,
-    $stubMethods  = true;
+    $class            = null,
+    $state            = null,
+    $invocationTrace  = null,
+    $behaviour    	  = null,
+    $stubMethods      = true;
   
-  public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output, $stubMethods = true)
+  public function __construct($class, LimeMockBehaviourInterface $behaviour, $stubMethods = true)
   {
     $this->class = $class;
     $this->behaviour = $behaviour;
-    $this->output = $output;
     $this->stubMethods = $stubMethods;
+    $this->invocationTrace = new LimeMockInvocationTrace();
     
     $this->__lime_reset();
   }
@@ -57,7 +57,7 @@
     catch (LimeMockInvocationException $e)
     {
       // hide the internal trace to not distract when debugging test errors
-      throw new LimeMockException($e, $this);
+      throw new LimeMockException($this, $e);
     }
   }
   
@@ -72,13 +72,18 @@
     
     if (!$this->state instanceof LimeMockRecordState)
     {
-      $this->state = new LimeMockRecordState($this->behaviour, $this->output);
+      $this->state = new LimeMockRecordState($this->behaviour, $this->invocationTrace);
     }
   }
   
   public function __lime_getState()
   {
     return $this->state;
+  }
+  
+  public function __lime_getInvocationTrace()
+  {
+    return $this->invocationTrace;
   }
   
   <?php if ($generate_controls): ?>

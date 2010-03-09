@@ -24,15 +24,15 @@
 class LimeMockException extends Exception
 {
   protected
-    $invocation      = null,
-    $mock            = null;
+    $invocation        = null,
+    $mock              = null;
 
   /**
    * Constructor.
    *
    * @param LimeMockInvocationException $e
    */
-  public function __construct(LimeMockInvocationException $e, LimeMockInterface $mock)
+  public function __construct(LimeMockInterface $mock, LimeMockInvocationException $e)
   {
     parent::__construct($e->getMessage());
 
@@ -68,5 +68,15 @@ class LimeMockException extends Exception
   public function getMethod()
   {
     return $this->invocation->getMethod();
+  }
+
+  /**
+   * Returns the invocationt race.
+   *
+   * @return LimeMockInvocationTrace
+   */
+  public function getInvocationTrace()
+  {
+    return $this->mock->__lime_getInvocationTrace();
   }
 }

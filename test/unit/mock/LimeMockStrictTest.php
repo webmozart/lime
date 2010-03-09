@@ -21,13 +21,11 @@ $t = new LimeTest();
 
 // @Before
 
-  $output = new MockLimeOutput();
-  $m = LimeMock::create('TestClass', $output, array('strict' => true));
+  $m = LimeMock::create('TestClass', array('strict' => true));
 
 
 // @After
 
-  $output = null;
   $m = null;
 
 
@@ -41,8 +39,7 @@ $t = new LimeTest();
   $m->testMethod2('Foobar');
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: ->verify() passes if a method is expected both with any and with concrete parameters
@@ -55,8 +52,7 @@ $t = new LimeTest();
   $m->testMethod(1, 'foobar');
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: An exception is thrown if methods are called in the wrong order
@@ -83,7 +79,7 @@ $t = new LimeTest();
 // @Test: If the option "nice" is set, ->verify() fails if methods were called in the wrong order
 
   // test
-  $m = LimeMock::create('TestClass', $output, array('strict' => true, 'nice' => true));
+  $m = LimeMock::create('TestClass', array('strict' => true, 'nice' => true));
   $m->method1();
   $m->method2();
   $m->method3();
@@ -91,10 +87,9 @@ $t = new LimeTest();
   $m->method3();
   $m->method1();
   $m->method2();
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
+  $t->expect('LimeConstraintException');
   $m->verify();
-  // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 1, 'One test failed');
 
 
 // @Test: The order of the tests remains intact when using times()
@@ -124,8 +119,7 @@ $t = new LimeTest();
   $m->method2();
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: The order of the tests remains intact when using atLeastOnce()
@@ -153,8 +147,7 @@ $t = new LimeTest();
   $m->method2();
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: Parameters are compared using strict comparison by default
@@ -177,6 +170,5 @@ $t = new LimeTest();
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 

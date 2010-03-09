@@ -49,7 +49,7 @@ class LimeMockInvocationExpectation
   protected
     $invocation         = null,
     $matched            = false,
-    $output             = null,
+    $trace              = null,
     $countMatcher       = null,
     $parameterMatchers  = array(),
     $parameters         = array(),
@@ -68,10 +68,10 @@ class LimeMockInvocationExpectation
    * @param  LimeOutputInterface $output      The output to write at when
    *                                          verification passes or fails
    */
-  public function __construct(LimeMockInvocation $invocation, LimeOutputInterface $output)
+  public function __construct(LimeMockInvocation $invocation, LimeMockInvocationTrace $trace)
   {
     $this->invocation = $invocation;
-    $this->output = $output;
+    $this->trace = $trace;
   }
 
   protected function getMatchers()
@@ -139,9 +139,7 @@ class LimeMockInvocationExpectation
 
     if (!$this->verified && $this->isSatisfied())
     {
-      list ($file, $line) = LimeTrace::findCaller('LimeMockInterface');
-
-      $this->output->pass((string)$this, $file, $line);
+      $this->trace->push((string)$this);
 
       $this->verified = true;
     }
@@ -250,15 +248,13 @@ class LimeMockInvocationExpectation
   {
     if (!$this->verified)
     {
-      list ($file, $line) = LimeTrace::findCaller('LimeMockInterface');
-
       if ($this->isSatisfied())
       {
-        $this->output->pass((string)$this, $file, $line);
+        $this->trace->push((string)$this);
       }
       else
       {
-        $this->output->fail((string)$this, $file, $line);
+        throw new LimeConstraintException((string)$this);
       }
 
       $this->verified = true;

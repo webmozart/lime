@@ -27,8 +27,8 @@
 class LimeMockRecordState implements LimeMockStateInterface
 {
   protected
-    $behaviour = null,
-    $output = null;
+    $behaviour         = null,
+    $invocationTrace   = null;
 
   /**
    * Constructor.
@@ -39,10 +39,10 @@ class LimeMockRecordState implements LimeMockStateInterface
    *                                                successful tests are written
    *                                                to.
    */
-  public function __construct(LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output)
+  public function __construct(LimeMockBehaviourInterface $behaviour, LimeMockInvocationTrace $invocationTrace)
   {
     $this->behaviour = $behaviour;
-    $this->output = $output;
+    $this->invocationTrace = $invocationTrace;
   }
 
   /**
@@ -52,7 +52,7 @@ class LimeMockRecordState implements LimeMockStateInterface
   public function invoke(LimeMockMethod $method, array $parameters = null)
   {
     $invocation = new LimeMockInvocation($method, is_null($parameters) ? array() : $parameters);
-    $invocation = new LimeMockInvocationExpectation($invocation, $this->output);
+    $invocation = new LimeMockInvocationExpectation($invocation, $this->invocationTrace);
 
     if (is_null($parameters))
     {

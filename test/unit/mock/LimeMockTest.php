@@ -110,20 +110,18 @@ $t = new LimeTest();
 
 // @Before
 
-  $output = new MockLimeOutput();
-  $m = LimeMock::create('TestClass', $output);
+  $m = LimeMock::create('TestClass');
 
 
 // @After
 
-  $output = null;
   $m = null;
 
 
 // @Test: Interfaces can be mocked
 
   // test
-  $m = LimeMock::create('TestInterface', $output);
+  $m = LimeMock::create('TestInterface');
   // assertions
   $t->ok($m instanceof TestInterface, 'The mock implements the interface');
   $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
@@ -136,7 +134,7 @@ $t = new LimeTest();
     require_once __DIR__.'/php5.3/TestInterface.php';
 
     // test
-    $m = LimeMock::create('TestNamespace\TestSubNamespace\TestInterface', $output);
+    $m = LimeMock::create('TestNamespace\TestSubNamespace\TestInterface');
     // assertions
     $interface = 'TestNamespace\TestSubNamespace\TestInterface';
     $t->ok($m instanceof $interface, 'The mock implements the interface');
@@ -152,7 +150,7 @@ $t = new LimeTest();
 // @Test: Abstract classes can be mocked
 
   // test
-  $m = LimeMock::create('TestClassAbstract', $output);
+  $m = LimeMock::create('TestClassAbstract');
   // assertions
   $t->ok($m instanceof TestClassAbstract, 'The mock inherits the class');
   $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
@@ -160,7 +158,7 @@ $t = new LimeTest();
 
 // @Test: Non-existing classes can be mocked
 
-  $m = LimeMock::create('FoobarClass', $output);
+  $m = LimeMock::create('FoobarClass');
   // assertions
   $t->ok($m instanceof FoobarClass, 'The mock generates and inherits the class');
   $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
@@ -171,7 +169,7 @@ $t = new LimeTest();
   if (version_compare(PHP_VERSION, '5.3', '>='))
   {
     // test
-    $m = LimeMock::create('TestNamespace\TestSubNamespace\TestClass', $output);
+    $m = LimeMock::create('TestNamespace\TestSubNamespace\TestClass');
     // assertions
     $class = 'TestNamespace\TestSubNamespace\TestClass';
     $t->ok($m instanceof $class, 'The mock generates and inherits the class');
@@ -186,7 +184,7 @@ $t = new LimeTest();
 
 // @Test: Classes with methods from the mock can be mocked
 
-  $m = LimeMock::create('TestClassWithMethodsFromMock', $output);
+  $m = LimeMock::create('TestClassWithMethodsFromMock');
   // assertions
   $t->ok($m instanceof TestClassWithMethodsFromMock, 'The mock generates and inherits the class');
   $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
@@ -195,7 +193,7 @@ $t = new LimeTest();
 // @Test: Methods with type hints can be mocked
 
   // test
-  $m = LimeMock::create('TestInterfaceWithTypeHints', $output);
+  $m = LimeMock::create('TestInterfaceWithTypeHints');
   // assertions
   $t->ok($m instanceof TestInterfaceWithTypeHints, 'The mock implements the interface');
 
@@ -203,7 +201,7 @@ $t = new LimeTest();
 // @Test: Methods with reference parameters can be mocked
 
   // test
-  $m = LimeMock::create('TestInterfaceWithReferenceParameters', $output);
+  $m = LimeMock::create('TestInterfaceWithReferenceParameters');
   // assertions
   $t->ok($m instanceof TestInterfaceWithReferenceParameters, 'The mock implements the interface');
 
@@ -211,7 +209,7 @@ $t = new LimeTest();
 // @Test: Methods with default values can be mocked
 
   // test
-  $m = LimeMock::create('TestInterfaceWithDefaultValues', $output);
+  $m = LimeMock::create('TestInterfaceWithDefaultValues');
   // assertions
   $t->ok($m instanceof TestInterfaceWithDefaultValues, 'The mock implements the interface');
 
@@ -221,7 +219,7 @@ $t = new LimeTest();
   // fixtures
   TestAutoloader::$calls = 0;
   // test
-  $m = LimeMock::create('Foobar', $output);
+  $m = LimeMock::create('Foobar');
   // assertions
   $t->is(TestAutoloader::$calls, 0, 'The autoloader was not called');
 
@@ -244,7 +242,7 @@ $t = new LimeTest();
   $m->calls = 0;
   $m->calls2 = 0;
   // test
-  $m = LimeMock::create('TestClass', $output, array('stub_methods' => false, 'nice' => true));
+  $m = LimeMock::create('TestClass', array('stub_methods' => false, 'nice' => true));
   $m->testMethod();
   $m->replay();
   $m->testMethod();
@@ -258,7 +256,7 @@ $t = new LimeTest();
 
   // fixtures
   TestClassWithFinalMethods::$calls = 0;
-  $m = LimeMock::create('TestClassWithFinalMethods', $output);
+  $m = LimeMock::create('TestClassWithFinalMethods');
   $m->replay();
   // test
   $m->testMethod();
@@ -314,10 +312,9 @@ $t = new LimeTest();
   // test
   $m->testMethod();
   $m->replay();
-  $m->verify();
   // assertions
-  $t->is($output->fails, 1, 'One test failed');
-  $t->is($output->passes, 0, 'No test passed');
+  $t->expect('LimeConstraintException');
+  $m->verify();
 
 
 // @Test: ->verify() passes if a method was called correctly
@@ -328,8 +325,7 @@ $t = new LimeTest();
   $m->testMethod(1, 'Foobar');
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
 // @Test: ->verify() passes if two methods were called correctly
@@ -342,8 +338,7 @@ $t = new LimeTest();
   $m->testMethod2('Foobar');
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: ->verify() passes if a method was expected and called several times
@@ -356,8 +351,7 @@ $t = new LimeTest();
   $m->testMethod1();
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: After verifying all method calls are ignored
@@ -370,8 +364,7 @@ $t = new LimeTest();
   $m->foobar();
   $m->hurray();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
 // @Test: A mock can be reset in record mode
@@ -384,8 +377,7 @@ $t = new LimeTest();
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
 // @Test: A mock can be reset in replay mode
@@ -399,8 +391,7 @@ $t = new LimeTest();
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
 // @Test: An exception is thrown if a method is called with wrong parameters
@@ -426,14 +417,13 @@ $t = new LimeTest();
 // @Test: The option "nice" suppresses exceptions upon method calls
 
   // test
-  $m = LimeMock::create('TestClass', $output, array('nice' => true));
+  $m = LimeMock::create('TestClass', array('nice' => true));
   $m->testMethod('Foobar');
   $m->replay();
   $m->testMethod('Foobar', 1);
-  $m->verify();
   // assertions
-  $t->is($output->fails, 1, 'One test failed');
-  $t->is($output->passes, 0, 'No test passed');
+  $t->expect('LimeConstraintException');
+  $m->verify();
 
 
 // @Test: A method can be expected twice with different parameters
@@ -445,10 +435,10 @@ $t = new LimeTest();
   $m->testMethod('Foobar');
   $m->replay();
   $m->testMethod();
-  $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 1, 'One test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
+  $t->expect('LimeConstraintException');
+  $m->verify();
 
 
   // @Test: - Case 2: Sufficient method calls
@@ -461,8 +451,7 @@ $t = new LimeTest();
   $m->testMethod('Foobar');
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: Methods may be called in any order
@@ -475,8 +464,7 @@ $t = new LimeTest();
   $m->testMethod1();
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: By default, method parameters are compared with weak typing
@@ -487,8 +475,7 @@ $t = new LimeTest();
   $m->testMethod('1');
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
 // @Test: ->times()
@@ -499,10 +486,10 @@ $t = new LimeTest();
   $m->testMethod(1)->times(2);
   $m->replay();
   $m->testMethod(1);
-  $m->verify();
   // assertions
-  $t->is($output->passes, 0, 'No test passed');
-  $t->is($output->fails, 1, 'One test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 0, 'No test passed');
+  $t->expect('LimeConstraintException');
+  $m->verify();
 
 
   // @Test: - Case 2: Too many actual calls
@@ -526,8 +513,7 @@ $t = new LimeTest();
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
   // @Test: - Case 4: Call with different parameters
@@ -547,10 +533,10 @@ $t = new LimeTest();
 
   $m->testMethod(1)->atLeastOnce();
   $m->replay();
-  $m->verify();
   // assertions
-  $t->is($output->passes, 0, 'No test passed');
-  $t->is($output->fails, 1, 'One test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 0, 'No test passed');
+  $t->expect('LimeConstraintException');
+  $m->verify();
 
   // @Test: - Case 2: One actual call
 
@@ -559,8 +545,7 @@ $t = new LimeTest();
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
   // @Test: - Case 3: Two actual calls
 
@@ -570,8 +555,7 @@ $t = new LimeTest();
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
 // @Test: ->times() and ->returns()
@@ -596,8 +580,7 @@ $t = new LimeTest();
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
   // @Test: - Case 1: "Wrong" parameters
 
@@ -607,8 +590,7 @@ $t = new LimeTest();
   $m->testMethod(1, 2, 3);
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
 // @Test: ->between()
@@ -619,10 +601,10 @@ $t = new LimeTest();
   $m->testMethod()->between(2, 4);
   $m->replay();
   $m->testMethod();
-  $m->verify();
   // assertions
-  $t->is($output->passes, 0, 'No test passed');
-  $t->is($output->fails, 1, 'One test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 0, 'No test passed');
+  $t->expect('LimeConstraintException');
+  $m->verify();
 
   // @Test: - Case 2: Correct number
 
@@ -633,8 +615,7 @@ $t = new LimeTest();
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
   // @Test: - Case 3: Another correct number
 
@@ -647,8 +628,7 @@ $t = new LimeTest();
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
   // @Test: - Case 4: Too many calls
 
@@ -674,8 +654,7 @@ $t = new LimeTest();
   $m->testMethod(1, 2, 3);
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
   // @Test: - Case 2: Any actual calls
 
@@ -699,8 +678,7 @@ $t = new LimeTest();
   $m->testMethod(1, 2, 3);
   $m->verify();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
   // @Test: - Case 2: Any actual calls
 
@@ -711,8 +689,7 @@ $t = new LimeTest();
   $m->testMethod(1, 2, 3);
   $m->testMethod();
   // assertions
-  $t->is($output->passes, 2, 'Two tests passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
 
 
 // @Test: ->strict() enforces strict parameter checks for single methods
@@ -735,8 +712,7 @@ $t = new LimeTest();
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
 // @Test: ->parameter() tests single parameters of a method invocation
@@ -759,8 +735,7 @@ $t = new LimeTest();
   $m->testMethod(1, 'foo');
   $m->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
 
 
   // @Test: - Case 3: Parameter offset is out of range
@@ -777,20 +752,20 @@ $t = new LimeTest();
 
   // test
   $t->expect('LogicException');
-  $m = LimeMock::create('TestClassWithControlMethods', $output);
+  $m = LimeMock::create('TestClassWithControlMethods');
 
 
 // @Test: If a class with the mock's control methods is mocked and "generate_controls" is set to false, no exception is thrown
 
   // test
-  $m = LimeMock::create('TestClassWithControlMethods', $output, array('generate_controls' => false));
+  $m = LimeMock::create('TestClassWithControlMethods', array('generate_controls' => false));
   $t->pass('No exception is thrown');
 
 
 // @Test: The control methods like ->replay() can be mocked
 
   // fixtures
-  $m = LimeMock::create('TestClass', $output, array('generate_controls' => false));
+  $m = LimeMock::create('TestClass', array('generate_controls' => false));
   // test
   $m->replay()->returns('Foobar');
   LimeMock::replay($m);
@@ -807,8 +782,7 @@ $t = new LimeTest();
   $m->testMethod2(1, 'Foobar');
   $m->verify();
   // assertions
-  $t->is($output->passes, 0, 'No test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $t->is(count($m->__lime_getInvocationTrace()), 0, 'No test passed');
 
 
 // @Test: If setExpectNothing() is called, no method must be called

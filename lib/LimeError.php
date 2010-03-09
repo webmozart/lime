@@ -24,11 +24,12 @@
 class LimeError implements Serializable
 {
   private
-    $type    = null,
-    $message = null,
-    $file    = null,
-    $line    = null,
-    $trace   = null;
+    $type              = null,
+    $message           = null,
+    $file              = null,
+    $line              = null,
+    $trace             = null,
+    $invocationTrace   = null;
 
   /**
    * Creates a new instance and copies the data from an exception.
@@ -41,6 +42,7 @@ class LimeError implements Serializable
     $file = $exception->getFile();
     $line = $exception->getLine();
     $trace = $exception->getTrace();
+    $invocationTrace = array();
 
     // Remove all the parts from the trace that have been generated inside
     // the mock object. In the end, only the traces that led to the erroneous
@@ -49,12 +51,14 @@ class LimeError implements Serializable
     // can't because getTrace() is final.
     if ($exception instanceof LimeMockException)
     {
+      $invocationTrace = iterator_to_array($exception->getInvocationTrace());
+
       $class = get_class($exception->getMock());
 
-      while (count($trace) > 0 && $trace[0]['class'] == $class)
+      while (count($trace) > 0 && isset($trace[0]['class']) && $trace[0]['class'] == $class)
       {
-        $file = $trace[0]['file'];
-        $line = $trace[0]['line'];
+        $file = isset($trace[0]['file']) ? $trace[0]['file'] : null;
+        $line = isset($trace[0]['line']) ? $trace[0]['line'] : null;
 
         array_shift($trace);
       }
@@ -74,7 +78,7 @@ class LimeError implements Serializable
       }
     }
 
-    return new self($exception->getMessage(), $file, $line, get_class($exception), $trace);
+    return new self($exception->getMessage(), $file, $line, get_class($exception), $trace, $invocationTrace);
   }
 
   /**
@@ -86,13 +90,14 @@ class LimeError implements Serializable
    * @param string  $type     The error type, f.i. "Fatal Error"
    * @param array   $trace    The traces of the error
    */
-  public function __construct($message, $file, $line, $type = 'Error', array $trace = array())
+  public function __construct($message, $file, $line, $type = 'Error', array $trace = array(), array $invocationTrace = array())
   {
     $this->message = $message;
     $this->file = $file;
     $this->line = $line;
     $this->type = $type;
     $this->trace = $trace;
+    $this->invocationTrace = $invocationTrace;
   }
 
   /**
@@ -146,6 +151,16 @@ class LimeError implements Serializable
   }
 
   /**
+   * Returns the invocation trace of mock errors.
+   *
+   * @return array
+   */
+  public function getInvocationTrace()
+  {
+    return $this->invocationTrace;
+  }
+
+  /**
    * Serializes the error.
    *
    * @see    Serializable#serialize()
@@ -176,7 +191,7 @@ class LimeError implements Serializable
       }
     }
 
-    return serialize(array($this->file, $this->line, $this->message, $traces, $this->type));
+    return serialize(array($this->file, $this->line, $this->message, $traces, $this->type, $this->invocationTrace));
   }
 
   /**
@@ -187,6 +202,6 @@ class LimeError implements Serializable
    */
   public function unserialize($data)
   {
-    list($this->file, $this->line, $this->message, $this->trace, $this->type) = unserialize($data);
+    list($this->file, $this->line, $this->message, $this->trace, $this->type, $this->invocationTrace) = unserialize($data);
   }
 }
