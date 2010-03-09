@@ -39,7 +39,7 @@ class LimeHarness
 
     if (!$output instanceof LimeLogicCollection)
     {
-      $output = new LimeOutputProxy($output);
+      $output = new LimeOutputLogicProxy($output);
     }
 
     $this->output = $output;

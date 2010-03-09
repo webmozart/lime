@@ -19,7 +19,7 @@ $t = new LimeTest(10);
 
 // @Before
 
-  $output = new LimeOutputProxy();
+  $output = new LimeOutputLogicProxy();
 
 
 // @After
@@ -41,7 +41,7 @@ $t = new LimeTest(10);
   $mock->comment('A comment');
   $mock->flush();
   $mock->replay();
-  $output = new LimeOutputProxy($mock);
+  $output = new LimeOutputLogicProxy($mock);
   // test
   $output->focus('/test/file');
   $output->pass('A passed test', '/test/script', 11);

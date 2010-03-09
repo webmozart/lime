@@ -10,7 +10,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeOutputProxy extends LimeOutput
+class LimeOutputLogicProxy extends LimeOutput
 {
   private
     $output       = null;
