@@ -63,6 +63,11 @@ $lime = LimeExecutable::php('lime', 'raw', array('--output' => 'raw'));
 $config->registerDir('test', $lime);
 
 /*
+ * Sets whether legacy classes like lime_test etc. should be loaded.
+ */
+$config->setLegacyMode(false);
+
+/*
  * If you set verbose to true, some test outputs will output additional
  * information. Only supported by some outputs.
  */

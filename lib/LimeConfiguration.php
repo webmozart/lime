@@ -40,7 +40,8 @@ class LimeConfiguration
     $testOutput      = null,
     $serialize       = false,
     $verbose         = false,
-    $forceColors     = false;
+    $forceColors     = false,
+    $legacyMode      = false;
 
   /**
    * Searches for the configuration file named self::FILENAME in the given
@@ -309,6 +310,26 @@ class LimeConfiguration
   public function getForceColors()
   {
     return $this->forceColors;
+  }
+
+  /**
+   * Sets whether legacy mode should be enabled by default.
+   *
+   * @param boolean $legacyMode
+   */
+  public function setLegacyMode($legacyMode)
+  {
+    $this->legacyMode = $legacyMode;
+  }
+
+  /**
+   * Returns whether legacy mode should be enabled by default.
+   *
+   * @return boolean $legacyMode
+   */
+  public function getLegacyMode()
+  {
+    return $this->legacyMode;
   }
 
   /**

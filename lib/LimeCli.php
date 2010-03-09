@@ -222,6 +222,11 @@ EOF;
   {
     $configuration = LimeConfiguration::getInstance(getcwd());
 
+    if ($configuration->getLegacyMode())
+    {
+      LimeAutoloader::enableLegacyMode();
+    }
+
     if (isset($options['processes']))
     {
       $configuration->setProcesses($options['processes']);
