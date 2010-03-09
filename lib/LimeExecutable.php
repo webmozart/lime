@@ -38,18 +38,18 @@ class LimeExecutable
 
   protected
     $command         = null,
-    $parserName      = null;
+    $inputName      = null;
 
   /**
    * Constructor.
    *
    * @param string $command
-   * @param string $parserName
+   * @param string $inputName
    */
-  public function __construct($command, $parserName = null)
+  public function __construct($command, $inputName = null)
   {
     $this->command = $command;
-    $this->parserName = $parserName;
+    $this->inputName = $inputName;
   }
 
   /**
@@ -70,9 +70,9 @@ class LimeExecutable
    *
    * @return string
    */
-  public function getParserName()
+  public function getInputName()
   {
-    return $this->parserName;
+    return $this->inputName;
   }
 
   /**

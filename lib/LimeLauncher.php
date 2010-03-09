@@ -50,7 +50,7 @@ class LimeLauncher
 
     $this->file = $file;
     $this->done = false;
-    $this->input =  $this->inputFactory->create($executable->getParserName(), $this->output);
+    $this->input =  $this->inputFactory->create($executable->getInputName(), $this->output);
     $this->process = new LimeProcess($executable, $file->getPath());
     $this->process->execute();
   }
