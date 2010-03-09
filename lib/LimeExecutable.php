@@ -11,20 +11,20 @@
  */
 
 /**
- * An executable used to execute test files.
+ * An command used to execute test files.
  *
  * Executables know about the programm that is used to execute the test files,
  * the input that is used to read their output and optionally some arguments
  * that are passed to the test file execution.
  *
- * This class offers two factory method for creating new executables:
+ * This class offers two factory method for creating new commands:
  *
  * LimeExecutable::php() automatically prepends the call with the local PHP
  * binary. You can pass the name of the PHP script to which you want to pass the
  * test file in the first parameter. If you want to execute the script directly
  * with PHP, you can leave the first parameter at its default null.
  *
- * LimeExecutable::shell() creates an executable that executes a test file
+ * LimeExecutable::shell() creates an command that executes a test file
  * in the console without PHP. If you pass the name of a program to the first
  * parameter, this program will be launched with the test file as first
  * argument.
@@ -37,79 +37,29 @@ class LimeExecutable
     $php             = null;
 
   protected
-    $executable      = null,
-    $arguments       = array(),
-    $inputName      = null;
+    $command         = null,
+    $parserName      = null;
 
   /**
-   * Creates a new executable executed with the PHP binary.
+   * Constructor.
    *
-   * The PHP binary is launched to execute the given executable with the test
-   * file as first argument. If the executable is omitted or set to NULL, the
-   * test file is launched directly with PHP.
-   *
-   * @param  string $executable  The name of the executable PHP script
-   * @param  string $inputName  The input used to parse the test file output
-   * @param  array $arguments    The default arguments passed to the script
-   * @return LimeExecutable
+   * @param string $command
+   * @param string $parserName
    */
-  public static function php($executable = null, $inputName = null, array $arguments = array())
+  public function __construct($command, $parserName = null)
   {
-    return new LimeExecutable(trim(self::findPhp().' '.$executable), $inputName, $arguments);
+    $this->command = $command;
+    $this->parserName = $parserName;
   }
 
   /**
-   * Creates a new executable.
-   *
-   * The given executable is launched with the test file as first argument. If
-   * the executable is omitted or set to NULL, the test file is launched
-   * directly.
-   *
-   * @param  string $executable  The name of the executable
-   * @param  string $inputName  The input used to parse the test file output
-   * @param  array $arguments    The default arguments passed to the executable
-   * @return LimeExecutable
-   */
-  public static function shell($executable = null, $inputName = null, array $arguments = array())
-  {
-    return new LimeExecutable($executable, $inputName, $arguments);
-  }
-
-  /**
-   * Private constructor.
-   *
-   * This constructor is private. You should use the factory methods php() or
-   * shell() instead.
-   *
-   * @param string $executable
-   * @param string $inputName
-   * @param array $arguments
-   */
-  private function __construct($executable = null, $inputName = null, array $arguments = array())
-  {
-    $this->executable = $executable;
-    $this->arguments = $arguments;
-    $this->inputName = $inputName;
-  }
-
-  /**
-   * Returns the name of the executable.
+   * Returns the name of the command.
    *
    * @return string
    */
-  public function getExecutable()
+  public function getCommand()
   {
-    return $this->executable;
-  }
-
-  /**
-   * Returns the default arguments for the executable.
-   *
-   * @return array
-   */
-  public function getArguments()
-  {
-    return $this->arguments;
+    return $this->command;
   }
 
   /**
@@ -122,25 +72,25 @@ class LimeExecutable
    */
   public function getParserName()
   {
-    return $this->inputName;
+    return $this->parserName;
   }
 
   /**
-   * Tries to find the system's PHP executable and returns it.
+   * Tries to find the system's PHP command and returns it.
    *
    * @return string
    */
-  protected static function findPhp()
+  public static function php()
   {
     if (is_null(self::$php))
     {
       if (getenv('PHP_PATH'))
       {
-        self::$executable = getenv('PHP_PATH');
+        self::$command = getenv('PHP_PATH');
 
         if (!is_executable(self::$php))
         {
-          throw new Exception('The defined PHP_PATH environment variable is not a valid PHP executable.');
+          throw new Exception('The defined PHP_PATH environment variable is not a valid PHP command.');
         }
       }
       else
@@ -153,13 +103,13 @@ class LimeExecutable
     {
       $path = getenv('PATH') ? getenv('PATH') : getenv('Path');
       $extensions = DIRECTORY_SEPARATOR == '\\' ? (getenv('PATHEXT') ? explode(PATH_SEPARATOR, getenv('PATHEXT')) : array('.exe', '.bat', '.cmd', '.com')) : array('');
-      foreach (array('php5', 'php') as $executable)
+      foreach (array('php5', 'php') as $command)
       {
         foreach ($extensions as $extension)
         {
           foreach (explode(PATH_SEPARATOR, $path) as $dir)
           {
-            $file = $dir.DIRECTORY_SEPARATOR.$executable.$extension;
+            $file = $dir.DIRECTORY_SEPARATOR.$command.$extension;
             if (is_executable($file))
             {
               self::$php = $file;
@@ -171,7 +121,7 @@ class LimeExecutable
 
       if (!is_executable(self::$php))
       {
-        throw new Exception("Unable to find PHP executable.");
+        throw new Exception("Unable to find PHP command.");
       }
     }
 

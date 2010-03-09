@@ -14,12 +14,12 @@ include dirname(__FILE__).'/../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(5);
+$t = new LimeTest(3);
 
 
 // @Before
 
-  $executable = LimeExecutable::php();
+  $executable = new LimeExecutable(LimeExecutable::php() . ' %file%');
 
 
 // @Test: A PHP file can be executed
@@ -34,32 +34,10 @@ exit(1);
 EOF
   );
   // test
-  $command = new LimeCommand($file, $executable);
+  $command = new LimeCommand($executable, $file);
   $command->execute();
   // assertions
   $t->is($command->getOutput(), 'Test', 'The output is correct');
   $t->is($command->getErrors(), 'Errors', 'The errors are correct');
   $t->is($command->getStatus(), 1, 'The return value is correct');
 
-
-// @Test: A PHP file can be executed with arguments
-
-  // fixtures
-  $file = tempnam(sys_get_temp_dir(), 'lime');
-  file_put_contents($file, <<<EOF
-<?php
-unset(\$GLOBALS['argv'][0]);
-var_export(\$GLOBALS['argv']);
-exit(1);
-EOF
-  );
-  // test
-  $command = new LimeCommand($file, $executable, array('--test' => true, '--arg' => 'value'));
-  $command->execute();
-  // assertions
-  $output = "array (
-  1 => '--test',
-  2 => '--arg=value',
-)";
-  $t->is($command->getOutput(), $output, 'The output is correct');
-  $t->is($command->getStatus(), 1, 'The return value is correct');

@@ -21,7 +21,7 @@ $t = new LimeTest(6);
 
   $output = $t->mock('LimeOutputInterface');
   $inputFactory = new LimeInputFactory();
-  $executable = LimeExecutable::php(null, 'raw');
+  $executable = new LimeExecutable(LimeExecutable::php().' %file%', 'raw');
   $file = tempnam(sys_get_temp_dir(), 'lime');
   $launcher = new LimeLauncher($output, $inputFactory);
 

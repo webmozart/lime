@@ -106,7 +106,6 @@ class LimeLoader
    */
   public function getFilesByLabels(array $labels = array())
   {
-    $time = microtime();
     $result = new LimeLabel();
 
     foreach ($this->files as $file)
@@ -120,7 +119,7 @@ class LimeLoader
       {
         if (!preg_match('/^([-+]?)(.+)$/', $label, $matches))
         {
-          throw new InvalidArgumentException(sprintf('Invalid label format: "%s"', $label));
+          throw new InvalidArgumentException(sprintf('Invalid label format: %s', $label));
         }
 
         $operation = $matches[1];
@@ -128,7 +127,7 @@ class LimeLoader
 
         if (!isset($this->labels[$label]))
         {
-          throw new InvalidArgumentException(sprintf('Unknown label: "%s"', $label));
+          throw new InvalidArgumentException(sprintf("Unknown label: %s. Did you mean to run this?\n    php lime --test=%s", $label, $label));
         }
 
         if ($operation == '+')

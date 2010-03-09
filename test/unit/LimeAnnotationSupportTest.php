@@ -27,7 +27,7 @@ $t = new LimeAnnotationSupportTest(41);
 $root = '# /test/unit/LimeAnnotationSupport';
 
 global $executable;
-$executable = LimeExecutable::php();
+$executable = new LimeExecutable(LimeExecutable::php().' %file%');
 
 function _backup($file)
 {
@@ -49,7 +49,7 @@ function _execute($file)
 {
   global $executable;
 
-  $command = new LimeCommand(dirname(__FILE__).'/LimeAnnotationSupport/'.$file, $executable);
+  $command = new LimeCommand($executable, dirname(__FILE__).'/LimeAnnotationSupport/'.$file);
   $command->execute();
 
   return $command;

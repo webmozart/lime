@@ -9,33 +9,15 @@ class LimeCommand
     $errors     = '',
     $errorFile  = '';
 
-  public function __construct($file, LimeExecutable $executable, array $arguments = array())
+  public function __construct(LimeExecutable $executable, $file)
   {
-    $arguments = array_merge($executable->getArguments(), $arguments);
-
-    foreach ($arguments as $argument => $value)
-    {
-      $arguments[$argument] = $argument;
-
-      if ($value !== true)
-      {
-        if (!is_string($value))
-        {
-          $value = var_export($value, true);
-        }
-
-        $arguments[$argument] .= '='.escapeshellarg($value);
-      }
-    }
-
     $this->errorFile = tempnam(sys_get_temp_dir(), 'lime');
+    $executable = str_replace('%file%', escapeshellarg($file), $executable->getCommand());
 
     // see http://trac.symfony-project.org/ticket/5437 for the explanation on the weird "cd" thing
     $this->command = sprintf(
-      'cd & %s %s %s 2>%s',
-      $executable->getExecutable(),
-      escapeshellarg($file),
-      implode(' ', $arguments),
+      'cd & %s 2>%s',
+      $executable,
       $this->errorFile
     );
   }

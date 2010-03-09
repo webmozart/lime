@@ -26,6 +26,7 @@ class LimeCli
     'verbose',
     'serialize',
     'output',
+    'test',
   );
 
   /**
@@ -83,7 +84,7 @@ Usage:
 
   Execute the test with a specific name:
 
-    lime <name>
+    lime --test=<name>
 
   The name is the test file name without the suffix configured in
   lime.config.php.
@@ -113,13 +114,15 @@ Options:
   --processes=<n>         Sets the number of processes to use.
   --serialize             Enables serialization of the output. Only works
                           with some output types (option --output).
+  --test=<test>           Executes a single test. The test name is the file name
+                          without the suffix configured in lime.config.php.
   --verbose               Enables verbose output. Only works with some
                           output types (option --output).
 
 Examples:
   Execute MyClassTest:
 
-    lime MyClass
+    lime --test=MyClass
 
   Execute all tests that are in label "unit" and "model" at the same
   time, but that are not in label "slow":
@@ -259,18 +262,12 @@ EOF;
     }
 
     // test is given as absolute path
-    if (count($labels) == 1 && is_readable($labels[0]))
+    if (isset($options['test']))
     {
-      return $this->includeTest($labels[0]);
-    }
-    else
-    {
-      $loader = new LimeLoader($configuration);
-
-      // test is given as class name
-      if (count($labels) == 1 && !$loader->isLabel($labels[0]))
+      if (!is_readable($options['test']))
       {
-        $files = $loader->getFilesByName($labels[0]);
+        $loader = new LimeLoader($configuration);
+        $files = $loader->getFilesByName($options['test']);
 
         if (count($files) == 0)
         {
@@ -287,21 +284,23 @@ EOF;
           throw new Exception(sprintf("The name \"%s\" is ambiguous:\n  - %s\nPlease launch the test with the full file path.", $labels[0], implode("\n  - ", $paths)));
         }
 
-        return $this->includeTest($files[0]->getPath());
+        $options['test'] = $files[0]->getPath();
       }
-      // labels are given
-      else
+
+      return $this->includeTest($options['test']);
+    }
+    else
+    {
+      $loader = new LimeLoader($configuration);
+      $harness = new LimeHarness($configuration, $loader);
+      $files = $loader->getFilesByLabels($labels);
+
+      if (count($files) == 0)
       {
-        $harness = new LimeHarness($configuration, $loader);
-        $files = $loader->getFilesByLabels($labels);
-
-        if (count($files) == 0)
-        {
-          throw new Exception("No tests are registered in the test suite! Please add your tests in lime.config.php.");
-        }
-
-        return $harness->run($files) ? 0 : 1;
+        throw new Exception("No tests are registered in the test suite! Please add your tests in lime.config.php.");
       }
+
+      return $harness->run($files) ? 0 : 1;
     }
   }
 

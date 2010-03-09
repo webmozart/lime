@@ -54,8 +54,8 @@ $config->setBaseDir(dirname(__FILE__));
  *   $config->registerDir('path/to/dir', array('unit', 'slow'));
  */
 
-$lime = LimeExecutable::php('lime', 'raw', array('--output' => 'raw'));
-$phpt = LimeExecutable::shell(null, 'tap');
+$lime = new LimeExecutable(LimeExecutable::php().' lime --output=raw --test=%file%', 'raw');
+$phpt = new LimeExecutable('%file%', 'tap');
 
 $config->registerGlob('test/unit/*Test.php', $lime);
 $config->registerGlob('test/unit/*/*Test.php', $lime);

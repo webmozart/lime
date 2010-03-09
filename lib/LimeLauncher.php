@@ -44,14 +44,14 @@ class LimeLauncher
    * @param string $file
    * @param array $arguments
    */
-  public function launch(LimeFile $file, array $arguments = array())
+  public function launch(LimeFile $file)
   {
     $executable = $file->getExecutable();
 
     $this->file = $file;
     $this->done = false;
     $this->input =  $this->inputFactory->create($executable->getParserName(), $this->output);
-    $this->process = new LimeProcess($file->getPath(), $executable, $arguments);
+    $this->process = new LimeProcess($executable, $file->getPath());
     $this->process->execute();
   }
 
