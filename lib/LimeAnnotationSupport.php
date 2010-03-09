@@ -182,6 +182,7 @@ class LimeAnnotationSupport
     {
       $testRunner->addExceptionHandler(array($this->test, 'handleException'));
       $testRunner->addAfter(array($this->test, 'verifyException'));
+      $testRunner->addAfter(array($this->test, 'verifyMocks'));
     }
 
     $testRunner->run();

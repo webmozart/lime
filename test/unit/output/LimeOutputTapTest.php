@@ -36,8 +36,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->focus('/test/file');
-  // assertions
-  $printer->verify();
 
 
 // @Test: focus() prints the filename only once
@@ -47,8 +45,6 @@ $t = new LimeTest(73);
   // test
   $output->focus('/test/file');
   $output->focus('/test/file');
-  // assertions
-  $printer->verify();
 
 
 // @Test: pass() prints and counts passed tests
@@ -62,8 +58,6 @@ $t = new LimeTest(73);
   // test
   $output->pass('A passed test', '/test/file', 11);
   $output->pass('Another passed test', '/test/file', 22);
-  // assertions
-  $printer->verify();
 
 
 // @Test: pass() prints no message if none is given
@@ -73,8 +67,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->pass('', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: fail() prints and counts failed tests
@@ -92,8 +84,6 @@ $t = new LimeTest(73);
   // test
   $output->fail('A failed test', '/test/file', 33);
   $output->fail('Another failed test', '/test/file', 55, "error\nmessage");
-  // assertions
-  $printer->verify();
 
 
 // @Test: fail() prints no message if none is given
@@ -104,8 +94,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->fail('', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: fail() truncates the file path
@@ -119,8 +107,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->fail('', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: skip() prints and counts skipped tests
@@ -136,8 +122,6 @@ $t = new LimeTest(73);
   // test
   $output->skip('A skipped test', '/test/file', 11);
   $output->skip('Another skipped test', '/test/file', 22);
-  // assertions
-  $printer->verify();
 
 
 // @Test: skip() prints no message if none is given
@@ -149,8 +133,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->skip('', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: todo() prints and counts todos
@@ -166,8 +148,6 @@ $t = new LimeTest(73);
   // test
   $output->todo('A todo', '/test/file', 11);
   $output->todo('Another todo', '/test/file', 22);
-  // assertions
-  $printer->verify();
 
 
 // @Test: todo() prints no message if none is given
@@ -179,8 +159,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->todo('', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: warning() prints a warning
@@ -190,8 +168,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->warning('A very important warning', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: warning() truncates the file path
@@ -204,8 +180,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->warning('A very important warning', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: error() prints an error
@@ -218,8 +192,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->error(new LimeError('A very important error', '/test/file', 11));
-  // assertions
-  $printer->verify();
 
 
 // @Test: error() truncates the file path
@@ -235,8 +207,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->error(new LimeError('A very important error', '/test/file', 11));
-  // assertions
-  $printer->verify();
 
 
 // @Test: info() prints an information
@@ -246,8 +216,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->info('My information', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: comment() prints a comment
@@ -257,8 +225,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->comment('My comment', '/test/file', 11);
-  // assertions
-  $printer->verify();
 
 
 // @Test: flush() prints the plan and a summary
@@ -275,8 +241,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 2 - Too many tests including failed tests
 
@@ -291,8 +255,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 3 - Too few tests
 
@@ -305,8 +267,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 4 - Correct number of tests
 
@@ -319,8 +279,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 5 - Failed tests
 
@@ -335,8 +293,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 6 - Failed and too few tests
 
@@ -351,8 +307,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 7 - No plan
 
@@ -364,8 +318,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 8 - Skipped tests
 
@@ -378,8 +330,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 9 - Successful but warnings
 
@@ -393,8 +343,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 9 - Successful but errors
 
@@ -408,8 +356,6 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();
 
   // @Test: Case 10 - Several plans
 
@@ -424,5 +370,3 @@ $t = new LimeTest(73);
   $printer->replay();
   // test
   $output->flush();
-  // assertions
-  $printer->verify();

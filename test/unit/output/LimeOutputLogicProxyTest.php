@@ -52,8 +52,6 @@ $t = new LimeTest(10);
   $output->error(new LimeError('An error', '/test/script', 11));
   $output->comment('A comment');
   $output->flush();
-  // assertions
-  $mock->verify();
 
 
 // @Test: getDubiousFiles() returns the scripts that contained failures, warnings or errors

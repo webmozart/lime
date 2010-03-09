@@ -94,6 +94,5 @@ class LimeMockRecordState implements LimeMockStateInterface
    */
   public function verify()
   {
-    throw new BadMethodCallException('replay() must be called before verify()');
   }
 }

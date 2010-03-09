@@ -23,7 +23,8 @@ class LimeTest
     $output                 = null,
     $errorReporting         = true,
     $exception              = null,
-    $exceptionExpectation   = null;
+    $exceptionExpectation   = null,
+    $mocks                  = array();
 
   public function __construct($plan = null, LimeConfiguration $configuration = null)
   {
@@ -299,7 +300,11 @@ class LimeTest
 
   public function mock($class, array $options = array())
   {
-    return LimeMock::create($class, $this->output, $options);
+    $mock = LimeMock::create($class, $this->output, $options);
+
+    $this->mocks[] = $mock;
+
+    return $mock;
   }
 
   public function stub($class, array $options = array())
@@ -403,5 +408,15 @@ class LimeTest
     }
 
     $this->exceptionExpectation = null;
+  }
+
+  public function verifyMocks()
+  {
+    foreach ($this->mocks as $mock)
+    {
+      $mock->verify();
+    }
+
+    $this->mocks = array();
   }
 }

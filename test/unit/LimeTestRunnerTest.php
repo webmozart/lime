@@ -30,8 +30,6 @@ $t->diag('The test comments are printed');
   $r->addTest(array($stub, 'testDoSomething'), 'A test comment');
   // test
   $r->run();
-  // assertions
-  $output->verify();
 
 
 $t->diag('The before callbacks are called before each test method');
@@ -49,8 +47,6 @@ $t->diag('The before callbacks are called before each test method');
   $mock->replay();
   // test
   $r->run();
-  // assertions
-  $mock->verify();
 
 
 $t->diag('The after callbacks are called before each test method');
@@ -68,8 +64,6 @@ $t->diag('The after callbacks are called before each test method');
   $mock->replay();
   // test
   $r->run();
-  // assertions
-  $mock->verify();
 
 
 $t->diag('The before-all callbacks are called before the whole test suite');
@@ -86,8 +80,6 @@ $t->diag('The before-all callbacks are called before the whole test suite');
   $mock->replay();
   // test
   $r->run();
-  // assertions
-  $mock->verify();
 
 
 $t->diag('The after-all callbacks are called before the whole test suite');
@@ -104,8 +96,6 @@ $t->diag('The after-all callbacks are called before the whole test suite');
   $mock->replay();
   // test
   $r->run();
-  // assertions
-  $mock->verify();
 
 
 $t->diag('The exception handlers are called when a test throws an exception');
@@ -122,8 +112,6 @@ $t->diag('The exception handlers are called when a test throws an exception');
   $mock->replay();
   // test
   $r->run();
-  // assertions
-  $mock->verify();
 
 
 $t->diag('If no exception handler returns true, the exception is thrown again');

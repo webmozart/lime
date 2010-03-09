@@ -41,7 +41,6 @@ $t = new LimeTest(34);
   $input->parse("ok 1 - A passed test\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Successful tests without message are passed to pass()
@@ -53,7 +52,6 @@ $t = new LimeTest(34);
   $input->parse("ok 1\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Failed tests are passed to fail()
@@ -65,7 +63,6 @@ $t = new LimeTest(34);
   $input->parse("not ok 1 - A failed test\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Failed tests without message are passed to pass()
@@ -77,7 +74,6 @@ $t = new LimeTest(34);
   $input->parse("not ok 1\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Skipped tests are passed to skip()
@@ -89,7 +85,6 @@ $t = new LimeTest(34);
   $input->parse("ok 1 - A skipped test # SKIP Skip reason\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Skipped tests without reason are passed to skip()
@@ -101,7 +96,6 @@ $t = new LimeTest(34);
   $input->parse("ok 1 - A skipped test # SKIP\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Skipped tests without message are passed to skip()
@@ -113,7 +107,6 @@ $t = new LimeTest(34);
   $input->parse("ok 1 # SKIP\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Skipped tests are passed to skip() and warning() when status is "not ok"
@@ -126,7 +119,6 @@ $t = new LimeTest(34);
   $input->parse("not ok 1 - A skipped test # SKIP Skip reason\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Todos are passed to todo()
@@ -138,7 +130,6 @@ $t = new LimeTest(34);
   $input->parse("not ok 1 - A todo # TODO Todo reason\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Todos without reason are passed to todo()
@@ -150,7 +141,6 @@ $t = new LimeTest(34);
   $input->parse("not ok 1 - A todo # TODO\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Todos without message are passed to todo()
@@ -162,7 +152,6 @@ $t = new LimeTest(34);
   $input->parse("not ok 1 # TODO\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Todos are passed to todo() and warning() when status is "ok"
@@ -175,7 +164,6 @@ $t = new LimeTest(34);
   $input->parse("ok 1 - A todo # TODO Todo reason\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: The plan is passed to plan()
@@ -187,7 +175,6 @@ $t = new LimeTest(34);
   $input->parse("1..10\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Lines can be read when split
@@ -200,7 +187,6 @@ $t = new LimeTest(34);
   $input->parse("assed test\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: Additional lines and comments are ignored
@@ -213,7 +199,6 @@ $t = new LimeTest(34);
   $input->parse("# Some comment\n");
   // assertions
   $t->ok($input->done(), 'The input is done');
-  $output->verify();
 
 
 // @Test: A PHP error is passed to error() - invalid identifier
@@ -228,8 +213,6 @@ $t = new LimeTest(34);
   $command->execute();
   // test
   $input->parse($command->getOutput());
-  // assertions
-  $output->verify();
 
 
   // @Test: Case 2 - Failed require
@@ -243,5 +226,3 @@ $t = new LimeTest(34);
   $command->execute();
   // test
   $input->parse($command->getOutput());
-  // assertions
-  $output->verify();

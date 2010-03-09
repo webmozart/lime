@@ -42,8 +42,6 @@ $t = new LimeTest(6);
   // test
   $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
-  // assertions
-  $output->verify();
 
 
 // @Test: Data sent to the error stream is passed to warning() line by line
@@ -56,8 +54,6 @@ $t = new LimeTest(6);
   // test
   $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
-  // assertions
-  $output->verify();
 
 
 // @Test: PHP errors/warnings are passed to error()/warning()
@@ -71,8 +67,6 @@ $t = new LimeTest(6);
   // test
   $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
-  // assertions
-  $output->verify();
 
 
   // @Test: Case 2 - Failed require
@@ -85,7 +79,5 @@ $t = new LimeTest(6);
   // test
   $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
-  // assertions
-  $output->verify();
 
 

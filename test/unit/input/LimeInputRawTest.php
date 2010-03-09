@@ -39,8 +39,6 @@ $t = new LimeTest(10);
   $output->replay();
   // test
   $input->parse(serialize(array("plan", array(1, "/test/file")))."\n");
-  // assertions
-  $output->verify();
 
 
 // @Test: The call to error() is passed
@@ -50,8 +48,6 @@ $t = new LimeTest(10);
   $output->replay();
   // test
   $input->parse(serialize(array("error", array(new LimeError("An error", "/test/file", 11))))."\n");
-  // assertions
-  $output->verify();
 
 
 // @Test: The call to pass() is passed
@@ -61,8 +57,6 @@ $t = new LimeTest(10);
   $output->replay();
   // test
   $input->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n");
-  // assertions
-  $output->verify();
 
 
 // @Test: Two arrays are converted to two method calls
@@ -73,8 +67,6 @@ $t = new LimeTest(10);
   $output->replay();
   // test
   $input->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n".serialize(array("pass", array("Another passed test", "/test/file", 11)))."\n");
-  // assertions
-  $output->verify();
 
 
 // @Test: A split serialized array can be read correctly
@@ -87,8 +79,6 @@ $t = new LimeTest(10);
   $strings =  str_split($serialized, strlen($serialized)/2 + 1);
   $input->parse($strings[0]);
   $input->parse($strings[1]);
-  // assertions
-  $output->verify();
 
 
 // @Test: Escaped arguments are unescaped
@@ -98,8 +88,6 @@ $t = new LimeTest(10);
   $output->replay();
   // test
   $input->parse(addcslashes(serialize(array("comment", array("A \\\\n\\\\r comment \\n with line \\r breaks"))), '//')."\n");
-  // assertions
-  $output->verify();
 
 
 // @Test: A PHP error is passed to error() - invalid identifier
@@ -114,8 +102,6 @@ $t = new LimeTest(10);
   $command->execute();
   // test
   $input->parse($command->getOutput());
-  // assertions
-  $output->verify();
 
 
   // @Test: Case 2 - Failed require
@@ -129,5 +115,3 @@ $t = new LimeTest(10);
   $command->execute();
   // test
   $input->parse($command->getOutput());
-  // assertions
-  $output->verify();

@@ -66,8 +66,6 @@ $t = new LimeTest(8);
   $test->impl->replay();
   // test
   $test->run();
-  // assertions
-  $test->impl->verify();
 
 
 // @Test: The method names are converted to comments
@@ -77,5 +75,3 @@ $t = new LimeTest(8);
   $output->replay();
   // test
   $test->run();
-  // assertions
-  $output->verify();

@@ -43,8 +43,6 @@ $t = new LimeTest(40);
   $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: When close() is called and a loader is available, the labels are included
@@ -65,8 +63,6 @@ $t = new LimeTest(40);
   $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: When close() is called and tests failed, the status is "not ok" and the failed tests are displayed
@@ -84,8 +80,6 @@ $t = new LimeTest(40);
   $output->fail('A failed test', '/test/script', 11);
   $output->fail('A failed test', '/test/script', 11);
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: When close() is called and warnings appeared in the test, the status is warning and the warnings are displayed
@@ -104,8 +98,6 @@ $t = new LimeTest(40);
   $output->warning('A warning', '/test/script', 33);
   $output->warning('A warning', '/test/script', 33);
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: When close() is called and errors appeared in the test, the status is "not ok" and the errors are displayed
@@ -124,8 +116,6 @@ $t = new LimeTest(40);
   $output->error(new LimeError('An error', '/test/script', 22));
   $output->error(new LimeError('An error', '/test/script', 22));
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: When close() is called and todos appeared in the test, the status is "ok" but the todos are displayed
@@ -144,8 +134,6 @@ $t = new LimeTest(40);
   $output->todo('A todo', '/test/script', 22);
   $output->todo('A todo', '/test/script', 22);
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: When close() is called and the too few tests were executed, a message is printed
@@ -161,8 +149,6 @@ $t = new LimeTest(40);
   $output->plan(2);
   $output->pass('A passed test', '/test/script', 11);
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: When close() is called and the too many tests were executed, a message is printed
@@ -179,8 +165,6 @@ $t = new LimeTest(40);
   $output->pass('A passed test', '/test/script', 11);
   $output->pass('A passed test', '/test/script', 11);
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: flush() prints a summary of all files if failures occured
@@ -212,8 +196,6 @@ $t = new LimeTest(40);
   $output->error(new LimeError('An error', '/test/script', 11));
   $output->close();
   $output->flush();
-  // assertions
-  $printer->verify();
 
 
 // @Test: flush() prints a success message if everything went fine
@@ -238,8 +220,6 @@ $t = new LimeTest(40);
   $output->pass('A passed test', '/test/script2', 11);
   $output->close();
   $output->flush();
-  // assertions
-  $printer->verify();
 
 
 // @Test: File extensions are omitted in the output
@@ -255,8 +235,6 @@ $t = new LimeTest(40);
   $output->focus('/test/script_test.php');
   $output->pass('A passed test', '/test/script_test.php', 11);
   $output->close();
-  // assertions
-  $printer->verify();
 
 
 // @Test: Too long file names are truncated
@@ -270,5 +248,3 @@ $t = new LimeTest(40);
   $output->focus('/test/'.str_repeat('x', 80).'script');
   $output->pass('A passed test', '/test/'.str_repeat('x', 80).'script', 11);
   $output->close();
-  // assertions
-  $printer->verify();
