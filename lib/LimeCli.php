@@ -38,8 +38,6 @@ class LimeCli
   {
     try
     {
-      echo "Lime 2.0.0 by Bernhard Schussek\n";
-
       list($options, $labels) = $this->parseArguments($arguments);
 
       if ($diff = array_diff(array_keys($options), self::$allowedOptions))
