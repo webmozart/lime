@@ -13,7 +13,7 @@
 include dirname(__FILE__).'/../bootstrap/unit.php';
 
 
-$t = new LimeTest(21);
+$t = new LimeTest();
 
 
 

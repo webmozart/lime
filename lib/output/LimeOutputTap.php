@@ -59,11 +59,11 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
     if (empty($message))
     {
-      $this->printer->printLine('ok '.$this->getActual(), LimePrinter::OK);
+      $this->printer->printLine('ok '.$this->getTotal(), LimePrinter::OK);
     }
     else
     {
-      $this->printer->printText('ok '.$this->getActual(), LimePrinter::OK);
+      $this->printer->printText('ok '.$this->getTotal(), LimePrinter::OK);
       $this->printer->printLine(' - '.$message);
     }
   }
@@ -74,11 +74,11 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
     if (empty($message))
     {
-      $this->printer->printLine('not ok '.$this->getActual(), LimePrinter::NOT_OK);
+      $this->printer->printLine('not ok '.$this->getTotal(), LimePrinter::NOT_OK);
     }
     else
     {
-      $this->printer->printText('not ok '.$this->getActual(), LimePrinter::NOT_OK);
+      $this->printer->printText('not ok '.$this->getTotal(), LimePrinter::NOT_OK);
       $this->printer->printLine(' - '.$message);
     }
 
@@ -99,12 +99,12 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
     if (empty($message))
     {
-      $this->printer->printText('ok '.$this->getActual(), LimePrinter::SKIP);
+      $this->printer->printText('ok '.$this->getTotal(), LimePrinter::SKIP);
       $this->printer->printText(' ');
     }
     else
     {
-      $this->printer->printText('ok '.$this->getActual(), LimePrinter::SKIP);
+      $this->printer->printText('ok '.$this->getTotal(), LimePrinter::SKIP);
       $this->printer->printText(' - '.$message.' ');
     }
 
@@ -117,12 +117,12 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
     if (empty($message))
     {
-      $this->printer->printText('not ok '.$this->getActual(), LimePrinter::TODO);
+      $this->printer->printText('not ok '.$this->getTotal(), LimePrinter::TODO);
       $this->printer->printText(' ');
     }
     else
     {
-      $this->printer->printText('not ok '.$this->getActual(), LimePrinter::TODO);
+      $this->printer->printText('not ok '.$this->getTotal(), LimePrinter::TODO);
       $this->printer->printText(' - '.$message.' ');
     }
 
@@ -213,11 +213,11 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
     $this->printer->printLine('# '.$message, LimePrinter::COMMENT);
   }
 
-  public function getMessages($actual, $expected, $passed, $errors, $warnings)
+  public function getMessages($total, $passed, $errors, $warnings)
   {
     $messages = array();
 
-    if ($passed == $expected && $passed === $actual && $errors == 0)
+    if ($passed === $total && $errors == 0)
     {
       if ($warnings > 0)
       {
@@ -228,22 +228,13 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
         $messages[] = array('Looks like everything went fine.', LimePrinter::HAPPY);
       }
     }
-    else if ($passed != $actual)
+    else if ($passed != $total)
     {
-      $messages[] = array(sprintf('Looks like you failed %s tests of %s.', $actual - $passed, $actual), LimePrinter::ERROR);
+      $messages[] = array(sprintf('Looks like you failed %s tests of %s.', $total - $passed, $total), LimePrinter::ERROR);
     }
     else if ($errors > 0)
     {
       $messages[] = array('Looks like some errors occurred.', LimePrinter::ERROR);
-    }
-
-    if ($actual > $expected && $expected > 0)
-    {
-      $messages[] = array(sprintf('Looks like you only planned %s tests but ran %s.', $expected, $actual), LimePrinter::ERROR);
-    }
-    else if ($actual < $expected)
-    {
-      $messages[] = array(sprintf('Looks like you planned %s tests but only ran %s.', $expected, $actual), LimePrinter::ERROR);
     }
 
     return $messages;
@@ -251,9 +242,9 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
   public function flush()
   {
-    $this->printer->printLine('1..'.$this->getExpected());
+    $this->printer->printLine('1..'.$this->getTotal());
 
-    $messages = $this->getMessages($this->getActual(), $this->getExpected(), $this->getPassed(), $this->getErrors(), $this->getWarnings());
+    $messages = $this->getMessages($this->getTotal(), $this->getPassed(), $this->getErrors(), $this->getWarnings());
 
     foreach ($messages as $message)
     {

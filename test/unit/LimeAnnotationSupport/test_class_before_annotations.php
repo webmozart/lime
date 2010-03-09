@@ -43,7 +43,7 @@ class TestImplementingClassDefinition implements TestInterfaceDefinition {}
 
 class TestExtendingAndImplementingClassDefinition extends TestClassDefinition implements TestInterfaceDefinition {}
 
-$t = new LimeTest(0);
+$t = new LimeTest();
 
 // @Test
 try

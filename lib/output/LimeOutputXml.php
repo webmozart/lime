@@ -35,14 +35,9 @@ class LimeOutputXml implements LimeOutputInterface
     return $this->output->close();
   }
 
-  public function plan($amount)
-  {
-    return $this->output->plan($amount);
-  }
-
   public function pass($message, $file, $line)
   {
-    return $this->output->plan($message, $file, $line);
+    return $this->output->pass($message, $file, $line);
   }
 
   public function fail($message, $file, $line, $error = null)
@@ -102,12 +97,12 @@ class LimeOutputXml implements LimeOutputInterface
       $testSuite->setAttribute('failures', count($result['stats']['failed']));
       $testSuite->setAttribute('errors', 0);
       $testSuite->setAttribute('skipped', count($result['stats']['skipped']));
-      $testSuite->setAttribute('tests', $result['stats']['plan']);
-      $testSuite->setAttribute('assertions', $result['stats']['plan']);
+      $testSuite->setAttribute('tests', $result['stats']['total']);
+      $testSuite->setAttribute('assertions', $result['stats']['total']);
 
       $failures += count($result['stats']['failed']);
       $skipped += count($result['stats']['skipped']);
-      $assertions += $result['stats']['plan'];
+      $assertions += $result['stats']['total'];
 
       foreach ($result['tests'] as $test)
       {

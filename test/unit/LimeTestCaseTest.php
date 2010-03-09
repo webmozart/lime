@@ -40,7 +40,7 @@ class TestCase extends LimeTestCase
 }
 
 
-$t = new LimeTest(8);
+$t = new LimeTest();
 
 
 // @Before
@@ -49,7 +49,7 @@ $t = new LimeTest(8);
   $configuration = $t->stub('LimeConfiguration');
   $configuration->createTestOutput()->returns($output);
   $configuration->replay();
-  $test = new TestCase(null, $configuration);
+  $test = new TestCase($configuration);
   $output->reset();
   $test->impl = $t->mock('Test');
 

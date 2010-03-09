@@ -14,7 +14,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(2);
+$t = new LimeTest();
 
 // @Before
 
@@ -47,7 +47,6 @@ $t = new LimeTest(2);
         ),
       ),
       'stats' => array(
-        'plan' => 3,
         'total' => 2,
         'failed' => array(2),
         'passed' => array(1),
@@ -78,7 +77,6 @@ $t = new LimeTest(2);
         ),
       ),
       'stats' => array(
-        'plan' => 2,
         'total' => 3,
         'failed' => array(1),
         'passed' => array(2),
@@ -88,11 +86,9 @@ $t = new LimeTest(2);
   );
   // test
   $output->focus('/test/file1');
-  $output->plan(3);
   $output->pass('Test message 1', '/test/file1', 11);
   $output->fail('Test message 2', '/test/file1', 22);
   $output->focus('/test/file2');
-  $output->plan(2);
   $output->fail('Test message 3', '/test/file2', 33, 'error message');
   $output->pass('Test message 4', '/test/file2', 44);
   $output->skip('Test message 5', '/test/file2', 55);
@@ -121,7 +117,6 @@ $t = new LimeTest(2);
         ),
       ),
       'stats' => array(
-        'plan' => 3,
         'total' => 2,
         'failed' => array(2),
         'passed' => array(1),
@@ -152,7 +147,6 @@ $t = new LimeTest(2);
         ),
       ),
       'stats' => array(
-        'plan' => 2,
         'total' => 3,
         'failed' => array(1),
         'passed' => array(2),
@@ -162,10 +156,8 @@ $t = new LimeTest(2);
   );
   // test
   $output->focus('/test/file1');
-  $output->plan(3);
   $output->pass('Test message 1', '/test/file1', 11);
   $output->focus('/test/file2');
-  $output->plan(2);
   $output->fail('Test message 3', '/test/file2', 33, 'error message');
   $output->pass('Test message 4', '/test/file2', 44);
   $output->focus('/test/file1');

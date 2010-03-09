@@ -62,15 +62,6 @@ class LimeOutputArray implements LimeOutputInterface
 
   /**
    * (non-PHPdoc)
-   * @see output/LimeOutputInterface#plan($amount)
-   */
-  public function plan($amount)
-  {
-    $this->currentResults['stats']['plan'] = $amount;
-  }
-
-  /**
-   * (non-PHPdoc)
    * @see output/LimeOutputInterface#pass($message, $file, $line)
    */
   public function pass($message, $file, $line)
@@ -184,7 +175,6 @@ class LimeOutputArray implements LimeOutputInterface
       'file' => $file,
       'tests' => array(),
       'stats' => array(
-        'plan' => 0,
         'total' => 0,
         'failed' => array(),
         'passed' => array(),

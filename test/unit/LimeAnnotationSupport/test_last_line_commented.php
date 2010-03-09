@@ -15,7 +15,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 LimeAnnotationSupport::enable();
 
 
-$t = new LimeTest(0);
+$t = new LimeTest();
 
 // @Test
 echo "Test\n";

@@ -14,7 +14,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(1);
+$t = new LimeTest();
 
 
 // @Before

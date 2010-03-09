@@ -14,7 +14,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(2);
+$t = new LimeTest();
 
 // @Test
 $t->expect('RuntimeException');

@@ -14,7 +14,7 @@ include_once dirname(__FILE__).'/../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(1);
+$t = new LimeTest();
 
 
 // @Test: indent() indents every line of the string

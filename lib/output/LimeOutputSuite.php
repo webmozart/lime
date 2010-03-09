@@ -84,7 +84,7 @@ class LimeOutputSuite extends LimeOutput
   {
     parent::fail($message, $file, $line, $error);
 
-    $this->failures[$this->getCurrentFile()][$this[$this->getCurrentFile()]->getActual()] = array($message, $file, $line, $error);
+    $this->failures[$this->getCurrentFile()][$this[$this->getCurrentFile()]->getTotal()] = array($message, $file, $line, $error);
   }
 
   /**
@@ -164,19 +164,6 @@ class LimeOutputSuite extends LimeOutput
       else
       {
         $this->printer->printLine("ok", LimePrinter::OK);
-      }
-
-      if ($this[$file]->isIncomplete())
-      {
-        $this->printer->printLine('    Plan Mismatch:', LimePrinter::COMMENT);
-        if ($this[$file]->getActual() > $this[$file]->getExpected())
-        {
-          $this->printer->printLine(sprintf('    Looks like you only planned %s tests but ran %s.', $this[$file]->getExpected(), $this[$file]->getActual()));
-        }
-        else
-        {
-          $this->printer->printLine(sprintf('    Looks like you planned %s tests but only ran %s.', $this[$file]->getExpected(), $this[$file]->getActual()));
-        }
       }
 
       if (count($this->failures[$file]))
@@ -279,25 +266,23 @@ class LimeOutputSuite extends LimeOutput
   {
     $failedFiles = $this->countFailed();
     $actualFiles = $this->count();
+    $totalTests = $this->getTotal();
 
     if ($failedFiles > 0)
     {
       $failedTests = $this->getFailed();
-      $expectedTests = $this->getExpected();
 
       $stats = sprintf(' Failed %d/%d test scripts, %.2f%% okay. %d/%d subtests failed, %.2f%% okay.',
           $failedFiles, $actualFiles, 100 - 100*$failedFiles/max(1,$actualFiles),
-          $failedTests, $expectedTests, 100 - 100*$failedTests/max(1,$expectedTests));
+          $failedTests, $totalTests, 100 - 100*$failedTests/max(1,$totalTests));
 
       $this->printer->printBox($stats, LimePrinter::NOT_OK);
     }
     else
     {
-      $actualTests = $this->getActual();
-
       $time = max(1, time() - $this->startTime);
       $stats = sprintf(' Files=%d, Tests=%d, Time=%02d:%02d, Processes=%d',
-          $actualFiles, $actualTests, floor($time/60), $time%60, $this->configuration->getProcesses());
+          $actualFiles, $totalTests, floor($time/60), $time%60, $this->configuration->getProcesses());
 
       $this->printer->printBox(' All tests successful.', LimePrinter::HAPPY);
       $this->printer->printBox($stats, LimePrinter::HAPPY);

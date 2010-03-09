@@ -40,11 +40,6 @@ class LimeOutputRaw implements LimeOutputInterface
     $this->printCall('close', array());
   }
 
-  public function plan($amount)
-  {
-    $this->printCall('plan', array($amount));
-  }
-
   public function pass($message, $file, $line)
   {
     $this->printCall('pass', array($message, $file, $line));

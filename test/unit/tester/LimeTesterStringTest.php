@@ -22,7 +22,7 @@ class TestClassWithToString
   }
 }
 
-$t = new LimeTest(3);
+$t = new LimeTest();
 
 
 // @Test: __toString() returns the string in quotes

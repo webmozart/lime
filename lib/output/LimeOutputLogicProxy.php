@@ -37,13 +37,6 @@ class LimeOutputLogicProxy extends LimeOutput
     $this->output->close();
   }
 
-  public function plan($amount)
-  {
-    parent::plan($amount);
-
-    $this->output->plan($amount);
-  }
-
   public function pass($message, $file, $line)
   {
     parent::pass($message, $file, $line);

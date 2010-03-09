@@ -22,7 +22,7 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(41);
+$t = new LimeAnnotationSupportTest();
 
 $root = '# /test/unit/LimeAnnotationSupport';
 

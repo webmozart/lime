@@ -21,7 +21,7 @@ function testFunctionDefinition($param1, $param2 = null)
 
 function testFunctionDefinitionInOneLine() {}
 
-$t = new LimeTest(0);
+$t = new LimeTest();
 
 // @Test
 echo "Test\n";

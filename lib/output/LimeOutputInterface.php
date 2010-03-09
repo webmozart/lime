@@ -56,15 +56,6 @@ interface LimeOutputInterface
   public function close();
 
   /**
-   * Sets the plan for the currently focused test file.
-   *
-   * The plan is the expected number of tests.0
-   *
-   * @param integer $amount
-   */
-  public function plan($amount);
-
-  /**
    * Informs the output about a successful test.
    *
    * @param  string  $message  The test message

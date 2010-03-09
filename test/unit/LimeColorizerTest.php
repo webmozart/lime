@@ -12,7 +12,7 @@
 
 require_once dirname(__FILE__).'/../bootstrap/unit.php';
 
-$t = new LimeTest(10);
+$t = new LimeTest();
 
 
 $t->diag('Text can be colorized with font and color styles');

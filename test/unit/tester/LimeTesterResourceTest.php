@@ -16,7 +16,7 @@ LimeAnnotationSupport::enable();
 
 define('FILE', dirname(__FILE__).'/test_resource.txt');
 
-$t = new LimeTest(2);
+$t = new LimeTest();
 
 // @BeforeAll
 

@@ -50,7 +50,7 @@ class TestAuthor
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(5);
+$t = new LimeTest();
 
 
 // @Test: is() throws an exception if values don't match

@@ -14,7 +14,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(73);
+$t = new LimeTest();
 
 // @Before
 
@@ -229,49 +229,9 @@ $t = new LimeTest(73);
 
 // @Test: flush() prints the plan and a summary
 
-  // @Test: Case 1 - Too many tests
+  // @Test: Case 1 - Correct number of tests
 
   // fixtures
-  $output->plan(1);
-  $output->pass('First test', '/test/file', 11);
-  $output->pass('Second test', '/test/file', 22);
-  $printer->reset();
-  $printer->printLine('1..1');
-  $printer->printBox(' Looks like you only planned 1 tests but ran 2.', LimePrinter::ERROR);
-  $printer->replay();
-  // test
-  $output->flush();
-
-  // @Test: Case 2 - Too many tests including failed tests
-
-  // fixtures
-  $output->plan(1);
-  $output->pass('First test', '/test/file', 11);
-  $output->fail('Second test', '/test/file', 22);
-  $printer->reset();
-  $printer->printLine('1..1');
-  $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
-  $printer->printBox(' Looks like you only planned 1 tests but ran 2.', LimePrinter::ERROR);
-  $printer->replay();
-  // test
-  $output->flush();
-
-  // @Test: Case 3 - Too few tests
-
-  // fixtures
-  $output->plan(2, '/test/file');
-  $output->pass('First test', '/test/file', 11);
-  $printer->reset();
-  $printer->printLine('1..2');
-  $printer->printBox(' Looks like you planned 2 tests but only ran 1.', LimePrinter::ERROR);
-  $printer->replay();
-  // test
-  $output->flush();
-
-  // @Test: Case 4 - Correct number of tests
-
-  // fixtures
-  $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $printer->reset();
   $printer->printLine('1..1');
@@ -280,10 +240,9 @@ $t = new LimeTest(73);
   // test
   $output->flush();
 
-  // @Test: Case 5 - Failed tests
+  // @Test: Case 2 - Failed tests
 
   // fixtures
-  $output->plan(3, '/test/file');
   $output->pass('First test', '/test/file', 11);
   $output->fail('Second test', '/test/file', 22);
   $output->pass('Third test', '/test/file', 33);
@@ -294,35 +253,9 @@ $t = new LimeTest(73);
   // test
   $output->flush();
 
-  // @Test: Case 6 - Failed and too few tests
+  // @Test: Case 3 - Skipped tests
 
   // fixtures
-  $output->plan(3, '/test/file');
-  $output->pass('First test', '/test/file', 11);
-  $output->fail('Second test', '/test/file', 22);
-  $printer->reset();
-  $printer->printLine('1..3');
-  $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
-  $printer->printBox(' Looks like you planned 3 tests but only ran 2.', LimePrinter::ERROR);
-  $printer->replay();
-  // test
-  $output->flush();
-
-  // @Test: Case 7 - No plan
-
-  // fixtures
-  $output->pass('First test', '/test/file', 11);
-  $printer->reset();
-  $printer->printLine('1..1');
-  $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
-  $printer->replay();
-  // test
-  $output->flush();
-
-  // @Test: Case 8 - Skipped tests
-
-  // fixtures
-  $output->plan(1);
   $output->skip('First test', '/test/file', 11);
   $printer->reset();
   $printer->printLine('1..1');
@@ -331,10 +264,9 @@ $t = new LimeTest(73);
   // test
   $output->flush();
 
-  // @Test: Case 9 - Successful but warnings
+  // @Test: Case 4 - Successful but warnings
 
   // fixtures
-  $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $output->warning('Some warning', '/test/file', 11);
   $printer->reset();
@@ -344,10 +276,9 @@ $t = new LimeTest(73);
   // test
   $output->flush();
 
-  // @Test: Case 9 - Successful but errors
+  // @Test: Case 5 - Successful but errors
 
   // fixtures
-  $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $output->error(new LimeError('Some error', '/test/file', 11));
   $printer->reset();
@@ -357,16 +288,3 @@ $t = new LimeTest(73);
   // test
   $output->flush();
 
-  // @Test: Case 10 - Several plans
-
-  // fixtures
-  $output->plan(1);
-  $output->pass('First test', '/test/file', 11);
-  $output->plan(1);
-  $output->pass('Second test', '/test/file', 11);
-  $printer->reset();
-  $printer->printLine('1..2');
-  $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
-  $printer->replay();
-  // test
-  $output->flush();

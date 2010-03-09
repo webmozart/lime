@@ -23,7 +23,7 @@ class TestSubClass extends TestClass {}
 class TestClassTester extends LimeTesterObject {}
 class InvalidTester {}
 
-$t = new LimeTest(15);
+$t = new LimeTest();
 
 
 // Don't use other test methods than ->ok() here, because the testers tested

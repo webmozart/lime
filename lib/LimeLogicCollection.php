@@ -29,33 +29,16 @@ class LimeLogicCollection implements ArrayAccess, Countable, IteratorAggregate
    *
    * @return integer
    */
-  public function getActual()
+  public function getTotal()
   {
     $actual = 0;
 
     foreach ($this->logics as $logic)
     {
-      $actual += $logic->getActual();
+      $actual += $logic->getTotal();
     }
 
     return $actual;
-  }
-
-  /**
-   * Returns the expected number of tests.
-   *
-   * @return integer
-   */
-  public function getExpected()
-  {
-    $expected = 0;
-
-    foreach ($this->logics as $logic)
-    {
-      $expected += $logic->getExpected();
-    }
-
-    return $expected;
   }
 
   /**
@@ -141,24 +124,6 @@ class LimeLogicCollection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     return $todos;
-  }
-
-  /**
-   * Returns whether not all expected tests have been executed in any logic.
-   *
-   * @return boolean
-   */
-  public function isIncomplete()
-  {
-    foreach ($this->logics as $logic)
-    {
-      if ($logic->isIncomplete())
-      {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /**

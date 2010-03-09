@@ -20,8 +20,7 @@
 class LimeLogic
 {
   private
-    $expected     = null,
-    $actual       = 0,
+    $total       = 0,
     $passed       = 0,
     $failed       = 0,
     $errors       = 0,
@@ -29,21 +28,11 @@ class LimeLogic
     $todos        = 0;
 
   /**
-   * Adds the given amount of tests to the test plan.
-   *
-   * @param integer $plan
-   */
-  public function addPlan($plan)
-  {
-    $this->expected += $plan;
-  }
-
-  /**
    * Adds a passed test.
    */
   public function addPassed()
   {
-    $this->actual++;
+    $this->total++;
     $this->passed++;
   }
 
@@ -56,7 +45,7 @@ class LimeLogic
    */
   public function addFailed()
   {
-    $this->actual++;
+    $this->total++;
     $this->failed++;
   }
 
@@ -65,7 +54,7 @@ class LimeLogic
    */
   public function addSkipped()
   {
-    $this->actual++;
+    $this->total++;
     $this->passed++;
   }
 
@@ -74,7 +63,7 @@ class LimeLogic
    */
   public function addTodo()
   {
-    $this->actual++;
+    $this->total++;
     $this->passed++;
     $this->todos++;
   }
@@ -96,23 +85,13 @@ class LimeLogic
   }
 
   /**
-   * Returns the actual number of tests.
+   * Returns the total number of tests.
    *
    * @return integer
    */
-  public function getActual()
+  public function getTotal()
   {
-    return $this->actual;
-  }
-
-  /**
-   * Returns the expected number of tests.
-   *
-   * @return integer
-   */
-  public function getExpected()
-  {
-    return is_null($this->expected) ? $this->actual : $this->expected;
+    return $this->total;
   }
 
   /**
@@ -166,16 +145,6 @@ class LimeLogic
   }
 
   /**
-   * Returns whether not all expected tests have been executed.
-   *
-   * @return boolean
-   */
-  public function isIncomplete()
-  {
-    return $this->expected > 0 && $this->actual != $this->expected;
-  }
-
-  /**
    * Returns whether the test was successful.
    *
    * A test is considered successful if no test case failed, no error occurred
@@ -185,6 +154,6 @@ class LimeLogic
    */
   public function isSuccessful()
   {
-    return !$this->getErrors() && !$this->getFailed() && !$this->isIncomplete();
+    return !$this->getErrors() && !$this->getFailed();
   }
 }

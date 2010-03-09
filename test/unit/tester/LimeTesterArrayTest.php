@@ -14,7 +14,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(12);
+$t = new LimeTest();
 
 
 // @Test: is() throws an exception if keys are missing

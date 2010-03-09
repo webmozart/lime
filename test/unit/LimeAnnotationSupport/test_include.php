@@ -12,7 +12,7 @@
 
 include dirname(__FILE__).'/test_include.inc.php';
 
-$t = new LimeTest(0);
+$t = new LimeTest();
 
 // @Before
 echo "Before\n";

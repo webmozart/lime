@@ -12,7 +12,7 @@
 
 require_once dirname(__FILE__).'/../bootstrap/unit.php';
 
-$t = new LimeTest(5);
+$t = new LimeTest();
 
 
 $t->diag('->autoload() loads class files by class name');

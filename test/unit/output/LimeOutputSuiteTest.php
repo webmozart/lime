@@ -14,7 +14,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(40);
+$t = new LimeTest();
 
 
 // @Before
@@ -136,62 +136,27 @@ $t = new LimeTest(40);
   $output->close();
 
 
-// @Test: When close() is called and the too few tests were executed, a message is printed
-
-  // fixtures
-  $printer->printText(str_pad('script', 73, '.'));
-  $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->method('printLine')->once();
-  $printer->printLine('    Looks like you planned 2 tests but only ran 1.');
-  $printer->replay();
-  // test
-  $output->focus('/test/script');
-  $output->plan(2);
-  $output->pass('A passed test', '/test/script', 11);
-  $output->close();
-
-
-// @Test: When close() is called and the too many tests were executed, a message is printed
-
-  // fixtures
-  $printer->printText(str_pad('script', 73, '.'));
-  $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->method('printLine')->once();
-  $printer->printLine('    Looks like you only planned 1 tests but ran 2.');
-  $printer->replay();
-  // test
-  $output->focus('/test/script');
-  $output->plan(1);
-  $output->pass('A passed test', '/test/script', 11);
-  $output->pass('A passed test', '/test/script', 11);
-  $output->close();
-
-
 // @Test: flush() prints a summary of all files if failures occured
 
   // fixtures
   $printer = $t->mock('LimePrinter'); // non-strict
   $printer->method('printText')->atLeastOnce();
   $printer->method('printLine')->atLeastOnce();
-  $printer->printBox(' Failed 2/4 test scripts, 50.00% okay. 1/5 subtests failed, 80.00% okay.', LimePrinter::NOT_OK);
+  $printer->printBox(' Failed 2/4 test scripts, 50.00% okay. 1/4 subtests failed, 75.00% okay.', LimePrinter::NOT_OK);
   $printer->replay();
   $output = new LimeOutputSuite($printer, $configuration);
   // test
   $output->focus('/test/script1');
-  $output->plan(1);
   $output->pass('A passed test', '/test/script', 11);
   $output->close();
   $output->focus('/test/script2');
-  $output->plan(1);
   $output->pass('A passed test', '/test/script2', 11);
   $output->warning('A warning', '/test/script2', 11);
   $output->close();
   $output->focus('/test/script3');
-  $output->plan(1);
   $output->fail('A failed test', '/test/script3', 11);
   $output->close();
   $output->focus('/test/script4');
-  $output->plan(2);
   $output->pass('A passed test', '/test/script', 11);
   $output->error(new LimeError('An error', '/test/script', 11));
   $output->close();

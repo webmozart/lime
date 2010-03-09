@@ -16,7 +16,7 @@ require_once dirname(__FILE__).'/../../MockLimeOutput.php';
 LimeAnnotationSupport::enable();
 
 
-$t = new LimeTest(17);
+$t = new LimeTest();
 
 
 // @Before

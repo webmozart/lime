@@ -105,7 +105,7 @@ class TestAutoloader
 spl_autoload_register(array('TestAutoloader', 'autoload'));
 
 
-$t = new LimeTest(102);
+$t = new LimeTest();
 
 
 // @Before

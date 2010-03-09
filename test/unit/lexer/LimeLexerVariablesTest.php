@@ -13,7 +13,7 @@
 include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 
-$t = new LimeTest(4);
+$t = new LimeTest();
 
 
 $t->diag('All variables are extracted from the text');

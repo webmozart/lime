@@ -32,15 +32,6 @@ abstract class LimeOutput extends LimeLogicCollection implements LimeOutputInter
 
   /**
    * (non-PHPdoc)
-   * @see lib/output/LimeOutputInterface#plan($amount)
-   */
-  public function plan($amount)
-  {
-    $this[$this->file]->addPlan($amount);
-  }
-
-  /**
-   * (non-PHPdoc)
    * @see lib/output/LimeOutputInterface#pass($message, $file, $line)
    */
   public function pass($message, $file, $line)

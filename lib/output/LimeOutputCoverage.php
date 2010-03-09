@@ -29,8 +29,6 @@ class LimeOutputCoverage implements LimeOutputInterface
 
   public function close() {}
 
-  public function plan($amount) {}
-
   public function pass($message, $file, $line) {}
 
   public function fail($message, $file, $line, $error = null) {}

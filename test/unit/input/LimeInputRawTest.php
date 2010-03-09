@@ -14,7 +14,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(10);
+$t = new LimeTest();
 
 
 // @Before

@@ -19,7 +19,7 @@ function create_lexer()
 }
 
 
-$t = new LimeTest(4);
+$t = new LimeTest();
 
 
 $t->diag('The first variable that is assigned an instance of LimeTest is detected');

@@ -26,7 +26,7 @@ class LimeTest
     $exceptionExpectation   = null,
     $mocks                  = array();
 
-  public function __construct($plan = null, LimeConfiguration $configuration = null)
+  public function __construct(LimeConfiguration $configuration = null)
   {
     if (is_null($configuration))
     {
@@ -37,11 +37,6 @@ class LimeTest
 
     $this->output = $configuration->createTestOutput();
     $this->output->focus($file);
-
-    if (!is_null($plan))
-    {
-      $this->output->plan($plan);
-    }
 
     set_error_handler(array($this, 'handleError'));
 
