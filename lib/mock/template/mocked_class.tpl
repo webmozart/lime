@@ -57,7 +57,7 @@
     catch (LimeMockInvocationException $e)
     {
       // hide the internal trace to not distract when debugging test errors
-      throw new LimeMockException($e->getMessage());
+      throw new LimeMockException($e, $this);
     }
   }
   

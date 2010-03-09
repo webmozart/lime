@@ -23,4 +23,50 @@
  */
 class LimeMockException extends Exception
 {
+  protected
+    $invocation      = null,
+    $mock            = null;
+
+  /**
+   * Constructor.
+   *
+   * @param LimeMockInvocationException $e
+   */
+  public function __construct(LimeMockInvocationException $e, LimeMockInterface $mock)
+  {
+    parent::__construct($e->getMessage());
+
+    $this->invocation = $e->getInvocation();
+    $this->mock = $mock;
+  }
+
+  /**
+   * Returns the mock that threw this exception.
+   *
+   * @return LimeMockInterface
+   */
+  public function getMock()
+  {
+    return $this->mock;
+  }
+
+  /**
+   * Returns the class of the invoked method that caused this exception.
+   *
+   * @return string
+   */
+  public function getClass()
+  {
+    return $this->invocation->getClass();
+  }
+
+  /**
+   * Returns the method that caused this exception.
+   *
+   * @return string
+   */
+  public function getMethod()
+  {
+    return $this->invocation->getMethod();
+  }
 }

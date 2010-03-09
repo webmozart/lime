@@ -153,13 +153,6 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
     foreach ($error->getTrace() as $trace)
     {
-      // hide the part of the trace that is responsible for getting the
-      // annotations to work
-      if (strpos($trace['function'], '__lime_annotation_') === 0 && !$this->configuration->getVerbose())
-      {
-        break;
-      }
-
       if (array_key_exists('class', $trace))
       {
         $method = sprintf('%s%s%s()', $trace['class'], $trace['type'], $trace['function']);
