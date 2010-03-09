@@ -3,7 +3,7 @@ skip method with test name
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
-$t->skip('test name', 2);
+$t->skip(2, 'test name');
 ?>
 --EXPECT--
 # /test/unit/LimeTest/setup.php
