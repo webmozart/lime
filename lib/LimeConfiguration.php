@@ -19,29 +19,30 @@
 class LimeConfiguration
 {
   const
-    FILENAME       = 'lime.config.php';
+    FILENAME            = 'lime.config.php';
 
   private static
-    $instances     = array();
+    $instances          = array();
 
   private
-    $loadables       = array(),
-    $files           = array(),
-    $dirs            = array(),
-    $globs           = array(),
-    $callbacks       = array(),
-    $baseDir         = null,
-    $suffix          = 'Test.php',
-    $pattern         = '/Test\.php$/',
-    $loader          = null,
-    $processes       = 1,
-    $outputFactory   = null,
-    $suiteOutput     = null,
-    $testOutput      = null,
-    $serialize       = false,
-    $verbose         = false,
-    $forceColors     = false,
-    $legacyMode      = false;
+    $loadables          = array(),
+    $files              = array(),
+    $dirs               = array(),
+    $globs              = array(),
+    $callbacks          = array(),
+    $baseDir            = null,
+    $suffix             = 'Test.php',
+    $pattern            = '/Test\.php$/',
+    $loader             = null,
+    $processes          = 1,
+    $outputFactory      = null,
+    $suiteOutput        = null,
+    $testOutput         = null,
+    $serialize          = false,
+    $verbose            = false,
+    $forceColors        = false,
+    $legacyMode         = false,
+    $annotationSupport  = true;
 
   /**
    * Searches for the configuration file named self::FILENAME in the given
@@ -315,21 +316,41 @@ class LimeConfiguration
   /**
    * Sets whether legacy mode should be enabled by default.
    *
-   * @param boolean $legacyMode
+   * @param boolean $enabled
    */
-  public function setLegacyMode($legacyMode)
+  public function setLegacyMode($enabled)
   {
-    $this->legacyMode = $legacyMode;
+    $this->legacyMode = $enabled;
   }
 
   /**
    * Returns whether legacy mode should be enabled by default.
    *
-   * @return boolean $legacyMode
+   * @return boolean
    */
   public function getLegacyMode()
   {
     return $this->legacyMode;
+  }
+
+  /**
+   * Sets whether annotation support should be enabled by default.
+   *
+   * @param boolean $enabled
+   */
+  public function setAnnotationSupport($enabled)
+  {
+    $this->annotationSupport = $enabled;
+  }
+
+  /**
+   * Returns whether annotation support should be enabled by default.
+   *
+   * @return boolean
+   */
+  public function getAnnotationSupport()
+  {
+    return $this->annotationSupport;
   }
 
   /**

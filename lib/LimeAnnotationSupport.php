@@ -131,7 +131,7 @@ class LimeAnnotationSupport
    *
    * Creates a backup of the given file with the extension .bak.
    */
-  protected function __construct($path)
+  public function __construct($path)
   {
     $this->originalPath = $path;
     $this->path = dirname($path).'/@'.basename($path);
@@ -154,7 +154,7 @@ class LimeAnnotationSupport
    * Transforms the annotations in the script file and executes the resulting
    * script.
    */
-  protected function execute()
+  public function execute()
   {
     if (file_exists($this->path))
     {

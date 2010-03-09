@@ -62,6 +62,16 @@ $config->registerGlob('test/unit/*/*Test.php', $lime);
 $config->registerFile('test/bin/prove.sh', $phpt);
 
 /*
+ * Sets whether legacy classes like lime_test etc. should be loaded.
+ */
+$config->setLegacyMode(false);
+
+/*
+ * Sets whether annotation support should be enabled by default.
+ */
+$config->setAnnotationSupport(false);
+
+/*
  * If you set verbose to true, some test outputs will output additional
  * information. Only supported by some outputs.
  */

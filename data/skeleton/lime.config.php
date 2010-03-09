@@ -68,6 +68,11 @@ $config->registerDir('test', $lime);
 $config->setLegacyMode(false);
 
 /*
+ * Sets whether annotation support should be enabled by default.
+ */
+$config->setAnnotationSupport(true);
+
+/*
  * If you set verbose to true, some test outputs will output additional
  * information. Only supported by some outputs.
  */

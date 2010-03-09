@@ -18,7 +18,7 @@ $t = new LimeTest(5);
 $t->diag('->autoload() loads class files by class name');
 
 $autoloader = new LimeAutoloader();
-$t->is($autoloader->autoload('LimeCoverage'), true, 'Returns true if a class can be loaded');
+$t->is($autoloader->autoload('LimeHarness'), true, 'Returns true if a class can be loaded');
 $t->is($autoloader->autoload('Foo'), false, 'Does not load classes that do not begin with "Lime"');
 $t->is($autoloader->autoload('LimeFoo'), false, 'Does not load classes that do not exist');
 

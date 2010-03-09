@@ -360,29 +360,3 @@ class lime_harness extends LimeHarness
     return $this->output->getDubiousFiles();
   }
 }
-
-class lime_coverage extends LimeCoverage
-{
-  public static function get_php_lines($content)
-  {
-    return self::getPhpLines($content);
-  }
-
-  public function format_range($lines)
-  {
-    return $this->formatRange($lines);
-  }
-}
-
-class lime_registration extends LimeRegistration
-{
-  public function register_glob($glob)
-  {
-    return $this->registerGlob($glob);
-  }
-
-  public function register_dir($directory)
-  {
-    return $this->registerDir($directory);
-  }
-}

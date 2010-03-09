@@ -261,10 +261,11 @@ EOF;
       $configuration->setSerialize(true);
     }
 
-    // test is given as absolute path
     if (isset($options['test']))
     {
-      if (!is_readable($options['test']))
+      $fileName = $options['test'];
+
+      if (!is_readable($fileName))
       {
         $loader = new LimeLoader($configuration);
         $files = $loader->getFilesByName($options['test']);
@@ -284,10 +285,19 @@ EOF;
           throw new Exception(sprintf("The name \"%s\" is ambiguous:\n  - %s\nPlease launch the test with the full file path.", $labels[0], implode("\n  - ", $paths)));
         }
 
-        $options['test'] = $files[0]->getPath();
+        $fileName = $files[0]->getPath();
       }
 
-      return $this->includeTest($options['test']);
+      if ($configuration->getAnnotationSupport())
+      {
+        $support = new LimeAnnotationSupport($fileName);
+
+        return $support->execute();
+      }
+      else
+      {
+        return $this->includeTest($fileName);
+      }
     }
     else
     {
