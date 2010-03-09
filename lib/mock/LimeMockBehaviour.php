@@ -20,11 +20,11 @@
  *                      type comparison. Default: FALSE
  *    * nice:           If set to TRUE, the behaviour will ignore unexpected
  *                      method calls. Mocked methods will be initialized
- *                      with the modifier any(). Default: FALSE
- *    * no_exceptions:  If set to TRUE, throwing of exceptions is
- *                      suppressed when unexpected methods are called.
- *                      The methods will be reported as errors when
- *                      verify() is called. Default: FALSE
+ *                      with the modifier any(). Unexpected methods will be
+ *                      reported as errors when verify() is called.
+ *                      Default: FALSE
+ *    * default_count:  The default count modifier, with which methods are
+ *                      initialized. Legal values: "once", "any". Default: "once"
  *
  * @package    Lime
  * @author     Bernhard Schussek <bernhard.schussek@symfony-project.com>
@@ -50,7 +50,7 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
     $this->options = array_merge(array(
       'strict'        =>  false,
       'nice'          =>  false,
-      'no_exceptions' =>  false,
+      'default_count' =>  'once',
     ), $options);
   }
 
@@ -67,13 +67,13 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
       $invocation->strict();
     }
 
-    if ($this->options['nice'])
+    if ($this->options['default_count'] == 'once')
     {
-      $invocation->any();
+      $invocation->once();
     }
     else
     {
-      $invocation->once();
+      $invocation->any();
     }
   }
 
@@ -83,7 +83,7 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
    */
   public function invoke(LimeMockInvocation $invocation)
   {
-    if (!$this->options['nice'] && !$this->verified && !$this->options['no_exceptions'] && ($this->expectNothing || count($this->invocations) > 0))
+    if (!$this->options['nice'] && !$this->verified && ($this->expectNothing || count($this->invocations) > 0))
     {
       throw new LimeMockInvocationException($invocation, 'was not expected to be called');
     }

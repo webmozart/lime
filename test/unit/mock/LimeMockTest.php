@@ -105,7 +105,7 @@ class TestAutoloader
 spl_autoload_register(array('TestAutoloader', 'autoload'));
 
 
-$t = new LimeTest(106);
+$t = new LimeTest(102);
 
 
 // @Before
@@ -423,10 +423,10 @@ $t = new LimeTest(106);
   $m->testMethod('Foobar', 1);
 
 
-// @Test: The option "no_exceptions" suppresses exceptions upon method calls
+// @Test: The option "nice" suppresses exceptions upon method calls
 
   // test
-  $m = LimeMock::create('TestClass', $output, array('no_exceptions' => true));
+  $m = LimeMock::create('TestClass', $output, array('nice' => true));
   $m->testMethod('Foobar');
   $m->replay();
   $m->testMethod('Foobar', 1);
@@ -865,32 +865,4 @@ $t = new LimeTest(106);
   // assertions
   $t->is(TestCallbackClass::$arguments, array(1, 'foobar'), 'The arguments have been passed to the callback');
   $t->is($value, 'elvis is alive', 'The return value of the callback has been passed through');
-
-
-// @Test: Methods may be called any number of times if the option "nice" is set
-
-  // test
-  $m = LimeMock::create('TestClass', $output, array('nice' => true));
-  $m->testMethod();
-  $m->replay();
-  $m->testMethod();
-  $m->testMethod();
-  $m->verify();
-  // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
-
-
-// @Test: Unexpected method calls are ignored if the option "nice" is set
-
-  // test
-  $m = LimeMock::create('TestClass', $output, array('nice' => true));
-  $m->testMethod();
-  $m->replay();
-  $m->testMethod();
-  $m->testMethod(1, 2, 3);
-  $m->verify();
-  // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
 

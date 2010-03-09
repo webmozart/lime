@@ -80,10 +80,10 @@ $t = new LimeTest(17);
   $m->method2();
 
 
-// @Test: If the option "no_exceptions" is set, ->verify() fails if methods were called in the wrong order
+// @Test: If the option "nice" is set, ->verify() fails if methods were called in the wrong order
 
   // test
-  $m = LimeMock::create('TestClass', $output, array('strict' => true, 'no_exceptions' => true));
+  $m = LimeMock::create('TestClass', $output, array('strict' => true, 'nice' => true));
   $m->method1();
   $m->method2();
   $m->method3();

@@ -85,7 +85,7 @@
  *                          mocked class are called when a method is not
  *                          configured to be stubbed. Default: TRUE
  *    * nice:               See LimeMockBehaviour
- *    * no_exceptions:      See LimeMockBehaviour
+ *    * default_count:      See LimeMockBehaviour
  *
  * @package    Lime
  * @author     Bernhard Schussek <bernhard.schussek@symfony-project.com>

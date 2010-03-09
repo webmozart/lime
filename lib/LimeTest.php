@@ -311,7 +311,7 @@ class LimeTest
   {
     $options = array_merge(array(
       'nice'            =>  true,
-      'no_exceptions'   =>  true,
+      'default_count'   =>  'any',
     ), $options);
 
     return LimeMock::create($class, new LimeOutputNone(), $options);
