@@ -168,6 +168,11 @@ class LimeAnnotationSupport
 
     $testRunner = new LimeTestRunner($this->test ? $this->test->getOutput() : null);
 
+    if ($this->test instanceof LimeTest)
+    {
+      $testRunner->addBefore(array($this->test, 'beginTest'));
+    }
+
     foreach ($callbacks as $annotation => $callbacks)
     {
       $addMethod = 'add'.$annotation;
@@ -181,8 +186,7 @@ class LimeAnnotationSupport
     if ($this->test instanceof LimeTest)
     {
       $testRunner->addExceptionHandler(array($this->test, 'handleException'));
-      $testRunner->addAfter(array($this->test, 'verifyException'));
-      $testRunner->addAfter(array($this->test, 'verifyMocks'));
+      $testRunner->addAfter(array($this->test, 'endTest'));
     }
 
     $testRunner->run();

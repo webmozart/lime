@@ -74,11 +74,9 @@ $t = new LimeTest();
   // fixtures
   $printer->printText('not ok 1', LimePrinter::NOT_OK);
   $printer->printLine(' - A failed test');
-  $printer->printLine('#     Failed test (/test/file at line 33)', LimePrinter::COMMENT);
   $printer->printText('not ok 2', LimePrinter::NOT_OK);
   $printer->printLine(' - Another failed test');
-  $printer->printLine('#     Failed test (/test/file at line 55)', LimePrinter::COMMENT);
-  $printer->printLine('#       error', LimePrinter::COMMENT);
+    $printer->printLine('#       error', LimePrinter::COMMENT);
   $printer->printLine('#       message', LimePrinter::COMMENT);
   $printer->replay();
   // test
@@ -90,7 +88,6 @@ $t = new LimeTest();
 
   // fixtures
   $printer->printLine('not ok 1', LimePrinter::NOT_OK);
-  $printer->printLine('#     Failed test (/test/file at line 11)', LimePrinter::COMMENT);
   $printer->replay();
   // test
   $output->fail('', '/test/file', 11);
@@ -103,7 +100,6 @@ $t = new LimeTest();
   $configuration->getBaseDir()->returns('/test');
   $configuration->replay();
   $printer->printLine('not ok 1', LimePrinter::NOT_OK);
-  $printer->printLine('#     Failed test (/file at line 11)', LimePrinter::COMMENT);
   $printer->replay();
   // test
   $output->fail('', '/test/file', 11);

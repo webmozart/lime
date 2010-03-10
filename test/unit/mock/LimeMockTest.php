@@ -759,7 +759,6 @@ $t = new LimeTest();
 
   // test
   $m = LimeMock::create('TestClassWithControlMethods', array('generate_controls' => false));
-  $t->pass('No exception is thrown');
 
 
 // @Test: The control methods like ->replay() can be mocked

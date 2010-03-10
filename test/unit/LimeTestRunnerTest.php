@@ -40,9 +40,9 @@ $t->diag('The before callbacks are called before each test method');
   $r->addBefore(array($mock, 'setUp'));
   $r->addTest(array($mock, 'testDoSomething'));
   $r->addTest(array($mock, 'testDoSomethingElse'));
-  $mock->setUp();
+  $mock->setUp('');
   $mock->testDoSomething();
-  $mock->setUp();
+  $mock->setUp('');
   $mock->testDoSomethingElse();
   $mock->replay();
   // test
@@ -133,5 +133,4 @@ $t->diag('If no exception handler returns true, the exception is thrown again');
   }
   catch (Exception $e)
   {
-    $t->pass('The exception was thrown');
   }

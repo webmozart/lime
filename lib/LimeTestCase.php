@@ -20,13 +20,13 @@ class LimeTestCase extends LimeTest
     parent::__construct($configuration);
 
     $this->testRunner = new LimeTestRunner($this->getOutput());
+    $this->testRunner->addBefore(array($this, 'beginTest'));
     $this->testRunner->addBefore(array($this, 'setUp'));
     $this->testRunner->addAfter(array($this, 'tearDown'));
 
     // attention: the following lines are not tested
     $this->testRunner->addExceptionHandler(array($this, 'handleException'));
-    $this->testRunner->addAfter(array($this, 'verifyException'));
-    $this->testRunner->addAfter(array($this, 'verifyMocks'));
+    $this->testRunner->addAfter(array($this, 'endTest'));
 
     foreach (get_class_methods($this) as $method)
     {

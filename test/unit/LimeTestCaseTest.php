@@ -47,7 +47,7 @@ $t = new LimeTest();
 
   $output = $t->mock('LimeOutputInterface');
   $configuration = $t->stub('LimeConfiguration');
-  $configuration->createTestOutput()->returns($output);
+  $configuration->getTestOutput()->returns($output);
   $configuration->replay();
   $test = new TestCase($configuration);
   $output->reset();
@@ -68,10 +68,10 @@ $t = new LimeTest();
   $test->run();
 
 
-// @Test: The method names are converted to comments
+// @Test: The method names are converted to passed tests
 
-  $output->comment('Do something');
-  $output->comment('Do something else');
+  $output->method('pass')->parameter(1)->is('Do something');
+  $output->method('pass')->parameter(1)->is('Do something else');
   $output->replay();
   // test
   $test->run();

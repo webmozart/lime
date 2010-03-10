@@ -82,8 +82,6 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
       $this->printer->printLine(' - '.$message);
     }
 
-    $this->printer->printLine(sprintf('#     Failed test (%s at line %s)', $this->stripBaseDir($file), $line), LimePrinter::COMMENT);
-
     if (!is_null($error))
     {
       foreach (explode("\n", $error) as $line)

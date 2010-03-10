@@ -55,11 +55,9 @@ $config->setBaseDir(dirname(__FILE__));
  */
 
 $lime = new LimeExecutable(LimeExecutable::php().' lime --output=raw --test=%file%', 'raw');
-$phpt = new LimeExecutable('%file%', 'tap');
 
 $config->registerGlob('test/unit/*Test.php', $lime);
 $config->registerGlob('test/unit/*/*Test.php', $lime);
-$config->registerFile('test/bin/prove.sh', $phpt);
 
 /*
  * Sets whether legacy classes like lime_test etc. should be loaded.

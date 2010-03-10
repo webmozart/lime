@@ -72,14 +72,9 @@ class LimeTestRunner
 
     foreach ($this->testCallbacks as $key => $testCallback)
     {
-      if (!empty($this->testComments[$key]))
-      {
-        $this->output->comment($this->testComments[$key]);
-      }
-
       foreach ($this->beforeCallbacks as $callback)
       {
-        call_user_func($callback);
+        call_user_func($callback, $this->testComments[$key]);
       }
 
       try

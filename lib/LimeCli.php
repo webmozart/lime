@@ -61,7 +61,7 @@ class LimeCli
     }
     catch (Exception $e)
     {
-      echo $e->getMessage()."\n";
+      echo "CLI: ".$e->getMessage()."\n";
 
       return 1;
     }
@@ -288,15 +288,24 @@ EOF;
         $fileName = $files[0]->getPath();
       }
 
-      if ($configuration->getAnnotationSupport())
+      try
       {
-        $support = new LimeAnnotationSupport($fileName);
+        if ($configuration->getAnnotationSupport())
+        {
+          $support = new LimeAnnotationSupport($fileName);
 
-        return $support->execute();
+          return $support->execute();
+        }
+        else
+        {
+          return $this->includeTest($fileName);
+        }
       }
-      else
+      catch (Exception $e)
       {
-        return $this->includeTest($fileName);
+        $configuration->getTestOutput()->error(LimeError::fromException($e));
+
+        return 1;
       }
     }
     else

@@ -74,9 +74,11 @@ $t->diag('Code annotated with @Before is executed once before every test');
 $root/@$file
 Before
 Test 1
+ok 1
 Before
 Test 2
-1..0
+ok 2
+1..2
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -92,9 +94,11 @@ $t->diag('Code annotated with @After is executed once after every test');
 $root/@$file
 Test 1
 After
+ok 1
 Test 2
 After
-1..0
+ok 2
+1..2
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -110,8 +114,10 @@ $t->diag('Code annotated with @BeforeAll is executed once before the test suite'
 $root/@$file
 Before All
 Test 1
+ok 1
 Test 2
-1..0
+ok 2
+1..2
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -126,9 +132,11 @@ $t->diag('Code annotated with @AfterAll is executed once after the test suite');
   $expected = <<<EOF
 $root/@$file
 Test 1
+ok 1
 Test 2
+ok 2
 After All
-1..0
+1..2
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -145,7 +153,8 @@ $root/@$file
 Before annotation
 Before
 Test
-1..0
+ok 1
+1..1
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -160,8 +169,11 @@ $t->diag('Classes can be defined before the annotations');
   $expected = <<<EOF
 $root/@$file
 Try is not matched
+ok 1
 If is not matched
-1..0
+ok 2
+ok 3
+1..3
  Looks like everything went fine.
 EOF
 ;
@@ -177,7 +189,8 @@ $t->diag('Functions can be defined before the annotations');
   $expected = <<<EOF
 $root/@$file
 Test
-1..0
+ok 1
+1..1
  Looks like everything went fine.
 EOF
 ;
@@ -203,7 +216,8 @@ $root/@$file
 Before
 BeforeTest
 BeforeTestAfter
-1..0
+ok 1
+1..1
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -236,7 +250,8 @@ $t->diag('Variables from other annotations are NOT available in all other scopes
 $root/@$file
 Is not set
 Is not set
-1..0
+ok 1
+1..1
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -251,9 +266,10 @@ $t->diag('Tests annotated with @Test may have comments');
   $expected = <<<EOF
 $root/@$file
 Test 1
-# This test is commented with "double" and 'single' quotes
+ok 1
 Test 2
-1..0
+ok 2 - This test is commented with "double" and 'single' quotes
+1..2
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -265,15 +281,20 @@ $t->diag('Exceptions can be expected');
   // test
   $command = execute($file = 'test_expect.php');
   // assertion
-  $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
+  $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
 $root/@$file
 Test 1
-not ok 1 - A "RuntimeException" was thrown
-#     Failed test (%ANY%)
-#            got: 'none'
-#       expected: 'RuntimeException'
+not ok 1
+
+%WHITESPACE%
+  LimeConstraintException: A "RuntimeException" was thrown %WHITESPACE%
+       got: 'none' %WHITESPACE%
+  expected: 'RuntimeException' %WHITESPACE%
+  (in %ANY%) %WHITESPACE%
+%WHITESPACE%
+
 Test 2
-ok 2 - A "RuntimeException" was thrown
+ok 2
 1..2
  Looks like you failed 1 tests of 2.
 EOF
@@ -287,23 +308,28 @@ $t->diag('Exception objects can be expected');
   // test
   $command = execute($file = 'test_expect_object.php');
   // assertion
-  $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
+  $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
 $root/@$file
 Test 1
-ok 1 - A "RuntimeException" was thrown
+ok 1
 Test 2
-not ok 2 - A "RuntimeException" was thrown
-#     Failed test (%ANY%)
-#            got: object(RuntimeException) (
-#                   ...
-#                   'code' => 0,
-#                 )
-#       expected: object(RuntimeException) (
-#                   ...
-#                   'code' => 1,
-#                 )
+not ok 2
+
+ %WHITESPACE%
+  LimeConstraintException: A "RuntimeException" was thrown %WHITESPACE%
+       got: object(RuntimeException) ( %WHITESPACE%
+              ... %WHITESPACE%
+              'code' => 0, %WHITESPACE%
+            ) %WHITESPACE%
+  expected: object(RuntimeException) ( %WHITESPACE%
+              ... %WHITESPACE%
+              'code' => 1, %WHITESPACE%
+            ) %WHITESPACE%
+  (in %ANY%) %WHITESPACE%
+ %WHITESPACE%
+
 Test 3
-ok 3 - A "RuntimeException" was thrown
+ok 3
 1..3
  Looks like you failed 1 tests of 3.
 EOF
@@ -317,15 +343,21 @@ $t->diag('Old expected exceptions are ignored');
   // test
   $command = execute($file = 'test_expect_ignore_old.php');
   // assertion
-  $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
+  $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
 $root/@$file
 Test 1
-ok 1 - A "RuntimeException" was thrown
+ok 1
 Test 2
-not ok 2 - A "LogicException" was thrown
-#     Failed test (%ANY%)
-#            got: 'none'
-#       expected: 'LogicException'
+not ok 2
+
+ %WHITESPACE%
+  LimeConstraintException: A "LogicException" was thrown %WHITESPACE%
+       got: 'none' %WHITESPACE%
+  expected: 'LogicException' %WHITESPACE%
+  (in %ANY% %WHITESPACE%
+  %ANY%) %WHITESPACE%
+ %WHITESPACE%
+
 1..2
  Looks like you failed 1 tests of 2.
 EOF
@@ -342,8 +374,10 @@ $t->diag('Annotations can be commented out with /*...*/');
   $expected = <<<EOF
 $root/@$file
 Test 1
+ok 1
 Test 3
-1..0
+ok 2
+1..2
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -409,7 +443,8 @@ $t->diag('The last line in an annotated file can be a comment (bugfix)');
   $expected = <<<EOF
 $root/@$file
 Test
-1..0
+ok 1
+1..1
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -425,9 +460,11 @@ $t->diag('The annotation support can be enabled in included bootstrap files');
 $root/@$file
 Before
 Test 1
+ok 1
 Before
 Test 2
-1..0
+ok 2
+1..2
  Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');

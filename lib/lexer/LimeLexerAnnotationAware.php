@@ -97,6 +97,10 @@ abstract class LimeLexerAnnotationAware extends LimeLexer
         $this->inAnnotation = true;
         $this->inAnnotationDeclaration = true;
       }
+      else
+      {
+        $this->inAnnotationDeclaration = false;
+      }
     }
     else
     {

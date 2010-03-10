@@ -37,11 +37,21 @@ class LimeError implements Serializable
    * @param  Exception $exception
    * @return LimeError
    */
-  public static function fromException(Exception $exception)
+  public static function fromException(Exception $exception, $file = null, $line = null, $trace = null)
   {
-    $file = $exception->getFile();
-    $line = $exception->getLine();
-    $trace = $exception->getTrace();
+    if (is_null($file))
+    {
+      $file = $exception->getFile();
+    }
+    if (is_null($line))
+    {
+      $line = $exception->getLine();
+    }
+    if (is_null($trace))
+    {
+      $trace = $exception->getTrace();
+    }
+
     $invocationTrace = array();
 
     // Remove all the parts from the trace that have been generated inside

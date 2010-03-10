@@ -218,7 +218,7 @@ class LimeConfiguration
    *
    * @return LimeOutputInterface
    */
-  public function createSuiteOutput()
+  public function getSuiteOutput()
   {
     if (is_null($this->outputFactory))
     {
@@ -230,7 +230,12 @@ class LimeConfiguration
       throw new LogicException('You must set the output name before creating the output');
     }
 
-    return $this->outputFactory->create($this->suiteOutput);
+    if (!$this->suiteOutput instanceof LimeOutputInterface)
+    {
+      $this->suiteOutput = $this->outputFactory->create($this->suiteOutput);
+    }
+
+    return $this->suiteOutput;
   }
 
   /**
@@ -238,7 +243,7 @@ class LimeConfiguration
    *
    * @return LimeOutputInterface
    */
-  public function createTestOutput()
+  public function getTestOutput()
   {
     if (is_null($this->outputFactory))
     {
@@ -250,7 +255,12 @@ class LimeConfiguration
       throw new LogicException('You must set the output name before creating the output');
     }
 
-    return $this->outputFactory->create($this->testOutput);
+    if (!$this->testOutput instanceof LimeOutputInterface)
+    {
+      $this->testOutput = $this->outputFactory->create($this->testOutput);
+    }
+
+    return $this->testOutput;
   }
 
   /**

@@ -22,9 +22,11 @@ class LimeTest
   protected
     $output                 = null,
     $errorReporting         = true,
+    $comment                = '',
     $exception              = null,
     $exceptionExpectation   = null,
-    $mocks                  = array();
+    $mocks                  = array(),
+    $failed                 = false;
 
   public function __construct(LimeConfiguration $configuration = null)
   {
@@ -35,14 +37,68 @@ class LimeTest
 
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
-    $this->output = $configuration->createTestOutput();
+    $this->output = $configuration->getTestOutput();
     $this->output->focus($file);
 
     set_error_handler(array($this, 'handleError'));
 
     // make sure that exceptions that are not caught by the test runner are
     // caught and formatted in an appropriate way
-    set_exception_handler(array($this, 'handleException'));
+
+    // UPDATE: should be obsolete because uncaught exceptions are now handled
+    // by the CLI
+//    set_exception_handler(array($this, 'handleException'));
+  }
+
+  public function beginTest($comment = '')
+  {
+    $this->comment = $comment;
+    $this->exception = null;
+    $this->exceptionExpectation = null;
+    $this->mocks = array();
+    $this->failed = false;
+  }
+
+  public function endTest()
+  {
+    if (!is_null($this->exceptionExpectation))
+    {
+      $expected = $this->exceptionExpectation->getException();
+      $file = $this->exceptionExpectation->getFile();
+      $line = $this->exceptionExpectation->getLine();
+
+      if (is_string($expected))
+      {
+        $actual = is_object($this->exception) ? get_class($this->exception) : 'none';
+        $message = sprintf('A "%s" was thrown', $expected);
+      }
+      else
+      {
+        $actual = $this->exception;
+        $message = sprintf('A "%s" was thrown', get_class($expected));
+      }
+
+      try
+      {
+        $this->is($actual, $expected, $message);
+      }
+      catch (LimeConstraintException $e)
+      {
+        $this->printError(LimeError::fromException($e, $file, $line, array()));
+      }
+    }
+
+    if (!$this->failed)
+    {
+      foreach ($this->mocks as $mock)
+      {
+        $mock->verify();
+      }
+
+      list ($file, $line) = LimeTrace::findCaller('LimeTest');
+
+      $this->output->pass($this->comment, $file, $line);
+    }
   }
 
   public function setErrorReporting($enabled)
@@ -69,12 +125,10 @@ class LimeTest
     try
     {
       $constraint->evaluate($value);
-
-      return $this->pass($message);
     }
     catch (LimeConstraintException $e)
     {
-      return $this->fail($message, $e->getMessage());
+      throw new LimeConstraintException($message."\n".$e->getMessage());
     }
   }
 
@@ -88,13 +142,9 @@ class LimeTest
    */
   public function ok($exp, $message = '')
   {
-    if ((boolean)$exp)
+    if (!(boolean)$exp)
     {
-      return $this->pass($message);
-    }
-    else
-    {
-      return $this->fail($message);
+      throw new LimeConstraintException($message);
     }
   }
 
@@ -213,35 +263,15 @@ class LimeTest
   }
 
   /**
-   * Always passes--useful for testing exceptions
-   *
-   * @param string $message display output message
-   *
-   * @return true
-   */
-  public function pass($message = '')
-  {
-    list ($file, $line) = LimeTrace::findCaller('LimeTest');
-
-    $this->output->pass($message, $file, $line);
-
-    return true;
-  }
-
-  /**
-   * Always fails--useful for testing exceptions
+   * Always fails
    *
    * @param string $message display output message
    *
    * @return false
    */
-  public function fail($message = '', $error = null)
+  public function fail($message)
   {
-    list ($file, $line) = LimeTrace::findCaller('LimeTest');
-
-    $this->output->fail($message, $file, $line, $error);
-
-    return false;
+    throw new LimeConstraintException($message);
   }
 
   /**
@@ -351,6 +381,8 @@ class LimeTest
         break;
     }
 
+    $this->failed = true;
+    $this->output->fail($this->comment, $file, $line);
     $this->output->warning($message, $file, $line);
   }
 
@@ -362,56 +394,17 @@ class LimeTest
     }
     else
     {
-      $this->output->error(LimeError::fromException($exception));
+      $this->printError(LimeError::fromException($exception));
     }
 
+    // exception was handled
     return true;
   }
 
-  public function verifyException()
+  protected function printError(LimeError $error)
   {
-    if (!is_null($this->exceptionExpectation))
-    {
-      $expected = $this->exceptionExpectation->getException();
-      $file = $this->exceptionExpectation->getFile();
-      $line = $this->exceptionExpectation->getLine();
-
-      if (is_string($expected))
-      {
-        $actual = is_object($this->exception) ? get_class($this->exception) : 'none';
-        $message = sprintf('A "%s" was thrown', $expected);
-      }
-      else
-      {
-        $actual = $this->exception;
-        $message = sprintf('A "%s" was thrown', get_class($expected));
-      }
-
-      // can't use ->is() here because the custom file and line need to be
-      // passed to the output
-      try
-      {
-        $constraint = new LimeConstraintIs($expected);
-        $constraint->evaluate($actual);
-
-        $this->output->pass($message, $file, $line);
-      }
-      catch (LimeConstraintException $e)
-      {
-        $this->output->fail($message, $file, $line, $e->getMessage());
-      }
-    }
-
-    $this->exceptionExpectation = null;
-  }
-
-  public function verifyMocks()
-  {
-    foreach ($this->mocks as $mock)
-    {
-      $mock->verify();
-    }
-
-    $this->mocks = array();
+    $this->failed = true;
+    $this->output->fail($this->comment, $error->getFile(), $error->getLine());
+    $this->output->error($error);
   }
 }

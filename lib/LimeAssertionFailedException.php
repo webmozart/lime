@@ -18,11 +18,10 @@ class LimeAssertionFailedException extends Exception
 
   public function __construct($actual, $expected)
   {
-    $test = sprintf('Got: %s, Expected: %s', $actual, $expected);
-    parent::__construct($test);
-
     $this->actual = (string)$actual;
     $this->expected = (string)$expected;
+
+    parent::__construct(sprintf('Got: %s, Expected: %s', $this->actual, $this->expected));
   }
 
   public function getActual($indentation = 0)

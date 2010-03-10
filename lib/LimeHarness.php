@@ -25,7 +25,7 @@ class LimeHarness
   {
     $this->configuration = $configuration;
 
-    $output = $configuration->createSuiteOutput();
+    $output = $configuration->getSuiteOutput();
 
     if ($configuration->getProcesses() > 1 && !$output->supportsThreading())
     {
