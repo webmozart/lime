@@ -74,6 +74,19 @@ class LimeError implements Serializable
       }
     }
 
+    // Remove all the parts from the trace that have been generated inside
+    // the LimeTest object. Like above.
+    if ($exception instanceof LimeConstraintException)
+    {
+      while (count($trace) > 0 && isset($trace[0]['class']) && $trace[0]['class'] == 'LimeTest')
+      {
+        $file = isset($trace[0]['file']) ? $trace[0]['file'] : null;
+        $line = isset($trace[0]['line']) ? $trace[0]['line'] : null;
+
+        array_shift($trace);
+      }
+    }
+
     // Remove all the parts from the trace that have been generated in the
     // annotation support, the CLI etc. They are irrelevant for the testing
     // developer.
