@@ -26,7 +26,8 @@ class LimePrinter
     INFO = 10,
     TRACE = 11,
     TODO = 12,
-    LABEL = 13;
+    LABEL = 13,
+    HIGHLIGHT = 14;
 
   protected
     $colorizer = null;

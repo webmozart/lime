@@ -145,6 +145,37 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
     $this->printer->printLargeBox($message, LimePrinter::ERROR);
 
+    if (is_readable($error->getFile()))
+    {
+      $this->printer->printLine('Source code:', LimePrinter::COMMENT);
+
+      $file = fopen($error->getFile(), 'r');
+      $indentation = strlen($error->getLine()+5) + 4;
+      $i = 1; $l = $error->getLine() - 2;
+      while ($i < $l)
+      {
+        fgets($file);
+        ++$i;
+      }
+      while ($i < $l+5)
+      {
+        $line = rtrim(fgets($file), "\n");
+        $line = '  '.$i.'. '.wordwrap($line, 80 - $indentation, "\n".str_repeat(' ', $indentation));
+        $lines = explode("\n", $line);
+        $style = ($i == $error->getLine()) ? LimePrinter::ERROR : null;
+
+        foreach ($lines as $line)
+        {
+          $this->printer->printLine(str_pad($line, 80, ' '), $style);
+        }
+
+        ++$i;
+      }
+      fclose($file);
+
+      $this->printer->printLine('');
+    }
+
     if (count($error->getInvocationTrace()) > 0)
     {
       $this->printer->printLine('Invocation trace:', LimePrinter::COMMENT);

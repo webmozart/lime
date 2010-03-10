@@ -293,6 +293,13 @@ not ok 1
   (in %ANY%) %WHITESPACE%
 %WHITESPACE%
 
+Source code:
+  %ANY%
+  %ANY%
+  %ANY%
+  %ANY%
+  %ANY%
+
 Test 2
 ok 2
 1..2
@@ -328,6 +335,13 @@ not ok 2
   (in %ANY%) %WHITESPACE%
  %WHITESPACE%
 
+Source code:
+  %ANY%
+  %ANY%
+  %ANY%
+  %ANY%
+  %ANY%
+
 Test 3
 ok 3
 1..3
@@ -357,6 +371,13 @@ not ok 2
   (in %ANY% %WHITESPACE%
   %ANY%) %WHITESPACE%
  %WHITESPACE%
+
+Source code:
+  %ANY%
+  %ANY%
+  %ANY%
+  %ANY%
+  %ANY%
 
 1..2
  Looks like you failed 1 tests of 2.
