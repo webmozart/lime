@@ -26,7 +26,8 @@ class LimeTest
     $exception              = null,
     $exceptionExpectation   = null,
     $mocks                  = array(),
-    $failed                 = false;
+    $failed                 = false,
+    $skipped                = false;
 
   public function __construct(LimeConfiguration $configuration = null)
   {
@@ -57,10 +58,19 @@ class LimeTest
     $this->exceptionExpectation = null;
     $this->mocks = array();
     $this->failed = false;
+    $this->skipped = false;
   }
 
   public function endTest()
   {
+    if ($this->skipped)
+    {
+      list ($file, $line) = $this->skipped;
+      $this->output->skip($this->comment, $file, $line);
+
+      return;
+    }
+
     if (!is_null($this->exceptionExpectation))
     {
       $expected = $this->exceptionExpectation->getException();
@@ -294,20 +304,38 @@ class LimeTest
   }
 
   /**
-   * Counts as $nbTests tests--useful for conditional tests
-   *
-   * @param string  $message  display output message
-   * @param integer $nbTests number of tests to skip
-   *
-   * @return void
+   * Skips the current test
    */
-  public function skip($nbTests = 1, $message = '')
+  public function skip()
   {
-    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+    $this->skipped = LimeTrace::findCaller('LimeTest');
 
-    for ($i = 0; $i < $nbTests; $i++)
+    throw new Exception();
+  }
+
+  /**
+   * Skips the current test if the condition evaluates to true.
+   *
+   * @param boolean $condition
+   */
+  public function skipIf($condition)
+  {
+    if ($condition)
     {
-      $this->output->skip($message, $file, $line);
+      $this->skip();
+    }
+  }
+
+  /**
+   * Skips the current test if the condition evaluates to false.
+   *
+   * @param boolean $condition
+   */
+  public function skipUnless($condition)
+  {
+    if (!$condition)
+    {
+      $this->skip();
     }
   }
 
@@ -395,13 +423,16 @@ class LimeTest
 
   public function handleException(Exception $exception)
   {
-    if (!is_null($this->exceptionExpectation))
+    if (!$this->skipped)
     {
-      $this->exception = $exception;
-    }
-    else
-    {
-      $this->printError(LimeError::fromException($exception));
+      if (!is_null($this->exceptionExpectation))
+      {
+        $this->exception = $exception;
+      }
+      else
+      {
+        $this->printError(LimeError::fromException($exception));
+      }
     }
 
     // exception was handled

@@ -508,8 +508,3 @@ EOF;
     $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
     $t->isOutput($command->getOutput(), $expected);
   }
-  else
-  {
-    $t->skip();
-    $t->skip();
-  }
