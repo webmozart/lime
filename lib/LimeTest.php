@@ -90,14 +90,21 @@ class LimeTest
 
     if (!$this->failed)
     {
-      foreach ($this->mocks as $mock)
+      try
       {
-        $mock->verify();
+        foreach ($this->mocks as $mock)
+        {
+          $mock->verify();
+        }
+
+        list ($file, $line) = LimeTrace::findCaller('LimeTest');
+
+        $this->output->pass($this->comment, $file, $line);
       }
-
-      list ($file, $line) = LimeTrace::findCaller('LimeTest');
-
-      $this->output->pass($this->comment, $file, $line);
+      catch (LimeMockException $e)
+      {
+        $this->printError(LimeError::fromException($e, '', '', array()));
+      }
     }
   }
 

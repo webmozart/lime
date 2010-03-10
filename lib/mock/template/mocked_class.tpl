@@ -76,9 +76,22 @@
     }
   }
   
-  public function __lime_getState()
+  public function __lime_verify()
   {
-    return $this->state;
+    try
+    {
+      return $this->state->verify();
+    }
+    catch (LimeMockInvocationException $e)
+    {
+      // hide the internal trace to not distract when debugging test errors
+      throw new LimeMockException($this, $e);
+    }
+  }
+  
+  public function __lime_setExpectNothing()
+  {
+    return $this->state->setExpectNothing();
   }
   
   public function __lime_getInvocationTrace()

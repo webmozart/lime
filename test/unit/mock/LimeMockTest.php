@@ -313,7 +313,7 @@ $t = new LimeTest();
   $m->testMethod();
   $m->replay();
   // assertions
-  $t->expect('LimeConstraintException');
+  $t->expect('LimeMockException');
   $m->verify();
 
 
@@ -422,7 +422,7 @@ $t = new LimeTest();
   $m->replay();
   $m->testMethod('Foobar', 1);
   // assertions
-  $t->expect('LimeConstraintException');
+  $t->expect('LimeMockException');
   $m->verify();
 
 
@@ -437,7 +437,7 @@ $t = new LimeTest();
   $m->testMethod();
   // assertions
   $t->is(count($m->__lime_getInvocationTrace()), 1, 'One test passed');
-  $t->expect('LimeConstraintException');
+  $t->expect('LimeMockException');
   $m->verify();
 
 
@@ -488,7 +488,7 @@ $t = new LimeTest();
   $m->testMethod(1);
   // assertions
   $t->is(count($m->__lime_getInvocationTrace()), 0, 'No test passed');
-  $t->expect('LimeConstraintException');
+  $t->expect('LimeMockException');
   $m->verify();
 
 
@@ -535,7 +535,7 @@ $t = new LimeTest();
   $m->replay();
   // assertions
   $t->is(count($m->__lime_getInvocationTrace()), 0, 'No test passed');
-  $t->expect('LimeConstraintException');
+  $t->expect('LimeMockException');
   $m->verify();
 
   // @Test: - Case 2: One actual call
@@ -603,7 +603,7 @@ $t = new LimeTest();
   $m->testMethod();
   // assertions
   $t->is(count($m->__lime_getInvocationTrace()), 0, 'No test passed');
-  $t->expect('LimeConstraintException');
+  $t->expect('LimeMockException');
   $m->verify();
 
   // @Test: - Case 2: Correct number

@@ -328,7 +328,7 @@ class LimeMock
    */
   public static function setExpectNothing(LimeMockInterface $mock)
   {
-    return $mock->__lime_getState()->setExpectNothing();
+    return $mock->__lime_setExpectNothing();
   }
 
   /**
@@ -338,7 +338,7 @@ class LimeMock
    */
   public static function verify(LimeMockInterface $mock)
   {
-    return $mock->__lime_getState()->verify();
+    return $mock->__lime_verify();
   }
 }
 

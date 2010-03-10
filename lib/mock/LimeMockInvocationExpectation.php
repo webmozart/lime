@@ -254,7 +254,7 @@ class LimeMockInvocationExpectation
       }
       else
       {
-        throw new LimeConstraintException((string)$this);
+        throw new LimeMockInvocationException($this->invocation, 'should have been called');
       }
 
       $this->verified = true;

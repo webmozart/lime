@@ -88,7 +88,7 @@ $t = new LimeTest();
   $m->method1();
   $m->method2();
   $t->is(count($m->__lime_getInvocationTrace()), 2, 'Two tests passed');
-  $t->expect('LimeConstraintException');
+  $t->expect('LimeMockException');
   $m->verify();
 
 

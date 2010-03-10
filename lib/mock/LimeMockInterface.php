@@ -65,11 +65,14 @@ interface LimeMockInterface
   public function __lime_reset();
 
   /**
-   * Returns the object representing the current state of the mock.
-   *
-   * @return LimeMockStateInterface
+   * Verifies whether all expected invocations in the mock were called.
    */
-  public function __lime_getState();
+  public function __lime_verify();
+
+  /**
+   * Sets the mock to expect no invocation.
+   */
+  public function __lime_setExpectNothing();
 
   /**
    * Returns the trace of the called invocations.

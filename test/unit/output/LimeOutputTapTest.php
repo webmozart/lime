@@ -187,6 +187,15 @@ $t = new LimeTest();
   $output->error(new LimeError('A very important error', '/test/file', 11));
 
 
+// @Test: error() skips the filename if not set
+
+  // fixtures
+  $printer->printLargeBox("Error: A very important error", LimePrinter::ERROR);
+  $printer->replay();
+  // test
+  $output->error(new LimeError('A very important error', '', ''));
+
+
 // @Test: error() prints the error traces if available
 
   // fixtures
