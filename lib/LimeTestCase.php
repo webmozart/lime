@@ -28,11 +28,13 @@ class LimeTestCase extends LimeTest
     $this->testRunner->addExceptionHandler(array($this, 'handleException'));
     $this->testRunner->addAfter(array($this, 'endTest'));
 
-    foreach (get_class_methods($this) as $method)
+    $class = new ReflectionClass($this);
+
+    foreach ($class->getMethods() as $method)
     {
-      if (strpos($method, 'test') === 0 && strlen($method) > 4)
+      if (strpos($method->getName(), 'test') === 0 && strlen($method->getName()) > 4)
       {
-        $this->testRunner->addTest(array($this, $method), $this->humanize($method));
+        $this->testRunner->addTest(array($this, $method->getName()), $this->humanize($method->getName()), $method->getFileName(), $method->getStartLine());
       }
     }
   }

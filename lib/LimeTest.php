@@ -22,6 +22,8 @@ class LimeTest
   protected
     $output                 = null,
     $errorReporting         = true,
+    $file                   = '',
+    $line                   = null,
     $comment                = '',
     $exception              = null,
     $exceptionExpectation   = null,
@@ -36,7 +38,7 @@ class LimeTest
       $configuration = LimeConfiguration::getInstance(getcwd());
     }
 
-    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+    list ($file, $line) = $this->findCaller();
 
     $this->output = $configuration->getTestOutput();
     $this->output->focus($file);
@@ -51,14 +53,18 @@ class LimeTest
 //    set_exception_handler(array($this, 'handleException'));
   }
 
-  public function beginTest($comment = '')
+  public function beginTest($comment, $file, $line)
   {
     $this->comment = $comment;
+    $this->file = $file;
+    $this->line = $line;
     $this->exception = null;
     $this->exceptionExpectation = null;
     $this->mocks = array();
     $this->failed = false;
     $this->skipped = false;
+
+    $this->output->focus($file);
   }
 
   public function endTest()
@@ -107,9 +113,9 @@ class LimeTest
           $mock->verify();
         }
 
-        list ($file, $line) = LimeTrace::findCaller('LimeTest');
+        list ($file, $line) = $this->findCaller();
 
-        $this->output->pass($this->comment, $file, $line);
+        $this->output->pass($this->comment, $this->file, $this->line);
       }
       catch (LimeMockException $e)
       {
@@ -308,7 +314,7 @@ class LimeTest
    */
   public function skip()
   {
-    $this->skipped = LimeTrace::findCaller('LimeTest');
+    $this->skipped = $this->findCaller();
 
     throw new Exception();
   }
@@ -348,7 +354,7 @@ class LimeTest
    */
   public function todo($message = '')
   {
-    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+    list ($file, $line) = $this->findCaller();
 
     $this->output->todo($message, $file, $line);
   }
@@ -393,7 +399,7 @@ class LimeTest
 
   public function expect($exception, $code = null)
   {
-    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+    list ($file, $line) = $this->findCaller();
 
     $this->exceptionExpectation = new LimeExceptionExpectation($exception, $file, $line);
     $this->exception = null;
@@ -444,5 +450,25 @@ class LimeTest
     $this->failed = true;
     $this->output->fail($this->comment, $error->getFile(), $error->getLine());
     $this->output->error($error);
+  }
+
+  protected function findCaller()
+  {
+    $traces = debug_backtrace();
+    $result = array($traces[0]['file'], $traces[0]['line']);
+
+    for ($i = count($traces)-1; $i >= 0; --$i)
+    {
+      if (isset($traces[$i]['object']) && isset($traces[$i]['file']) && isset($traces[$i]['line']))
+      {
+        if ($traces[$i]['object'] instanceof $this)
+        {
+          $result = array($traces[$i]['file'], $traces[$i]['line']);
+          break;
+        }
+      }
+    }
+
+    return $result;
   }
 }

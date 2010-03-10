@@ -122,7 +122,7 @@ class lime_test extends LimeTest
 
   public function error($message)
   {
-    list($file, $line) = LimeTrace::findCaller('lime_test');
+    list($file, $line) = $this->findCaller();
 
     $this->output->error(new LimeError($message, $file, $line));
   }
@@ -142,7 +142,7 @@ class lime_test extends LimeTest
 
   private function test_ok($condition, $message, $error = null)
   {
-    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+    list ($file, $line) = $this->findCaller();
 
     if ($result = (boolean) $condition)
     {

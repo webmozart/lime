@@ -217,7 +217,12 @@ class LimeLexerTransformAnnotations extends LimeLexerAnnotationAware
     else if ($this->inAnnotationDeclaration())
     {
       $functionName = '__lime_annotation_'.($this->functionCount++);
-      $this->functions[$this->getCurrentAnnotation()][] = array($functionName, $this->getCurrentAnnotationComment());
+      $this->functions[$this->getCurrentAnnotation()][] = array(
+        $functionName,
+        $this->getCurrentAnnotationComment(),
+        $this->fileName,
+        $this->getCurrentLine()
+      );
 
       $text = $this->firstAnnotation ? '' : '} ';
       $this->firstAnnotation = false;

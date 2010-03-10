@@ -134,7 +134,7 @@ class LimeAnnotationSupport
   public function __construct($path)
   {
     $this->originalPath = $path;
-    $this->path = dirname($path).'/@'.basename($path);
+    $this->path = dirname($path).'/'.basename($path).'~annotated';
 
     register_shutdown_function(array($this, 'cleanup'));
   }
@@ -178,8 +178,8 @@ class LimeAnnotationSupport
       $addMethod = 'add'.$annotation;
       foreach ($callbacks as $list)
       {
-        list ($callback, $comment) = $list;
-        $testRunner->$addMethod($callback, $comment);
+        list ($callback, $comment, $file, $line) = $list;
+        $testRunner->$addMethod($callback, $comment, $file, $line);
       }
     }
 

@@ -35,30 +35,16 @@
 class LimeTestRunner
 {
   protected
-    $output             = null,
     $beforeAllCallbacks = array(),
     $afterAllCallbacks  = array(),
     $beforeCallbacks    = array(),
     $afterCallbacks     = array(),
     $testCallbacks      = array(),
     $testComments       = array(),
+    $testFiles          = array(),
+    $testLines          = array(),
     $errorCallbacks     = array(),
     $exceptionCallbacks = array();
-
-  /**
-   * Constructor.
-   *
-   * @param LimeOutputInterface $output
-   */
-  public function __construct(LimeOutputInterface $output = null)
-  {
-    if (is_null($output))
-    {
-      $output = new LimeOutputNone();
-    }
-
-    $this->output = $output;
-  }
 
   /**
    * Runs all registered callbacks.
@@ -74,7 +60,7 @@ class LimeTestRunner
     {
       foreach ($this->beforeCallbacks as $callback)
       {
-        call_user_func($callback, $this->testComments[$key]);
+        call_user_func($callback, $this->testComments[$key], $this->testFiles[$key], $this->testLines[$key]);
       }
 
       try
@@ -152,11 +138,13 @@ class LimeTestRunner
    * @param  callable $callback
    * @throws InvalidArgumentException  If the argument is no callbale
    */
-  public function addTest($callback, $comment = '')
+  public function addTest($callback, $comment, $file, $line)
   {
     $this->assertIsCallable($callback);
     $this->testCallbacks[] = $callback;
     $this->testComments[] = $comment;
+    $this->testFiles[] = $file;
+    $this->testLines[] = $line;
   }
 
   /**

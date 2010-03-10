@@ -17,32 +17,17 @@ $t = new LimeTest();
 
 
 
-$t->diag('The test comments are printed');
-
-  // fixtures
-  $output = $t->mock('LimeOutputInterface');
-  $output->comment('A test comment');
-  $output->replay();
-  $stub = $t->stub('Stub');
-  $stub->testDoSomething();
-  $stub->replay();
-  $r = new LimeTestRunner($output);
-  $r->addTest(array($stub, 'testDoSomething'), 'A test comment');
-  // test
-  $r->run();
-
-
 $t->diag('The before callbacks are called before each test method');
 
   // fixtures
   $mock = $t->mock('Mock', array('strict' => true));
   $r = new LimeTestRunner();
   $r->addBefore(array($mock, 'setUp'));
-  $r->addTest(array($mock, 'testDoSomething'));
-  $r->addTest(array($mock, 'testDoSomethingElse'));
-  $mock->setUp('');
+  $r->addTest(array($mock, 'testDoSomething'), 'Do something', '/test/file', 11);
+  $r->addTest(array($mock, 'testDoSomethingElse'), 'Do something else', '/test/file', 22);
+  $mock->setUp('Do something', '/test/file', 11);
   $mock->testDoSomething();
-  $mock->setUp('');
+  $mock->setUp('Do something else', '/test/file', 22);
   $mock->testDoSomethingElse();
   $mock->replay();
   // test
@@ -55,8 +40,8 @@ $t->diag('The after callbacks are called before each test method');
   $mock = $t->mock('Mock', array('strict' => true));
   $r = new LimeTestRunner();
   $r->addAfter(array($mock, 'tearDown'));
-  $r->addTest(array($mock, 'testDoSomething'));
-  $r->addTest(array($mock, 'testDoSomethingElse'));
+  $r->addTest(array($mock, 'testDoSomething'), '', '', 0);
+  $r->addTest(array($mock, 'testDoSomethingElse'), '', '', 0);
   $mock->testDoSomething();
   $mock->tearDown();
   $mock->testDoSomethingElse();
@@ -72,8 +57,8 @@ $t->diag('The before-all callbacks are called before the whole test suite');
   $mock = $t->mock('Mock', array('strict' => true));
   $r = new LimeTestRunner();
   $r->addBeforeAll(array($mock, 'setUp'));
-  $r->addTest(array($mock, 'testDoSomething'));
-  $r->addTest(array($mock, 'testDoSomethingElse'));
+  $r->addTest(array($mock, 'testDoSomething'), '', '', 0);
+  $r->addTest(array($mock, 'testDoSomethingElse'), '', '', 0);
   $mock->setUp();
   $mock->testDoSomething();
   $mock->testDoSomethingElse();
@@ -88,8 +73,8 @@ $t->diag('The after-all callbacks are called before the whole test suite');
   $mock = $t->mock('Mock', array('strict' => true));
   $r = new LimeTestRunner();
   $r->addAfterAll(array($mock, 'tearDown'));
-  $r->addTest(array($mock, 'testDoSomething'));
-  $r->addTest(array($mock, 'testDoSomethingElse'));
+  $r->addTest(array($mock, 'testDoSomething'), '', '', 0);
+  $r->addTest(array($mock, 'testDoSomethingElse'), '', '', 0);
   $mock->testDoSomething();
   $mock->testDoSomethingElse();
   $mock->tearDown();
@@ -103,7 +88,7 @@ $t->diag('The exception handlers are called when a test throws an exception');
   // fixtures
   $mock = $t->mock('Mock', array('strict' => true));
   $r = new LimeTestRunner();
-  $r->addTest(array($mock, 'testThrowsException'));
+  $r->addTest(array($mock, 'testThrowsException'), '', '', 0);
   $r->addExceptionHandler(array($mock, 'handleExceptionFailed'));
   $r->addExceptionHandler(array($mock, 'handleExceptionSuccessful'));
   $mock->testThrowsException()->throws('Exception');
@@ -119,7 +104,7 @@ $t->diag('If no exception handler returns true, the exception is thrown again');
   // fixtures
   $mock = $t->mock('Mock', array('strict' => true));
   $r = new LimeTestRunner();
-  $r->addTest(array($mock, 'testThrowsException'));
+  $r->addTest(array($mock, 'testThrowsException'), '', '', 0);
   $r->addExceptionHandler(array($mock, 'handleExceptionFailed'));
   $mock->testThrowsException()->throws('Exception');
   $mock->method('handleExceptionFailed')->returns(false);

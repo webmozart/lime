@@ -71,7 +71,7 @@ $t->diag('Code annotated with @Before is executed once before every test');
   $command = execute($file = 'test_before.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Before
 Test 1
 ok 1
@@ -91,7 +91,7 @@ $t->diag('Code annotated with @After is executed once after every test');
   $command = execute($file = 'test_after.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Test 1
 After
 ok 1
@@ -111,7 +111,7 @@ $t->diag('Code annotated with @BeforeAll is executed once before the test suite'
   $command = execute($file = 'test_before_all.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Before All
 Test 1
 ok 1
@@ -130,7 +130,7 @@ $t->diag('Code annotated with @AfterAll is executed once after the test suite');
   $command = execute($file = 'test_after_all.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Test 1
 ok 1
 Test 2
@@ -149,7 +149,7 @@ $t->diag('Code before the first annotations is executed normally');
   $command = execute($file = 'test_code_before_annotations.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Before annotation
 Before
 Test
@@ -167,7 +167,7 @@ $t->diag('Classes can be defined before the annotations');
   $command = execute($file = 'test_class_before_annotations.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Try is not matched
 ok 1
 If is not matched
@@ -187,7 +187,7 @@ $t->diag('Functions can be defined before the annotations');
   $command = execute($file = 'test_function_before_annotations.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Test
 ok 1
 1..1
@@ -212,7 +212,7 @@ $t->diag('Variables from the @Before scope are available in all other scopes');
   $command = execute($file = 'test_scope_before.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Before
 BeforeTest
 BeforeTestAfter
@@ -230,7 +230,7 @@ $t->diag('Variables from the global scope are available in all other scopes');
   $command = execute($file = 'test_scope_global.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Global
 GlobalBefore
 GlobalBeforeTest
@@ -247,7 +247,7 @@ $t->diag('Variables from other annotations are NOT available in all other scopes
   $command = execute($file = 'test_scope_private.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Is not set
 Is not set
 ok 1
@@ -264,7 +264,7 @@ $t->diag('Tests annotated with @Test may have comments');
   $command = execute($file = 'test_comments.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Test 1
 ok 1
 Test 2
@@ -282,7 +282,7 @@ $t->diag('Exceptions can be expected');
   $command = execute($file = 'test_expect.php');
   // assertion
   $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
-$root/@$file
+$root/$file~annotated
 Test 1
 not ok 1
 
@@ -316,7 +316,7 @@ $t->diag('Exception objects can be expected');
   $command = execute($file = 'test_expect_object.php');
   // assertion
   $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
-$root/@$file
+$root/$file~annotated
 Test 1
 ok 1
 Test 2
@@ -332,7 +332,8 @@ not ok 2
               ... %WHITESPACE%
               'code' => 1, %WHITESPACE%
             ) %WHITESPACE%
-  (in %ANY%) %WHITESPACE%
+  (in %ANY% %WHITESPACE%
+  %ANY%) %WHITESPACE%
  %WHITESPACE%
 
 Source code:
@@ -358,7 +359,7 @@ $t->diag('Old expected exceptions are ignored');
   $command = execute($file = 'test_expect_ignore_old.php');
   // assertion
   $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
-$root/@$file
+$root/$file~annotated
 Test 1
 ok 1
 Test 2
@@ -393,7 +394,7 @@ $t->diag('Annotations can be commented out with /*...*/');
   $command = execute($file = 'test_multiline_comments.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Test 1
 ok 1
 Test 3
@@ -462,7 +463,7 @@ $t->diag('The last line in an annotated file can be a comment (bugfix)');
   $command = execute($file = 'test_last_line_commented.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Test
 ok 1
 1..1
@@ -478,7 +479,7 @@ $t->diag('The annotation support can be enabled in included bootstrap files');
   $command = execute($file = 'test_include.php');
   // assertion
   $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Before
 Test 1
 ok 1
@@ -500,7 +501,7 @@ $t->diag('The annotation support is able to deal with closures');
     $command = execute($file = 'test_closure.php');
     // assertion
     $expected = <<<EOF
-$root/@$file
+$root/$file~annotated
 Test 1
 1..0
  Looks like everything went fine.
