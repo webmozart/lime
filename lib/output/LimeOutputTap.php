@@ -260,13 +260,20 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
     $this->printer->printLine('# '.$message, LimePrinter::COMMENT);
   }
 
-  public function getMessages($total, $passed, $errors)
+  public function getMessages($total, $passed, $errors, $todos)
   {
     $messages = array();
 
     if ($passed === $total && $errors == 0)
     {
-      $messages[] = array('Looks like everything went fine.', LimePrinter::HAPPY);
+      if ($todos > 0)
+      {
+        $messages[] = array(sprintf('Looks like there are %s TODOs open.', $todos), LimePrinter::HAPPY);
+      }
+      else
+      {
+        $messages[] = array('Looks like everything went fine.', LimePrinter::HAPPY);
+      }
     }
     else if ($passed != $total)
     {
@@ -284,7 +291,7 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
   {
     $this->printer->printLine('1..'.$this->total);
 
-    $messages = $this->getMessages($this->total, $this->passed, $this->errors);
+    $messages = $this->getMessages($this->total, $this->passed, $this->errors, $this->todos);
 
     foreach ($messages as $message)
     {

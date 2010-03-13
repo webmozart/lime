@@ -351,3 +351,16 @@ $t = new LimeTest();
   // test
   $output->flush();
 
+  // @Test: Case 5 - Todos
+
+  // fixtures
+  $output->focus('/test/file');
+  $output->todo('TODO', 'Class', '/test/file', 11);
+  $output->todo('TODO', 'Class', '/test/file', 11);
+  $printer->reset();
+  $printer->printLine('1..2');
+  $printer->printBox(' Looks like there are 2 TODOs open.', LimePrinter::HAPPY);
+  $printer->replay();
+  // test
+  $output->flush();
+
