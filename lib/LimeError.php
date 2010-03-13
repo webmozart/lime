@@ -110,6 +110,17 @@ class LimeError implements Serializable
       }
     }
 
+    // Remove "~annotated" suffixes
+    foreach ($trace as $t_trace)
+    {
+      if (isset($_trace['file']))
+      {
+        $_trace['file'] = preg_replace('/~annotated$/', '', $_trace['file']);
+      }
+    }
+
+    $file = preg_replace('/~annotated$/', '', $file);
+
     $this->message = $message;
     $this->file = $file;
     $this->line = $line;

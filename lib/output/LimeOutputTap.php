@@ -51,10 +51,6 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
     parent::focus($file);
   }
 
-  public function close()
-  {
-  }
-
   public function pass($message, $class, $time, $file, $line)
   {
     parent::pass($message, $class, $time, $file, $line);

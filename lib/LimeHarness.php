@@ -60,7 +60,8 @@ class LimeHarness
         if ($launcher->done() && !is_null(key($files)))
         {
           // start and close the file explicitly in case the file contains syntax errors
-          $this->output->focus(current($files)->getPath());
+          $file = preg_replace('/~annotated$/', '', current($files)->getPath());
+          $this->output->focus($file);
           $launcher->launch(current($files));
 
           next($files);

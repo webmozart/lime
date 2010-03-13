@@ -70,6 +70,8 @@ class LimeTest
     $this->aborted = false;
     $this->startTime = microtime(true);
 
+    $file = preg_replace('/~annotated$/', '', $file);
+
     $this->output->focus($file);
   }
 
@@ -462,6 +464,9 @@ class LimeTest
         }
       }
     }
+
+    // Remove "~annotated" suffix
+    $result[0] = preg_replace('/~annotated$/', '', $result[0]);
 
     return $result;
   }

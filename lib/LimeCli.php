@@ -287,6 +287,10 @@ EOF;
 
         $fileName = $files[0]->getPath();
       }
+      else
+      {
+        $fileName = realpath($fileName);
+      }
 
       try
       {
