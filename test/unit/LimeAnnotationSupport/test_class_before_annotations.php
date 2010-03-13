@@ -10,7 +10,7 @@
  * with this source code in the file LICENSE.
  */
 
-include dirname(__FILE__).'/../../bootstrap/unit.php';
+require_once dirname(__FILE__).'/setup.php';
 
 LimeAnnotationSupport::enable();
 

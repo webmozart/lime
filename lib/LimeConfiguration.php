@@ -55,7 +55,7 @@ class LimeConfiguration
    * @return LimeConfiguration  The configuration
    * @throws Exception          If no configuration file is found
    */
-  public static function getInstance($directory)
+  public static function read($directory)
   {
     if ($directory == dirname($directory)) // root
     {
@@ -77,19 +77,12 @@ class LimeConfiguration
     }
     else
     {
-      $config = self::getInstance(dirname($directory));
+      $config = self::read(dirname($directory));
 
       self::$instances[$directory] = $config;
     }
 
     return $config;
-  }
-
-  /**
-   * This class may not instantiated by other classes.
-   */
-  private function __construct()
-  {
   }
 
   /**

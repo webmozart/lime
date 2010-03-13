@@ -45,7 +45,7 @@ class LimeTestCase extends LimeTest
 
   public function run()
   {
-    $this->testRunner->run();
+    return $this->testRunner->run();
   }
 
   protected function humanize($method)

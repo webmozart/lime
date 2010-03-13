@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-include dirname(__FILE__).'/../../bootstrap/unit.php';
-
 LimeAnnotationSupport::enable();
 
 

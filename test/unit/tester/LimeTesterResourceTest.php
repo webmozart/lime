@@ -10,8 +10,6 @@
  * with this source code in the file LICENSE.
  */
 
-include dirname(__FILE__).'/../../bootstrap/unit.php';
-
 LimeAnnotationSupport::enable();
 
 define('FILE', dirname(__FILE__).'/test_resource.txt');

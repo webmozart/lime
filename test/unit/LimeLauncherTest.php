@@ -10,8 +10,6 @@
  * with this source code in the file LICENSE.
  */
 
-require_once dirname(__FILE__).'/../bootstrap/unit.php';
-
 LimeAnnotationSupport::enable();
 
 $t = new LimeTest();

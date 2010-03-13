@@ -10,6 +10,6 @@
  * with this source code in the file LICENSE.
  */
 
-require_once dirname(__FILE__).'/../../lib/LimeAutoloader.php';
+require_once dirname(__FILE__).'/../../../lib/LimeAutoloader.php';
 
 LimeAutoloader::register();

@@ -10,7 +10,7 @@
  * with this source code in the file LICENSE.
  */
 
-include dirname(__FILE__).'/test_include.inc.php';
+require_once dirname(__FILE__).'/test_include.inc.php';
 
 $t = new LimeTest();
 

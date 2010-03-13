@@ -38,13 +38,10 @@ class LimeTest
   {
     if (is_null($configuration))
     {
-      $configuration = LimeConfiguration::getInstance(getcwd());
+      $configuration = LimeConfiguration::read(getcwd());
     }
 
-    list ($file, $line) = $this->findCaller();
-
     $this->output = $configuration->getTestOutput();
-    $this->output->focus($file);
 
     set_error_handler(array($this, 'handleError'));
 

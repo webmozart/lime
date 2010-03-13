@@ -29,6 +29,22 @@ class LimeCli
     'test',
   );
 
+  protected $configuration;
+
+  /**
+   * Constructor.
+   * @param LimeConfiguration $configuration
+   */
+  public function __construct(LimeConfiguration $configuration = null)
+  {
+    if (is_null($configuration))
+    {
+      $configuration = LimeConfiguration::read(getcwd());
+    }
+
+    $this->configuration = $configuration;
+  }
+
   /**
    * Runs a command with the given CLI arguments.
    *
@@ -223,42 +239,40 @@ EOF;
    */
   protected function test(array $labels, array $options)
   {
-    $configuration = LimeConfiguration::getInstance(getcwd());
-
-    if ($configuration->getLegacyMode())
+    if ($this->configuration->getLegacyMode())
     {
       LimeAutoloader::enableLegacyMode();
     }
 
     if (isset($options['processes']))
     {
-      $configuration->setProcesses($options['processes']);
+      $this->configuration->setProcesses($options['processes']);
     }
 
     if (isset($options['suffix']))
     {
-      $configuration->setSuffix($options['suffix']);
+      $this->configuration->setSuffix($options['suffix']);
     }
 
     if (isset($options['output']))
     {
-      $configuration->setTestOutput($options['output']);
-      $configuration->setSuiteOutput($options['output']);
+      $this->configuration->setTestOutput($options['output']);
+      $this->configuration->setSuiteOutput($options['output']);
     }
 
     if (isset($options['color']))
     {
-      $configuration->setForceColors(true);
+      $this->configuration->setForceColors(true);
     }
 
     if (isset($options['verbose']))
     {
-      $configuration->setVerbose(true);
+      $this->configuration->setVerbose(true);
     }
 
     if (isset($options['serialize']))
     {
-      $configuration->setSerialize(true);
+      $this->configuration->setSerialize(true);
     }
 
     if (isset($options['test']))
@@ -267,7 +281,7 @@ EOF;
 
       if (!is_readable($fileName))
       {
-        $loader = new LimeLoader($configuration);
+        $loader = new LimeLoader($this->configuration);
         $files = $loader->getFilesByName($options['test']);
 
         if (count($files) == 0)
@@ -292,30 +306,45 @@ EOF;
         $fileName = realpath($fileName);
       }
 
+      $this->configuration->getTestOutput()->focus($fileName);
+
       try
       {
-        if ($configuration->getAnnotationSupport())
+        if ($this->configuration->getAnnotationSupport())
         {
           $support = new LimeAnnotationSupport($fileName);
 
-          return $support->execute();
+          $result = $support->execute();
         }
         else
         {
-          return $this->includeTest($fileName);
+          $result = $this->includeTest($fileName);
+        }
+
+        // xUnit compatibility
+        $class = basename($fileName, '.php');
+
+        if (class_exists($class) && is_subclass_of($class, 'LimeTestCase'))
+        {
+          $test = new $class($this->configuration);
+          return $test->run();
+        }
+        else
+        {
+          return $result;
         }
       }
       catch (Exception $e)
       {
-        $configuration->getTestOutput()->error(LimeError::fromException($e));
+        $this->configuration->getTestOutput()->error(LimeError::fromException($e));
 
         return 1;
       }
     }
     else
     {
-      $loader = new LimeLoader($configuration);
-      $harness = new LimeHarness($configuration, $loader);
+      $loader = new LimeLoader($this->configuration);
+      $harness = new LimeHarness($this->configuration, $loader);
       $files = $loader->getFilesByLabels($labels);
 
       if (count($files) == 0)

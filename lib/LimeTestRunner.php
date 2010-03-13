@@ -82,6 +82,8 @@ class LimeTestRunner
     {
       call_user_func($callback);
     }
+
+    // TODO: return correct result
   }
 
   /**

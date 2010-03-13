@@ -10,9 +10,6 @@
  * with this source code in the file LICENSE.
  */
 
-include dirname(__FILE__).'/../bootstrap/unit.php';
-
-
 class LimeAnnotationSupportTest extends LimeTest
 {
   public function isOutput($actual, $expected, $method='is')
@@ -20,7 +17,6 @@ class LimeAnnotationSupportTest extends LimeTest
     $this->$method(trim($actual), trim($expected), 'The test file returns the expected output');
   }
 }
-
 
 $t = new LimeAnnotationSupportTest();
 
@@ -111,8 +107,8 @@ $t->diag('Code annotated with @BeforeAll is executed once before the test suite'
   $command = execute($file = 'test_before_all.php');
   // assertion
   $expected = <<<EOF
-$root/$file
 Before All
+$root/$file
 Test 1
 ok 1
 Test 2
@@ -149,8 +145,8 @@ $t->diag('Code before the first annotations is executed normally');
   $command = execute($file = 'test_code_before_annotations.php');
   // assertion
   $expected = <<<EOF
-$root/$file
 Before annotation
+$root/$file
 Before
 Test
 ok 1
