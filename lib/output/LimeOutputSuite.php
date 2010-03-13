@@ -26,11 +26,9 @@ class LimeOutputSuite extends LimeOutput
     $loader         = null,
     $printer        = null,
     $configuration  = null,
-    $startTime      = 0,
-    $errors         = array(),
-    $failures       = array(),
-    $warnings       = array(),
-    $todos          = array();
+    $_errors        = array(),
+    $_failures      = array(),
+    $_todos         = array();
 
   /**
    * Constructor.
@@ -40,9 +38,10 @@ class LimeOutputSuite extends LimeOutput
    */
   public function __construct(LimePrinter $printer, LimeConfiguration $configuration)
   {
+    parent::__construct();
+
     $this->printer = $printer;
     $this->configuration = $configuration;
-    $this->startTime = time();
   }
 
   public function setLoader(LimeLoader $loader)
@@ -67,12 +66,11 @@ class LimeOutputSuite extends LimeOutput
   {
     parent::focus($file);
 
-    if (!isset($this->errors[$file]))
+    if (!isset($this->_errors[$file]))
     {
-      $this->errors[$file] = array();
-      $this->failures[$file] = array();
-      $this->warnings[$file] = array();
-      $this->todos[$file] = array();
+      $this->_errors[$file] = array();
+      $this->_failures[$file] = array();
+      $this->_todos[$file] = array();
     }
   }
 
@@ -80,33 +78,22 @@ class LimeOutputSuite extends LimeOutput
    * (non-PHPdoc)
    * @see lib/output/LimeOutput#fail($message, $file, $line, $error)
    */
-  public function fail($message, $file, $line, $error = null)
+  public function fail($message, $class, $time, $file, $line, LimeError $error = null)
   {
-    parent::fail($message, $file, $line, $error);
+    parent::fail($message, $class, $time, $file, $line, $error);
 
-    $this->failures[$this->getCurrentFile()][$this[$this->getCurrentFile()]->getTotal()] = array($message, $file, $line, $error);
+    $this->_failures[$this->getCurrentFile()][$this->files[$this->getCurrentFile()]->total] = array($message, $class, $time, $error);
   }
 
   /**
    * (non-PHPdoc)
    * @see lib/output/LimeOutput#todo($message, $file, $line)
    */
-  public function todo($message, $file, $line)
+  public function todo($message, $class, $file, $line)
   {
-    parent::todo($message, $file, $line);
+    parent::todo($message, $class, $file, $line);
 
-    $this->todos[$this->getCurrentFile()][] = $message;
-  }
-
-  /**
-   * (non-PHPdoc)
-   * @see lib/output/LimeOutput#warning($message, $file, $line)
-   */
-  public function warning($message, $file, $line)
-  {
-    parent::warning($message, $file, $line);
-
-    $this->warnings[$this->getCurrentFile()][] = array($message, $file, $line);
+    $this->_todos[$this->getCurrentFile()][] = $message;
   }
 
   /**
@@ -117,7 +104,7 @@ class LimeOutputSuite extends LimeOutput
   {
     parent::error($error);
 
-    $this->errors[$this->getCurrentFile()][] = $error;
+    $this->_errors[$this->getCurrentFile()][] = $error;
   }
 
   /**
@@ -126,6 +113,8 @@ class LimeOutputSuite extends LimeOutput
    */
   public function close()
   {
+    parent::close();
+
     if (!is_null($file = $this->getCurrentFile()))
     {
       $path = $this->truncate($file);
@@ -153,29 +142,25 @@ class LimeOutputSuite extends LimeOutput
 
       $this->printer->printText(str_pad($path, 73 - strlen($prefix), '.'));
 
-      if (!$this[$file]->isSuccessful())
+      if (!$this->files[$file]->success)
       {
         $this->printer->printLine("not ok", LimePrinter::NOT_OK);
-      }
-      else if ($this[$file]->getWarnings())
-      {
-        $this->printer->printLine("warning", LimePrinter::WARNING);
       }
       else
       {
         $this->printer->printLine("ok", LimePrinter::OK);
       }
 
-      if (count($this->failures[$file]))
+      if (count($this->_failures[$file]))
       {
         $this->printer->printLine('    Failed Tests:', LimePrinter::COMMENT);
 
         $i = 0;
-        foreach ($this->failures[$file] as $number => $failed)
+        foreach ($this->_failures[$file] as $number => $failed)
         {
           if (!$this->configuration->getVerbose() && $i > 2)
           {
-            $this->printer->printLine(sprintf('    ... and %s more', count($this->failures[$file])-$i));
+            $this->printer->printLine(sprintf('    ... and %s more', count($this->_failures[$file])-$i));
             break;
           }
 
@@ -184,40 +169,15 @@ class LimeOutputSuite extends LimeOutput
         }
       }
 
-      if (count($this->warnings[$file]))
-      {
-        $this->printer->printLine('    Warnings:', LimePrinter::COMMENT);
-
-        foreach ($this->warnings[$file] as $i => $warning)
-        {
-          if (!$this->configuration->getVerbose() && $i > 2)
-          {
-            $this->printer->printLine(sprintf('    ... and %s more', count($this->warnings[$file])-$i));
-            break;
-          }
-
-          $this->printer->printLine('    '.$warning[0]);
-
-          if ($this->configuration->getVerbose())
-          {
-            $this->printer->printText('      (in ');
-            $this->printer->printText($this->truncate($warning[1]), LimePrinter::TRACE);
-            $this->printer->printText(' on line ');
-            $this->printer->printText($warning[2], LimePrinter::TRACE);
-            $this->printer->printLine(')');
-          }
-        }
-      }
-
-      if (count($this->errors[$file]))
+      if (count($this->_errors[$file]))
       {
         $this->printer->printLine('    Errors:', LimePrinter::COMMENT);
 
-        foreach ($this->errors[$file] as $i => $error)
+        foreach ($this->_errors[$file] as $i => $error)
         {
           if (!$this->configuration->getVerbose() && $i > 2)
           {
-            $this->printer->printLine(sprintf('    ... and %s more', count($this->errors[$file])-$i));
+            $this->printer->printLine(sprintf('    ... and %s more', count($this->_errors[$file])-$i));
             break;
           }
 
@@ -234,15 +194,15 @@ class LimeOutputSuite extends LimeOutput
         }
       }
 
-      if (count($this->todos[$file]))
+      if (count($this->_todos[$file]))
       {
         $this->printer->printLine('    TODOs:', LimePrinter::COMMENT);
 
-        foreach ($this->todos[$file] as $i => $todo)
+        foreach ($this->_todos[$file] as $i => $todo)
         {
           if (!$this->configuration->getVerbose() && $i > 2)
           {
-            $this->printer->printLine(sprintf('    ... and %s more', count($this->todos[$file])-$i));
+            $this->printer->printLine(sprintf('    ... and %s more', count($this->_todos[$file])-$i));
             break;
           }
 
@@ -264,25 +224,30 @@ class LimeOutputSuite extends LimeOutput
    */
   public function flush()
   {
-    $failedFiles = $this->countFailed();
-    $actualFiles = $this->count();
-    $totalTests = $this->getTotal();
+    $failedFiles = 0;
+    $actualFiles = count($this->files);
+
+    foreach ($this->files as $file)
+    {
+      if (!$file->success)
+      {
+        ++$failedFiles;
+      }
+    }
 
     if ($failedFiles > 0)
     {
-      $failedTests = $this->getFailed();
-
       $stats = sprintf(' Failed %d/%d test scripts, %.2f%% okay. %d/%d subtests failed, %.2f%% okay.',
           $failedFiles, $actualFiles, 100 - 100*$failedFiles/max(1,$actualFiles),
-          $failedTests, $totalTests, 100 - 100*$failedTests/max(1,$totalTests));
+          $this->failed, $this->total, 100 - 100*$this->failed/max(1,$this->total));
 
       $this->printer->printBox($stats, LimePrinter::NOT_OK);
     }
     else
     {
-      $time = max(1, time() - $this->startTime);
+      $time = max(1, round($this->time));
       $stats = sprintf(' Files=%d, Tests=%d, Time=%02d:%02d, Processes=%d',
-          $actualFiles, $totalTests, floor($time/60), $time%60, $this->configuration->getProcesses());
+          $actualFiles, $this->total, floor($time/60), $time%60, $this->configuration->getProcesses());
 
       $this->printer->printBox(' All tests successful.', LimePrinter::HAPPY);
       $this->printer->printBox($stats, LimePrinter::HAPPY);

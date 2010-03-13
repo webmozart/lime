@@ -22,6 +22,7 @@ class LimeTest
   protected
     $output                 = null,
     $errorReporting         = true,
+    $class                  = '',
     $file                   = '',
     $line                   = null,
     $comment                = '',
@@ -29,7 +30,9 @@ class LimeTest
     $exceptionExpectation   = null,
     $mocks                  = array(),
     $failed                 = false,
-    $skipped                = false;
+    $skipped                = false,
+    $aborted                = false,
+    $startTime              = 0;
 
   public function __construct(LimeConfiguration $configuration = null)
   {
@@ -58,26 +61,31 @@ class LimeTest
     $this->comment = $comment;
     $this->file = $file;
     $this->line = $line;
+    $this->error = null;
     $this->exception = null;
     $this->exceptionExpectation = null;
     $this->mocks = array();
     $this->failed = false;
     $this->skipped = false;
+    $this->aborted = false;
+    $this->startTime = microtime(true);
 
     $this->output->focus($file);
   }
 
   public function endTest()
   {
+    $time = microtime(true) - $this->startTime;
+    $this->startTime = 0;
+
     if ($this->skipped)
     {
-      list ($file, $line) = $this->skipped;
-      $this->output->skip($this->comment, $file, $line);
+      $this->output->skip($this->comment, $this->class, $time, $this->skipped[0], $this->skipped[1], $this->skipped[2]);
 
       return;
     }
 
-    if (!is_null($this->exceptionExpectation))
+    if (!is_null($this->exceptionExpectation) && !$this->aborted)
     {
       $expected = $this->exceptionExpectation->getException();
       $file = $this->exceptionExpectation->getFile();
@@ -100,8 +108,15 @@ class LimeTest
       }
       catch (LimeConstraintException $e)
       {
-        $this->printError(LimeError::fromException($e, $file, $line, array()));
+        $this->failed = true;
+        $this->error = LimeError::fromException($e, $file, $line, array());
       }
+    }
+
+    if (is_null($this->exceptionExpectation) && !is_null($this->exception))
+    {
+      $this->failed = true;
+      $this->error = LimeError::fromException($this->exception);
     }
 
     if (!$this->failed)
@@ -113,14 +128,19 @@ class LimeTest
           $mock->verify();
         }
 
-        list ($file, $line) = $this->findCaller();
-
-        $this->output->pass($this->comment, $this->file, $this->line);
+        $this->output->pass($this->comment, $this->class, $time, $this->file, $this->line);
       }
       catch (LimeMockException $e)
       {
-        $this->printError(LimeError::fromException($e, '', '', array()));
+        $this->failed = true;
+        // suppress trace
+        $this->error = LimeError::fromException($e, '', '', array());
       }
+    }
+
+    if ($this->failed)
+    {
+      $this->output->fail($this->comment, $this->class, $time, $this->file, $this->line, $this->error);
     }
   }
 
@@ -312,37 +332,12 @@ class LimeTest
   /**
    * Skips the current test
    */
-  public function skip()
+  public function skip($reason = '')
   {
     $this->skipped = $this->findCaller();
+    $this->skipped[] = $reason;
 
     throw new Exception();
-  }
-
-  /**
-   * Skips the current test if the condition evaluates to true.
-   *
-   * @param boolean $condition
-   */
-  public function skipIf($condition)
-  {
-    if ($condition)
-    {
-      $this->skip();
-    }
-  }
-
-  /**
-   * Skips the current test if the condition evaluates to false.
-   *
-   * @param boolean $condition
-   */
-  public function skipUnless($condition)
-  {
-    if (!$condition)
-    {
-      $this->skip();
-    }
   }
 
   /**
@@ -356,7 +351,7 @@ class LimeTest
   {
     list ($file, $line) = $this->findCaller();
 
-    $this->output->todo($message, $file, $line);
+    $this->output->todo($message, $this->class, $file, $line);
   }
 
   public function comment($message)
@@ -415,41 +410,40 @@ class LimeTest
     switch ($code)
     {
       case E_WARNING:
-        $message = 'Warning: '.$message;
+        $type = 'Warning';
         break;
-      case E_NOTICE:
-        $message = 'Notice: '.$message;
+      default:
+        $type = 'Notice';
         break;
     }
 
+    $trace = debug_backtrace();
+    array_shift($trace); // handleError() is not important
+
     $this->failed = true;
-    $this->output->fail($this->comment, $file, $line);
-    $this->output->warning($message, $file, $line);
+    $this->aborted = true;
+    $this->error = new LimeError($message, $file, $line, $type, $trace);
+
+    if ($this->startTime > 0)
+    {
+      // abort test execution
+      throw new Exception($message);
+    }
+    else
+    {
+      $this->output->error($this->error);
+    }
   }
 
   public function handleException(Exception $exception)
   {
-    if (!$this->skipped)
+    if (!$this->skipped && !$this->aborted)
     {
-      if (!is_null($this->exceptionExpectation))
-      {
-        $this->exception = $exception;
-      }
-      else
-      {
-        $this->printError(LimeError::fromException($exception));
-      }
+      $this->exception = $exception;
     }
 
     // exception was handled
     return true;
-  }
-
-  protected function printError(LimeError $error)
-  {
-    $this->failed = true;
-    $this->output->fail($this->comment, $error->getFile(), $error->getLine());
-    $this->output->error($error);
   }
 
   protected function findCaller()

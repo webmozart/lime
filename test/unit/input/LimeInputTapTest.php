@@ -35,7 +35,7 @@ $t = new LimeTest();
 // @Test: Successful tests are passed to pass()
 
   // fixtures
-  $output->pass('A passed test', '', '');
+  $output->pass('A passed test', '', 0, '', '');
   $output->replay();
   // test
   $input->parse("ok 1 - A passed test\n");
@@ -46,7 +46,7 @@ $t = new LimeTest();
 // @Test: Successful tests without message are passed to pass()
 
   // fixtures
-  $output->pass('', '', '');
+  $output->pass('', '', 0, '', '');
   $output->replay();
   // test
   $input->parse("ok 1\n");
@@ -57,7 +57,7 @@ $t = new LimeTest();
 // @Test: Failed tests are passed to fail()
 
   // fixtures
-  $output->fail('A failed test', '', '');
+  $output->fail('A failed test', '', 0, '', '');
   $output->replay();
   // test
   $input->parse("not ok 1 - A failed test\n");
@@ -68,7 +68,7 @@ $t = new LimeTest();
 // @Test: Failed tests without message are passed to pass()
 
   // fixtures
-  $output->fail('', '', '');
+  $output->fail('', '', 0, '', '');
   $output->replay();
   // test
   $input->parse("not ok 1\n");
@@ -79,7 +79,7 @@ $t = new LimeTest();
 // @Test: Skipped tests are passed to skip()
 
   // fixtures
-  $output->skip('A skipped test', '', '');
+  $output->skip('A skipped test', '', 0, '', '', 'Skip reason');
   $output->replay();
   // test
   $input->parse("ok 1 - A skipped test # SKIP Skip reason\n");
@@ -90,7 +90,7 @@ $t = new LimeTest();
 // @Test: Skipped tests without reason are passed to skip()
 
   // fixtures
-  $output->skip('A skipped test', '', '');
+  $output->skip('A skipped test', '', 0, '', '', '');
   $output->replay();
   // test
   $input->parse("ok 1 - A skipped test # SKIP\n");
@@ -101,7 +101,7 @@ $t = new LimeTest();
 // @Test: Skipped tests without message are passed to skip()
 
   // fixtures
-  $output->skip('', '', '');
+  $output->skip('', '', 0, '', '', '');
   $output->replay();
   // test
   $input->parse("ok 1 # SKIP\n");
@@ -109,22 +109,10 @@ $t = new LimeTest();
   $t->ok($input->done(), 'The input is done');
 
 
-// @Test: Skipped tests are passed to skip() and warning() when status is "not ok"
-
-  // fixtures
-  $output->skip('A skipped test', '', '');
-  $output->warning('Skipped tests are expected to have status "ok"', '', '');
-  $output->replay();
-  // test
-  $input->parse("not ok 1 - A skipped test # SKIP Skip reason\n");
-  // assertions
-  $t->ok($input->done(), 'The input is done');
-
-
 // @Test: Todos are passed to todo()
 
   // fixtures
-  $output->todo('A todo', '', '');
+  $output->todo('A todo', '', '', '');
   $output->replay();
   // test
   $input->parse("not ok 1 - A todo # TODO Todo reason\n");
@@ -135,7 +123,7 @@ $t = new LimeTest();
 // @Test: Todos without reason are passed to todo()
 
   // fixtures
-  $output->todo('A todo', '', '');
+  $output->todo('A todo', '', '', '');
   $output->replay();
   // test
   $input->parse("not ok 1 - A todo # TODO\n");
@@ -146,7 +134,7 @@ $t = new LimeTest();
 // @Test: Todos without message are passed to todo()
 
   // fixtures
-  $output->todo('', '', '');
+  $output->todo('', '', '', '');
   $output->replay();
   // test
   $input->parse("not ok 1 # TODO\n");
@@ -154,22 +142,10 @@ $t = new LimeTest();
   $t->ok($input->done(), 'The input is done');
 
 
-// @Test: Todos are passed to todo() and warning() when status is "ok"
+// @Test: The plan is ignored
 
   // fixtures
-  $output->todo('A todo', '', '');
-  $output->warning('TODOs are expected to have status "not ok"', '', '');
-  $output->replay();
-  // test
-  $input->parse("ok 1 - A todo # TODO Todo reason\n");
-  // assertions
-  $t->ok($input->done(), 'The input is done');
-
-
-// @Test: The plan is passed to plan()
-
-  // fixtures
-  $output->plan(10);
+  $output->setExpectNothing();
   $output->replay();
   // test
   $input->parse("1..10\n");
@@ -180,7 +156,7 @@ $t = new LimeTest();
 // @Test: Lines can be read when split
 
   // fixtures
-  $output->pass('A passed test', '', '');
+  $output->pass('A passed test', '', 0, '', '');
   $output->replay();
   // test
   $input->parse("ok 1 - A p");
@@ -218,7 +194,7 @@ $t = new LimeTest();
   // @Test: Case 2 - Failed require
 
   // fixtures
-  $output->warning("Warning: require(foobar.php): failed to open stream: No such file or directory", $file, 1);
+  $output->error(new LimeError("require(foobar.php): failed to open stream: No such file or directory", $file, 1, 'Warning'));
   $output->error(new LimeError("require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1, 'Fatal error'));
   $output->replay();
   file_put_contents($file, '<?php require "foobar.php";');

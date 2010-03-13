@@ -54,51 +54,9 @@ class LimeError implements Serializable
 
     $invocationTrace = array();
 
-    // Remove all the parts from the trace that have been generated inside
-    // the mock object. In the end, only the traces that led to the erroneous
-    // method call remain there.
-    // It would be nice if we could do that inside LimeMockException, but we
-    // can't because getTrace() is final.
     if ($exception instanceof LimeMockException)
     {
       $invocationTrace = iterator_to_array($exception->getInvocationTrace());
-
-      $class = get_class($exception->getMock());
-
-      while (count($trace) > 0 && isset($trace[0]['class']) && $trace[0]['class'] == $class)
-      {
-        $file = isset($trace[0]['file']) ? $trace[0]['file'] : null;
-        $line = isset($trace[0]['line']) ? $trace[0]['line'] : null;
-
-        array_shift($trace);
-      }
-    }
-
-    // Remove all the parts from the trace that have been generated inside
-    // the LimeTest object. Like above.
-    if ($exception instanceof LimeConstraintException)
-    {
-      while (count($trace) > 0 && isset($trace[0]['class']) && $trace[0]['class'] == 'LimeTest')
-      {
-        $file = isset($trace[0]['file']) ? $trace[0]['file'] : null;
-        $line = isset($trace[0]['line']) ? $trace[0]['line'] : null;
-
-        array_shift($trace);
-      }
-    }
-
-    // Remove all the parts from the trace that have been generated in the
-    // annotation support, the CLI etc. They are irrelevant for the testing
-    // developer.
-    for ($i = 0, $c = count($trace); $i < $c; ++$i)
-    {
-      if (strpos($trace[$i]['function'], '__lime_annotation_') === 0)
-      {
-        for (; $i < $c; ++$i)
-        {
-          unset($trace[$i]);
-        }
-      }
     }
 
     return new self($exception->getMessage(), $file, $line, get_class($exception), $trace, $invocationTrace);
@@ -115,6 +73,43 @@ class LimeError implements Serializable
    */
   public function __construct($message, $file, $line, $type = 'Error', array $trace = array(), array $invocationTrace = array())
   {
+    // Remove all the parts from the trace that have been generated inside
+    // a mock object. In the end, only the traces that led to the erroneous
+    // method call remain there.
+    // It would be nice if we could do that inside LimeMockException, but we
+    // can't because getTrace() is final.
+    while (count($trace) > 0 && isset($trace[0]['class']) && preg_match('/^Mock_\w+_\w{8}$/', $trace[0]['class']))
+    {
+      $file = isset($trace[0]['file']) ? $trace[0]['file'] : null;
+      $line = isset($trace[0]['line']) ? $trace[0]['line'] : null;
+
+      array_shift($trace);
+    }
+
+    // Remove all the parts from the trace that have been generated inside
+    // the LimeTest object. Like above.
+    while (count($trace) > 0 && isset($trace[0]['class']) && $trace[0]['class'] == 'LimeTest')
+    {
+      $file = isset($trace[0]['file']) ? $trace[0]['file'] : null;
+      $line = isset($trace[0]['line']) ? $trace[0]['line'] : null;
+
+      array_shift($trace);
+    }
+
+    // Remove all the parts from the trace that have been generated in the
+    // annotation support, the CLI etc. They are irrelevant for the testing
+    // developer.
+    for ($i = 0, $c = count($trace); $i < $c; ++$i)
+    {
+      if (strpos($trace[$i]['function'], '__lime_annotation_') === 0)
+      {
+        for (; $i < $c; ++$i)
+        {
+          unset($trace[$i]);
+        }
+      }
+    }
+
     $this->message = $message;
     $this->file = $file;
     $this->line = $line;

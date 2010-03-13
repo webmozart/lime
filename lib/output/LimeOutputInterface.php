@@ -62,17 +62,15 @@ interface LimeOutputInterface
    * @param  string  $file     The file in which the successful test occured
    * @param  integer $line     The line of the file
    */
-  public function pass($message, $file, $line);
+  public function pass($message, $class, $time, $file, $line);
 
   /**
-   * Informs the output about a failed test with an optional failure reason.
+   * Informs the output about a failed test.
    *
-   * @param  string  $message  The test message
-   * @param  string  $file     The file in which the failed test occured
-   * @param  integer $line     The line of the file
-   * @param  string  $error    The reason why the test failed
+   * @param  string     $message  The test message
+   * @param  LimeError  $error    The reason why the test failed
    */
-  public function fail($message, $file, $line, $error = null);
+  public function fail($message, $class, $time, $file, $line, LimeError $error = null);
 
   /**
    * Informs the output about a skipped test.
@@ -81,7 +79,7 @@ interface LimeOutputInterface
    * @param  string  $file     The file in which the skipped test occured
    * @param  integer $line     The line of the file
    */
-  public function skip($message, $file, $line);
+  public function skip($message, $class, $time, $file, $line, $reason = '');
 
   /**
    * Informs the output about a todo.
@@ -90,16 +88,7 @@ interface LimeOutputInterface
    * @param  string  $file     The file in which the todo occured
    * @param  integer $line     The line of the file
    */
-  public function todo($message, $file, $line);
-
-  /**
-   * Informs the output about a warning.
-   *
-   * @param  string  $message  The warning message
-   * @param  string  $file     The file in which the warning occured
-   * @param  integer $line     The line of the file
-   */
-  public function warning($message, $file, $line);
+  public function todo($message, $class, $file, $line);
 
   /**
    * Informs the output about an error.
@@ -119,4 +108,9 @@ interface LimeOutputInterface
    * Flushes the test outputs to the console.
    */
   public function flush();
+
+  /**
+   * Returns whether the overall tests were successful.
+   */
+  public function success();
 }

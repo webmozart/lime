@@ -10,64 +10,25 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeOutputXml implements LimeOutputInterface
+class LimeOutputXml extends LimeOutput
 {
   protected
-    $output = null;
+    $configuration     = null;
 
-  public function __construct()
+  public function __construct(LimeConfiguration $configuration)
   {
-    $this->output = new LimeOutputArray();
+    parent::__construct();
+
+    $this->configuration = $configuration;
   }
 
   public function supportsThreading()
   {
-    return $this->output->supportsThreading();
-  }
-
-  public function focus($file)
-  {
-    return $this->output->focus($file);
-  }
-
-  public function close()
-  {
-    return $this->output->close();
-  }
-
-  public function pass($message, $file, $line)
-  {
-    return $this->output->pass($message, $file, $line);
-  }
-
-  public function fail($message, $file, $line, $error = null)
-  {
-    return $this->output->fail($message, $file, $line, $error);
-  }
-
-  public function skip($message, $file, $line)
-  {
-    return $this->output->skip($message, $file, $line);
-  }
-
-  public function todo($message, $file, $line)
-  {
-    return $this->output->todo($message, $file, $line);
-  }
-
-  public function warning($message, $file, $line)
-  {
-    return $this->output->warning($message, $file, $line);
-  }
-
-  public function error(LimeError $error)
-  {
-    return $this->output->error($error);
+    return true;
   }
 
   public function comment($message)
   {
-    return $this->output->comment($message);
   }
 
   public function flush()
@@ -77,57 +38,58 @@ class LimeOutputXml implements LimeOutputInterface
 
   public function toXml()
   {
-    $results = $this->output->toArray();
-
     $dom = new DOMDocument('1.0', 'UTF-8');
     $dom->formatOutput = true;
+
     $dom->appendChild($testsuites = $dom->createElement('testsuites'));
+    $testsuites->setAttribute('failures', $this->failed);
+    $testsuites->setAttribute('errors', $this->errors);
+    $testsuites->setAttribute('tests', $this->total);
+    $testsuites->setAttribute('assertions', $this->total);
+    $testsuites->setAttribute('skipped', $this->skipped);
+    $testsuites->setAttribute('time', round($this->time, 6));
 
-    $errors = 0;
-    $failures = 0;
-    $errors = 0;
-    $skipped = 0;
-    $assertions = 0;
-
-    foreach ($results as $result)
+    foreach ($this->files as $file => $result)
     {
       $testsuites->appendChild($testSuite = $dom->createElement('testsuite'));
-      $testSuite->setAttribute('name', basename($result['file'], '.php'));
-      $testSuite->setAttribute('file', $result['file']);
-      $testSuite->setAttribute('failures', count($result['stats']['failed']));
-      $testSuite->setAttribute('errors', 0);
-      $testSuite->setAttribute('skipped', count($result['stats']['skipped']));
-      $testSuite->setAttribute('tests', $result['stats']['total']);
-      $testSuite->setAttribute('assertions', $result['stats']['total']);
+      $testSuite->setAttribute('name', basename($file, $this->configuration->getSuffix()));
+      $testSuite->setAttribute('file', $file);
+      $testSuite->setAttribute('failures', $result->failed);
+      $testSuite->setAttribute('errors', $result->errors);
+      $testSuite->setAttribute('skipped', $result->skipped);
+      $testSuite->setAttribute('tests', $result->total);
+      $testSuite->setAttribute('assertions', $result->total);
+      $testSuite->setAttribute('time', round($result->time, 6));
 
-      $failures += count($result['stats']['failed']);
-      $skipped += count($result['stats']['skipped']);
-      $assertions += $result['stats']['total'];
-
-      foreach ($result['tests'] as $test)
+      foreach ($result->tests as $test)
       {
         $testSuite->appendChild($testCase = $dom->createElement('testcase'));
         $testCase->setAttribute('name', $test['message']);
         $testCase->setAttribute('file', $test['file']);
         $testCase->setAttribute('line', $test['line']);
+        $testCase->setAttribute('time', round($test['time'], 6));
         $testCase->setAttribute('assertions', 1);
-        if (!$test['status'])
+        if ($test['class'])
+        {
+          $testCase->setAttribute('classname', $test['class']);
+        }
+        if ($test['status'] == 'error')
         {
           $testCase->appendChild($failure = $dom->createElement('failure'));
-          $failure->setAttribute('type', 'lime');
           if (array_key_exists('error', $test))
           {
-            $failure->appendChild($dom->createTextNode($test['error']));
+            $failure->setAttribute('type', $test['error']->getType());
+            $failure->setAttribute('file', $test['error']->getFile());
+            $failure->setAttribute('line', $test['error']->getLine());
+            $failure->appendChild($dom->createTextNode($test['error']->getMessage()));
+          }
+          else
+          {
+            $failure->setAttribute('type', 'lime');
           }
         }
       }
     }
-
-    $testsuites->setAttribute('failures', $failures);
-    $testsuites->setAttribute('errors', $errors);
-    $testsuites->setAttribute('tests', $assertions);
-    $testsuites->setAttribute('assertions', $assertions);
-    $testsuites->setAttribute('skipped', $skipped);
 
     return $dom->saveXml();
   }

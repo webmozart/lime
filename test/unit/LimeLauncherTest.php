@@ -37,19 +37,19 @@ $t = new LimeTest();
 
   // fixtures
   file_put_contents($file, '<?php echo "Some Error occurred\n";');
-  $output->warning('Could not parse test output: "Some Error occurred"', $file, 1);
+  $output->error(new LimeError('Could not parse test output: "Some Error occurred"', $file, 1, 'Warning'));
   $output->replay();
   // test
   $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
 
 
-// @Test: Data sent to the error stream is passed to warning() line by line
+// @Test: Data sent to the error stream is passed to error() line by line
 
   // fixtures
   file_put_contents($file, '<?php file_put_contents("php://stderr", "Error 1\nError 2");');
-  $output->warning('Error 1', $file, 0);
-  $output->warning('Error 2', $file, 0);
+  $output->error(new LimeError('Error 1', $file, 0));
+  $output->error(new LimeError('Error 2', $file, 0));
   $output->replay();
   // test
   $launcher->launch(new LimeFile($file, $executable));
@@ -73,7 +73,7 @@ $t = new LimeTest();
 
   // fixtures
   file_put_contents($file, '<?php require "foobar.php";');
-  $output->warning("Warning: require(foobar.php): failed to open stream: No such file or directory", $file, 1);
+  $output->error(new LimeError("require(foobar.php): failed to open stream: No such file or directory", $file, 1, 'Warning'));
   $output->error(new LimeError("require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1, 'Fatal error'));
   $output->replay();
   // test

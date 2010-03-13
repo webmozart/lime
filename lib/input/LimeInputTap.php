@@ -20,48 +20,29 @@ class LimeInputTap extends LimeInput
 
         if (preg_match('/^1\.\.(\d+)\n/', $line, $matches))
         {
-          $this->output->plan((int)$matches[1]);
         }
-        else if (preg_match('/^ok \d+( - (.+?))?( # (SKIP|TODO)( .+)?)?\n/', $line, $matches))
+        else if (preg_match('/^(not )?ok \d+( - (.+?))?( # (SKIP|TODO)( .+)?)?\n/', $line, $matches))
         {
-          $message = count($matches) > 2 ? $matches[2] : '';
+          $message = count($matches) > 2 ? $matches[3] : '';
 
-          if (count($matches) > 3)
+          if (count($matches) > 5)
           {
-            if ($matches[4] == 'SKIP')
+            if ($matches[5] == 'SKIP')
             {
-              $this->output->skip($message, '', '');
+              $this->output->skip($message, '', 0, '', '', count($matches) > 6 ? trim($matches[6]) : '');
             }
             else
             {
-              $this->output->todo($message, '', '');
-              $this->output->warning('TODOs are expected to have status "not ok"', '', '');
+              $this->output->todo($message, '', '', '');
             }
+          }
+          else if (count($matches) > 1 && $matches[1] == 'not ')
+          {
+            $this->output->fail($message, '', 0, '', '');
           }
           else
           {
-            $this->output->pass($message, '', '');
-          }
-        }
-        else if (preg_match('/^not ok \d+( - (.+?))?( # (SKIP|TODO)( .+)?)?\n/', $line, $matches))
-        {
-          $message = count($matches) > 2 ? $matches[2] : '';
-
-          if (count($matches) > 3)
-          {
-            if ($matches[4] == 'SKIP')
-            {
-              $this->output->skip($message, '', '');
-              $this->output->warning('Skipped tests are expected to have status "ok"', '', '');
-            }
-            else
-            {
-              $this->output->todo($message, '', '');
-            }
-          }
-          else
-          {
-            $this->output->fail($message, '', '');
+            $this->output->pass($message, '', 0, '', '');
           }
         }
       }

@@ -41,7 +41,7 @@ $t = new LimeTest();
   $printer->replay();
   // test
   $output->focus('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script', 11);
   $output->close();
 
 
@@ -61,7 +61,7 @@ $t = new LimeTest();
   $output->setLoader($loader);
   // test
   $output->focus('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script', 11);
   $output->close();
 
 
@@ -75,28 +75,10 @@ $t = new LimeTest();
   $printer->replay();
   // test
   $output->focus('/test/script');
-  $output->fail('A failed test', '/test/script', 11);
-  $output->fail('A failed test', '/test/script', 11);
-  $output->fail('A failed test', '/test/script', 11);
-  $output->fail('A failed test', '/test/script', 11);
-  $output->close();
-
-
-// @Test: When close() is called and warnings appeared in the test, the status is warning and the warnings are displayed
-
-  // fixtures
-  $printer->printText(str_pad('script', 73, '.'));
-  $printer->printLine("warning", LimePrinter::WARNING);
-  $printer->method('printLine')->times(4);
-  $printer->printLine('    ... and 1 more');
-  $printer->replay();
-  // test
-  $output->focus('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->warning('A warning', '/test/script', 33);
-  $output->warning('A warning', '/test/script', 33);
-  $output->warning('A warning', '/test/script', 33);
-  $output->warning('A warning', '/test/script', 33);
+  $output->fail('A failed test', 'Class', 100, '/test/script', 11, new LimeError('A very important error', '/test/file', 11));
+  $output->fail('A failed test', 'Class', 100, '/test/script', 11, new LimeError('A very important error', '/test/file', 11));
+  $output->fail('A failed test', 'Class', 100, '/test/script', 11, new LimeError('A very important error', '/test/file', 11));
+  $output->fail('A failed test', 'Class', 100, '/test/script', 11, new LimeError('A very important error', '/test/file', 11));
   $output->close();
 
 
@@ -110,7 +92,7 @@ $t = new LimeTest();
   $printer->replay();
   // test
   $output->focus('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script', 11);
   $output->error(new LimeError('An error', '/test/script', 22));
   $output->error(new LimeError('An error', '/test/script', 22));
   $output->error(new LimeError('An error', '/test/script', 22));
@@ -128,11 +110,11 @@ $t = new LimeTest();
   $printer->replay();
   // test
   $output->focus('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->todo('A todo', '/test/script', 22);
-  $output->todo('A todo', '/test/script', 22);
-  $output->todo('A todo', '/test/script', 22);
-  $output->todo('A todo', '/test/script', 22);
+  $output->pass('A passed test', 'Class', 100, '/test/script', 11);
+  $output->todo('A todo', 'Class', '/test/script', 22);
+  $output->todo('A todo', 'Class', '/test/script', 22);
+  $output->todo('A todo', 'Class', '/test/script', 22);
+  $output->todo('A todo', 'Class', '/test/script', 22);
   $output->close();
 
 
@@ -142,22 +124,18 @@ $t = new LimeTest();
   $printer = $t->mock('LimePrinter'); // non-strict
   $printer->method('printText')->atLeastOnce();
   $printer->method('printLine')->atLeastOnce();
-  $printer->printBox(' Failed 2/4 test scripts, 50.00% okay. 1/4 subtests failed, 75.00% okay.', LimePrinter::NOT_OK);
+  $printer->printBox(' Failed 2/3 test scripts, 33.33% okay. 1/3 subtests failed, 66.67% okay.', LimePrinter::NOT_OK);
   $printer->replay();
   $output = new LimeOutputSuite($printer, $configuration);
   // test
   $output->focus('/test/script1');
-  $output->pass('A passed test', '/test/script', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script', 11);
   $output->close();
   $output->focus('/test/script2');
-  $output->pass('A passed test', '/test/script2', 11);
-  $output->warning('A warning', '/test/script2', 11);
+  $output->fail('A failed test', 'Class', 100, '/test/script3', 11, new LimeError('A very important error', '/test/file', 11));
   $output->close();
   $output->focus('/test/script3');
-  $output->fail('A failed test', '/test/script3', 11);
-  $output->close();
-  $output->focus('/test/script4');
-  $output->pass('A passed test', '/test/script', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script', 11);
   $output->error(new LimeError('An error', '/test/script', 11));
   $output->close();
   $output->flush();
@@ -178,11 +156,11 @@ $t = new LimeTest();
   $output = new LimeOutputSuite($printer, $configuration);
   // test
   $output->focus('/test/script1');
-  $output->pass('A passed test', '/test/script1', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script1', 11);
   $output->close();
   $output->focus('/test/script2');
-  $output->pass('A passed test', '/test/script2', 11);
-  $output->pass('A passed test', '/test/script2', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script2', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script2', 11);
   $output->close();
   $output->flush();
 
@@ -198,7 +176,7 @@ $t = new LimeTest();
   $configuration->replay();
   // test
   $output->focus('/test/script_test.php');
-  $output->pass('A passed test', '/test/script_test.php', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/script_test.php', 11);
   $output->close();
 
 
@@ -211,5 +189,5 @@ $t = new LimeTest();
   $printer->replay();
   // test
   $output->focus('/test/'.str_repeat('x', 80).'script');
-  $output->pass('A passed test', '/test/'.str_repeat('x', 80).'script', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/'.str_repeat('x', 80).'script', 11);
   $output->close();

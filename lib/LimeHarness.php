@@ -37,11 +37,6 @@ class LimeHarness
       $output->setLoader($loader);
     }
 
-    if (!$output instanceof LimeLogicCollection)
-    {
-      $output = new LimeOutputLogicProxy($output);
-    }
-
     $this->output = $output;
   }
 
@@ -90,6 +85,6 @@ class LimeHarness
 
     $this->output->flush();
 
-    return $this->output->isSuccessful();
+    return $this->output->success();
   }
 }

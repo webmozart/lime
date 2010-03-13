@@ -78,7 +78,7 @@ class LimeLauncher
 
     while (preg_match('/^(.+)\n/', $this->errors, $matches))
     {
-      $this->output->warning($matches[1], $this->file->getPath(), 0);
+      $this->output->error(new LimeError($matches[1], $this->file->getPath(), 0));
       $this->errors = substr($this->errors, strlen($matches[0]));
     }
 
@@ -88,13 +88,13 @@ class LimeLauncher
       {
         // FIXME: Should be handled in a better way
         $buffer = substr($this->input->buffer, 0, strpos($this->input->buffer, "\n"));
-        $this->output->warning(sprintf('Could not parse test output: "%s"', $buffer), $this->file->getPath(), 1);
+        $this->output->error(new LimeError(sprintf('Could not parse test output: "%s"', $buffer), $this->file->getPath(), 1, 'Warning'));
       }
 
       // if the last error was not followed by \n, it is still in the buffer
       if (!empty($this->errors))
       {
-        $this->output->warning($this->errors, $this->file->getPath(), 0);
+        $this->output->error(new LimeError($this->errors, $this->file->getPath(), 0));
         $this->errors = '';
       }
 

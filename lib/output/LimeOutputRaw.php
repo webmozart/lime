@@ -12,6 +12,10 @@
 
 class LimeOutputRaw implements LimeOutputInterface
 {
+  protected
+    $errors      = 0,
+    $failed    = 0;
+
   protected function printCall($method, array $arguments = array())
   {
     foreach ($arguments as &$argument)
@@ -40,33 +44,30 @@ class LimeOutputRaw implements LimeOutputInterface
     $this->printCall('close', array());
   }
 
-  public function pass($message, $file, $line)
+  public function pass($message, $class, $time, $file, $line)
   {
-    $this->printCall('pass', array($message, $file, $line));
+    $this->printCall('pass', array($message, $class, $time, $file, $line));
   }
 
-  public function fail($message, $file, $line, $error = null)
+  public function fail($message, $class, $time, $file, $line, LimeError $error = null)
   {
-    $this->printCall('fail', array($message, $file, $line, $error));
+    ++$this->failed;
+    $this->printCall('fail', array($message, $class, $time, $file, $line, $error));
   }
 
-  public function skip($message, $file, $line)
+  public function skip($message, $class, $time, $file, $line, $reason = '')
   {
-    $this->printCall('skip', array($message, $file, $line));
+    $this->printCall('skip', array($message, $class, $time, $file, $line, $reason));
   }
 
-  public function todo($message, $file, $line)
+  public function todo($message, $class, $file, $line)
   {
-    $this->printCall('todo', array($message, $file, $line));
-  }
-
-  public function warning($message, $file, $line)
-  {
-    $this->printCall('warning', array($message, $file, $line));
+    $this->printCall('todo', array($message, $class, $file, $line));
   }
 
   public function error(LimeError $error)
   {
+    ++$this->errors;
     $this->printCall('error', array($error));
   }
 
@@ -78,5 +79,10 @@ class LimeOutputRaw implements LimeOutputInterface
   public function flush()
   {
     $this->printCall('flush');
+  }
+
+  public function success()
+  {
+    return ($this->errors + $this->failed) == 0;
   }
 }

@@ -54,50 +54,40 @@ $t = new LimeTest();
 
   // test
   ob_start();
-  $output->pass('A passed test', '/test/file', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/file', 11);
   $result = ob_get_clean();
   // assertions
-  $t->is($result, serialize(array('pass', array('A passed test', '/test/file', 11)))."\n", 'The method call is serialized');
+  $t->is($result, serialize(array('pass', array('A passed test', 'Class', 100, '/test/file', 11)))."\n", 'The method call is serialized');
 
 
 // @Test: fail() prints the method call as serialized array
 
   // test
   ob_start();
-  $output->fail('A failed test', '/test/file', 11, 'Error message');
+  $output->fail('A failed test', 'Class', 100, '/test/file', 11, new LimeError('A very important error', '/test/file', 11));
   $result = ob_get_clean();
   // assertions
-  $t->is($result, serialize(array('fail', array('A failed test', '/test/file', 11, 'Error message')))."\n", 'The method call is serialized');
+  $t->is($result, serialize(array('fail', array('A failed test', 'Class', 100, '/test/file', 11, new LimeError('A very important error', '/test/file', 11))))."\n", 'The method call is serialized');
 
 
 // @Test: skip() prints the method call as serialized array
 
   // test
   ob_start();
-  $output->skip('A skipped test', '/test/file', 11);
+  $output->skip('A skipped test', 'Class', 100, '/test/file', 11, 'Reason');
   $result = ob_get_clean();
   // assertions
-  $t->is($result, serialize(array('skip', array('A skipped test', '/test/file', 11)))."\n", 'The method call is serialized');
+  $t->is($result, serialize(array('skip', array('A skipped test', 'Class', 100, '/test/file', 11, 'Reason')))."\n", 'The method call is serialized');
 
 
 // @Test: todo() prints the method call as serialized array
 
   // test
   ob_start();
-  $output->todo('A todo', '/test/file', 11);
+  $output->todo('A todo', 'Class', '/test/file', 11);
   $result = ob_get_clean();
   // assertions
-  $t->is($result, serialize(array('todo', array('A todo', '/test/file', 11)))."\n", 'The method call is serialized');
-
-
-// @Test: warning() prints the method call as serialized array
-
-  // test
-  ob_start();
-  $output->warning('A warning', '/test/file', 11);
-  $result = ob_get_clean();
-  // assertions
-  $t->is($result, serialize(array('warning', array('A warning', '/test/file', 11)))."\n", 'The method call is serialized');
+  $t->is($result, serialize(array('todo', array('A todo', 'Class', '/test/file', 11)))."\n", 'The method call is serialized');
 
 
 // @Test: error() prints the method call as serialized array

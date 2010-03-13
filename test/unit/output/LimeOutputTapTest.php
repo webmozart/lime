@@ -50,47 +50,56 @@ $t = new LimeTest();
 // @Test: pass() prints and counts passed tests
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printText('ok 1', LimePrinter::OK);
   $printer->printLine(' - A passed test');
   $printer->printText('ok 2', LimePrinter::OK);
   $printer->printLine(' - Another passed test');
   $printer->replay();
   // test
-  $output->pass('A passed test', '/test/file', 11);
-  $output->pass('Another passed test', '/test/file', 22);
+  $output->focus('/test/file');
+  $output->pass('A passed test', 'Class', 100, '/test/file', 11);
+  $output->pass('Another passed test', 'Class', 100, '/test/file', 22);
 
 
 // @Test: pass() prints no message if none is given
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printLine('ok 1', LimePrinter::OK);
   $printer->replay();
   // test
-  $output->pass('', '/test/file', 11);
+  $output->focus('/test/file');
+  $output->pass('', 'Class', 100, '/test/file', 11);
 
 
 // @Test: fail() prints and counts failed tests
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printText('not ok 1', LimePrinter::NOT_OK);
   $printer->printLine(' - A failed test');
+  $printer->printLargeBox("Error: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->printText('not ok 2', LimePrinter::NOT_OK);
   $printer->printLine(' - Another failed test');
-    $printer->printLine('#       error', LimePrinter::COMMENT);
-  $printer->printLine('#       message', LimePrinter::COMMENT);
+  $printer->printLargeBox("Error: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->replay();
   // test
-  $output->fail('A failed test', '/test/file', 33);
-  $output->fail('Another failed test', '/test/file', 55, "error\nmessage");
+  $output->focus('/test/file');
+  $output->fail('A failed test', 'Class', 100, '/test/file', 33, new LimeError('A very important error', '/test/file', 11));
+  $output->fail('Another failed test', 'Class', 100, '/test/file', 55, new LimeError('A very important error', '/test/file', 11));
 
 
 // @Test: fail() prints no message if none is given
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printLine('not ok 1', LimePrinter::NOT_OK);
+  $printer->printLargeBox("Error: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->replay();
   // test
-  $output->fail('', '/test/file', 11);
+  $output->focus('/test/file');
+  $output->fail('', 'Class', 100, '/test/file', 11, new LimeError('A very important error', '/test/file', 11));
 
 
 // @Test: fail() truncates the file path
@@ -99,15 +108,19 @@ $t = new LimeTest();
   $configuration->reset();
   $configuration->getBaseDir()->returns('/test');
   $configuration->replay();
+  $printer->printLine('# /file', LimePrinter::INFO);
   $printer->printLine('not ok 1', LimePrinter::NOT_OK);
+  $printer->printLargeBox("Error: A very important error\n(in /file on line 11)", LimePrinter::ERROR);
   $printer->replay();
   // test
-  $output->fail('', '/test/file', 11);
+  $output->focus('/test/file');
+  $output->fail('', 'Class', 100, '/test/file', 11, new LimeError('A very important error', '/test/file', 11));
 
 
 // @Test: skip() prints and counts skipped tests
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printText('ok 1', LimePrinter::SKIP);
   $printer->printText(' - A skipped test ');
   $printer->printLine('# SKIP', LimePrinter::SKIP);
@@ -116,24 +129,42 @@ $t = new LimeTest();
   $printer->printLine('# SKIP', LimePrinter::SKIP);
   $printer->replay();
   // test
-  $output->skip('A skipped test', '/test/file', 11);
-  $output->skip('Another skipped test', '/test/file', 22);
+  $output->focus('/test/file');
+  $output->skip('A skipped test', 'Class', 100, '/test/file', 11);
+  $output->skip('Another skipped test', 'Class', 100, '/test/file', 22);
 
 
 // @Test: skip() prints no message if none is given
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printText('ok 1', LimePrinter::SKIP);
   $printer->printText(' ');
   $printer->printLine('# SKIP', LimePrinter::SKIP);
   $printer->replay();
   // test
-  $output->skip('', '/test/file', 11);
+  $output->focus('/test/file');
+  $output->skip('', 'Class', 100, '/test/file', 11);
+
+
+// @Test: skip() prints the reason for skipping
+
+  // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
+  $printer->printText('ok 1', LimePrinter::SKIP);
+  $printer->printText(' ');
+  $printer->printLine('# SKIP', LimePrinter::SKIP);
+  $printer->printLine('# The reason', LimePrinter::COMMENT);
+  $printer->replay();
+  // test
+  $output->focus('/test/file');
+  $output->skip('', 'Class', 100, '/test/file', 11, 'The reason');
 
 
 // @Test: todo() prints and counts todos
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printText('not ok 1', LimePrinter::TODO);
   $printer->printText(' - A todo ');
   $printer->printLine('# TODO', LimePrinter::TODO);
@@ -142,63 +173,50 @@ $t = new LimeTest();
   $printer->printLine('# TODO', LimePrinter::TODO);
   $printer->replay();
   // test
-  $output->todo('A todo', '/test/file', 11);
-  $output->todo('Another todo', '/test/file', 22);
+  $output->focus('/test/file');
+  $output->todo('A todo', 'Class', '/test/file', 11);
+  $output->todo('Another todo', 'Class', '/test/file', 22);
 
 
 // @Test: todo() prints no message if none is given
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printText('not ok 1', LimePrinter::TODO);
   $printer->printText(' ');
   $printer->printLine('# TODO', LimePrinter::TODO);
   $printer->replay();
   // test
-  $output->todo('', '/test/file', 11);
-
-
-// @Test: warning() prints a warning
-
-  // fixtures
-  $printer->printLargeBox("A very important warning\n(in /test/file on line 11)", LimePrinter::WARNING);
-  $printer->replay();
-  // test
-  $output->warning('A very important warning', '/test/file', 11);
-
-
-// @Test: warning() truncates the file path
-
-  // fixtures
-  $configuration->reset();
-  $configuration->getBaseDir()->returns('/test');
-  $configuration->replay();
-  $printer->printLargeBox("A very important warning\n(in /file on line 11)", LimePrinter::WARNING);
-  $printer->replay();
-  // test
-  $output->warning('A very important warning', '/test/file', 11);
+  $output->focus('/test/file');
+  $output->todo('', 'Class', '/test/file', 11);
 
 
 // @Test: error() prints an error
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printLargeBox("Error: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->replay();
   // test
+  $output->focus('/test/file');
   $output->error(new LimeError('A very important error', '/test/file', 11));
 
 
 // @Test: error() skips the filename if not set
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printLargeBox("Error: A very important error", LimePrinter::ERROR);
   $printer->replay();
   // test
+  $output->focus('/test/file');
   $output->error(new LimeError('A very important error', '', ''));
 
 
 // @Test: error() prints the error traces if available
 
   // fixtures
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printLargeBox("MyException: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->printLine('Exception trace:', LimePrinter::COMMENT);
   $printer->printText('  at ');
@@ -220,6 +238,7 @@ $t = new LimeTest();
   $printer->printLine('');
   $printer->replay();
   // test
+  $output->focus('/test/file');
   $trace = array(
     array('function' => 'my_function_1'),
     array('function' => 'my_function_2', 'file' => 'file_2', 'line' => 20),
@@ -231,6 +250,7 @@ $t = new LimeTest();
 
 // @Test: error() prints the invocation traces if available
 
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->printLargeBox("MyException: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->printLine('Invocation trace:', LimePrinter::COMMENT);
   $printer->printLine('  1) printLine("Foo", 2) was called once');
@@ -238,6 +258,7 @@ $t = new LimeTest();
   $printer->printLine('');
   $printer->replay();
   // test
+  $output->focus('/test/file');
   $trace = array(
     'printLine("Foo", 2) was called once',
     'printLine("Bar") was called never',
@@ -251,9 +272,11 @@ $t = new LimeTest();
   $configuration->reset();
   $configuration->getBaseDir()->returns('/test');
   $configuration->replay();
+  $printer->printLine('# /file', LimePrinter::INFO);
   $printer->printLargeBox("Error: A very important error\n(in /file on line 11)", LimePrinter::ERROR);
   $printer->replay();
   // test
+  $output->focus('/test/file');
   $output->error(new LimeError('A very important error', '/test/file', 11));
 
 
@@ -280,7 +303,8 @@ $t = new LimeTest();
   // @Test: Case 1 - Correct number of tests
 
   // fixtures
-  $output->pass('First test', '/test/file', 11);
+  $output->focus('/test/file');
+  $output->pass('First test', 'Class', 100, '/test/file', 11);
   $printer->reset();
   $printer->printLine('1..1');
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
@@ -291,9 +315,10 @@ $t = new LimeTest();
   // @Test: Case 2 - Failed tests
 
   // fixtures
-  $output->pass('First test', '/test/file', 11);
-  $output->fail('Second test', '/test/file', 22);
-  $output->pass('Third test', '/test/file', 33);
+  $output->focus('/test/file');
+  $output->pass('First test', 'Class', 100, '/test/file', 11);
+  $output->fail('Second test', 'Class', 100, '/test/file', 22, new LimeError('A very important error', '/test/file', 11));
+  $output->pass('Third test', 'Class', 100, '/test/file', 33);
   $printer->reset();
   $printer->printLine('1..3');
   $printer->printBox(' Looks like you failed 1 tests of 3.', LimePrinter::ERROR);
@@ -304,7 +329,8 @@ $t = new LimeTest();
   // @Test: Case 3 - Skipped tests
 
   // fixtures
-  $output->skip('First test', '/test/file', 11);
+  $output->focus('/test/file');
+  $output->skip('First test', 'Class', 100, '/test/file', 11);
   $printer->reset();
   $printer->printLine('1..1');
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
@@ -312,22 +338,11 @@ $t = new LimeTest();
   // test
   $output->flush();
 
-  // @Test: Case 4 - Successful but warnings
+  // @Test: Case 4 - Successful but errors
 
   // fixtures
-  $output->pass('First test', '/test/file', 11);
-  $output->warning('Some warning', '/test/file', 11);
-  $printer->reset();
-  $printer->printLine('1..1');
-  $printer->printBox(' Looks like you\'re nearly there.', LimePrinter::WARNING);
-  $printer->replay();
-  // test
-  $output->flush();
-
-  // @Test: Case 5 - Successful but errors
-
-  // fixtures
-  $output->pass('First test', '/test/file', 11);
+  $output->focus('/test/file');
+  $output->pass('First test', 'Class', 100, '/test/file', 11);
   $output->error(new LimeError('Some error', '/test/file', 11));
   $printer->reset();
   $printer->printLine('1..1');

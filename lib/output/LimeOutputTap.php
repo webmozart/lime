@@ -18,6 +18,8 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
   public function __construct(LimePrinter $printer, LimeConfiguration $configuration)
   {
+    parent::__construct();
+
     $this->printer = $printer;
     $this->configuration = $configuration;
   }
@@ -53,93 +55,88 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
   {
   }
 
-  public function pass($message, $file, $line)
+  public function pass($message, $class, $time, $file, $line)
   {
-    parent::pass($message, $file, $line);
+    parent::pass($message, $class, $time, $file, $line);
 
     if (empty($message))
     {
-      $this->printer->printLine('ok '.$this->getTotal(), LimePrinter::OK);
+      $this->printer->printLine('ok '.$this->total, LimePrinter::OK);
     }
     else
     {
-      $this->printer->printText('ok '.$this->getTotal(), LimePrinter::OK);
+      $this->printer->printText('ok '.$this->total, LimePrinter::OK);
       $this->printer->printLine(' - '.$message);
     }
   }
 
-  public function fail($message, $file, $line, $error = null)
+  public function fail($message, $class, $time, $file, $line, LimeError $error = null)
   {
-    parent::fail($message, $file, $line, $error);
+    parent::fail($message, $class, $time, $file, $line, $error);
 
     if (empty($message))
     {
-      $this->printer->printLine('not ok '.$this->getTotal(), LimePrinter::NOT_OK);
+      $this->printer->printLine('not ok '.$this->total, LimePrinter::NOT_OK);
     }
     else
     {
-      $this->printer->printText('not ok '.$this->getTotal(), LimePrinter::NOT_OK);
+      $this->printer->printText('not ok '.$this->total, LimePrinter::NOT_OK);
       $this->printer->printLine(' - '.$message);
     }
 
-    if (!is_null($error))
-    {
-      foreach (explode("\n", $error) as $line)
-      {
-        $this->printer->printLine('#       '.$line, LimePrinter::COMMENT);
-      }
-    }
+    $this->printError($error);
   }
 
-  public function skip($message, $file, $line)
+  public function skip($message, $class, $time, $file, $line, $reason = '')
   {
-    parent::skip($message, $file, $line);
+    parent::skip($message, $class, $time, $file, $line, $reason);
 
     if (empty($message))
     {
-      $this->printer->printText('ok '.$this->getTotal(), LimePrinter::SKIP);
+      $this->printer->printText('ok '.$this->total, LimePrinter::SKIP);
       $this->printer->printText(' ');
     }
     else
     {
-      $this->printer->printText('ok '.$this->getTotal(), LimePrinter::SKIP);
+      $this->printer->printText('ok '.$this->total, LimePrinter::SKIP);
       $this->printer->printText(' - '.$message.' ');
     }
 
     $this->printer->printLine('# SKIP', LimePrinter::SKIP);
+
+    if (!empty($reason))
+    {
+      $this->printer->printLine('# '.$reason, LimePrinter::COMMENT);
+    }
   }
 
-  public function todo($message, $file, $line)
+  public function todo($message, $class, $file, $line)
   {
-    parent::todo($message, $file, $line);
+    parent::todo($message, $class, $file, $line);
 
     if (empty($message))
     {
-      $this->printer->printText('not ok '.$this->getTotal(), LimePrinter::TODO);
+      $this->printer->printText('not ok '.$this->total, LimePrinter::TODO);
       $this->printer->printText(' ');
     }
     else
     {
-      $this->printer->printText('not ok '.$this->getTotal(), LimePrinter::TODO);
+      $this->printer->printText('not ok '.$this->total, LimePrinter::TODO);
       $this->printer->printText(' - '.$message.' ');
     }
 
     $this->printer->printLine('# TODO', LimePrinter::TODO);
   }
 
-  public function warning($message, $file, $line)
-  {
-    parent::warning($message, $file, $line);
-
-    $message .= sprintf("\n(in %s on line %s)", $this->stripBaseDir($file), $line);
-
-    $this->printer->printLargeBox($message, LimePrinter::WARNING);
-  }
-
   public function error(LimeError $error)
   {
     parent::error($error);
 
+    $this->printError($error);
+  }
+
+  private function printError(LimeError $error)
+  {
     $message = sprintf("%s: %s", $error->getType(), $error->getMessage());
 
     if ($error->getFile())
@@ -147,7 +144,16 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
       $message .= sprintf("\n(in %s on line %s)", $this->stripBaseDir($error->getFile()), $error->getLine());
     }
 
-    $this->printer->printLargeBox($message, LimePrinter::ERROR);
+    if ($error->getType() == 'Warning' || $error->getType() == 'Notice')
+    {
+      $lineStyle = LimePrinter::WARNING;
+    }
+    else
+    {
+      $lineStyle = LimePrinter::ERROR;
+    }
+
+    $this->printer->printLargeBox($message, $lineStyle);
 
     if (is_readable($error->getFile()))
     {
@@ -166,7 +172,7 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
         $line = rtrim(fgets($file), "\n");
         $line = '  '.$i.'. '.wordwrap($line, 80 - $indentation, "\n".str_repeat(' ', $indentation));
         $lines = explode("\n", $line);
-        $style = ($i == $error->getLine()) ? LimePrinter::ERROR : null;
+        $style = ($i == $error->getLine()) ? $lineStyle : null;
 
         foreach ($lines as $line)
         {
@@ -254,20 +260,13 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
     $this->printer->printLine('# '.$message, LimePrinter::COMMENT);
   }
 
-  public function getMessages($total, $passed, $errors, $warnings)
+  public function getMessages($total, $passed, $errors)
   {
     $messages = array();
 
     if ($passed === $total && $errors == 0)
     {
-      if ($warnings > 0)
-      {
-        $messages[] = array('Looks like you\'re nearly there.', LimePrinter::WARNING);
-      }
-      else
-      {
-        $messages[] = array('Looks like everything went fine.', LimePrinter::HAPPY);
-      }
+      $messages[] = array('Looks like everything went fine.', LimePrinter::HAPPY);
     }
     else if ($passed != $total)
     {
@@ -283,9 +282,9 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
 
   public function flush()
   {
-    $this->printer->printLine('1..'.$this->getTotal());
+    $this->printer->printLine('1..'.$this->total);
 
-    $messages = $this->getMessages($this->getTotal(), $this->getPassed(), $this->getErrors(), $this->getWarnings());
+    $messages = $this->getMessages($this->total, $this->passed, $this->errors);
 
     foreach ($messages as $message)
     {

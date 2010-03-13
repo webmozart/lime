@@ -314,8 +314,51 @@ $t->diag('Exception objects can be expected');
 
   // test
   $command = execute($file = 'test_expect_object.php');
-  // assertion
-  $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
+
+  if (version_compare(PHP_VERSION, '5.3', '>='))
+  {
+    $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
+$root/$file~annotated
+Test 1
+ok 1
+Test 2
+not ok 2
+
+ %WHITESPACE%
+  LimeConstraintException: A "RuntimeException" was thrown %WHITESPACE%
+       got: object(RuntimeException) ( %WHITESPACE%
+              ... %WHITESPACE%
+              'code' => 0, %WHITESPACE%
+              ... %WHITESPACE%
+            ) %WHITESPACE%
+  expected: object(RuntimeException) ( %WHITESPACE%
+              ... %WHITESPACE%
+              'code' => 1, %WHITESPACE%
+              ... %WHITESPACE%
+            ) %WHITESPACE%
+  (in %ANY% %WHITESPACE%
+  %ANY%) %WHITESPACE%
+ %WHITESPACE%
+
+Source code:
+  %ANY%
+  %ANY%
+  %ANY%
+  %ANY%
+  %ANY%
+
+Test 3
+ok 3
+1..3
+ Looks like you failed 1 tests of 3.
+EOF
+    , '/')).'/';
+    $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+    $t->isOutput($command->getOutput(), $expected, 'like');
+  }
+  else
+  {
+    $expected = '/'.str_replace(array('%ANY%', '%WHITESPACE%'), array('.*', '\s+'), preg_quote(<<<EOF
 $root/$file~annotated
 Test 1
 ok 1
@@ -348,7 +391,9 @@ ok 3
 1..3
  Looks like you failed 1 tests of 3.
 EOF
-, '/')).'/';
+    , '/')).'/';
+  }
+
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected, 'like');
 
@@ -503,7 +548,8 @@ $t->diag('The annotation support is able to deal with closures');
     $expected = <<<EOF
 $root/$file~annotated
 Test 1
-1..0
+ok 1
+1..1
  Looks like everything went fine.
 EOF;
     $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');

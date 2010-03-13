@@ -32,15 +32,6 @@ $t = new LimeTest();
   $input = null;
 
 
-// @Test: The call to plan() is passed
-
-  // fixtures
-  $output->plan(1, '/test/file');
-  $output->replay();
-  // test
-  $input->parse(serialize(array("plan", array(1, "/test/file")))."\n");
-
-
 // @Test: The call to error() is passed
 
   // fixtures
@@ -53,29 +44,29 @@ $t = new LimeTest();
 // @Test: The call to pass() is passed
 
   // fixtures
-  $output->pass('A passed test', '/test/file', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/file', 11);
   $output->replay();
   // test
-  $input->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n");
+  $input->parse(serialize(array("pass", array("A passed test", 'Class', 100, "/test/file", 11)))."\n");
 
 
 // @Test: Two arrays are converted to two method calls
 
   // fixtures
-  $output->pass('A passed test', '/test/file', 11);
-  $output->pass('Another passed test', '/test/file', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/file', 11);
+  $output->pass('Another passed test', 'Class', 100, '/test/file', 11);
   $output->replay();
   // test
-  $input->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n".serialize(array("pass", array("Another passed test", "/test/file", 11)))."\n");
+  $input->parse(serialize(array("pass", array("A passed test", 'Class', 100, "/test/file", 11)))."\n".serialize(array("pass", array("Another passed test", 'Class', 100, "/test/file", 11)))."\n");
 
 
 // @Test: A split serialized array can be read correctly
 
   // fixtures
-  $output->pass('A passed test', '/test/file', 11);
+  $output->pass('A passed test', 'Class', 100, '/test/file', 11);
   $output->replay();
   // test
-  $serialized = serialize(array("pass", array("A passed test", "/test/file", 11)))."\n";
+  $serialized = serialize(array("pass", array("A passed test", 'Class', 100, "/test/file", 11)))."\n";
   $strings =  str_split($serialized, strlen($serialized)/2 + 1);
   $input->parse($strings[0]);
   $input->parse($strings[1]);
@@ -107,7 +98,7 @@ $t = new LimeTest();
   // @Test: Case 2 - Failed require
 
   // fixtures
-  $output->warning("Warning: require(foobar.php): failed to open stream: No such file or directory", $file, 1);
+  $output->error(new LimeError("require(foobar.php): failed to open stream: No such file or directory", $file, 1, 'Warning'));
   $output->error(new LimeError("require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1, 'Fatal error'));
   $output->replay();
   file_put_contents($file, '<?php require "foobar.php";');

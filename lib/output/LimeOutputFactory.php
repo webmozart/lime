@@ -52,9 +52,7 @@ class LimeOutputFactory implements LimeOutputFactoryInterface
       case 'raw':
         return new LimeOutputRaw();
       case 'xml':
-        return new LimeOutputXml();
-      case 'array':
-        return new LimeOutputArray($this->configuration->getSerialize());
+        return new LimeOutputXml($this->configuration);
       case 'suite':
         return new LimeOutputSuite($printer, $this->configuration);
       case 'tap':
