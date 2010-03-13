@@ -297,7 +297,7 @@ class LimeOutputTap extends LimeOutput implements LimeOutputInterface
     {
       list ($message, $style) = $message;
 
-      $this->printer->printBox(' '.$message, $style);
+      $this->printer->printBox('# '.$message, $style);
     }
   }
 }

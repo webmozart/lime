@@ -307,7 +307,7 @@ $t = new LimeTest();
   $output->pass('First test', 'Class', 100, '/test/file', 11);
   $printer->reset();
   $printer->printLine('1..1');
-  $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
+  $printer->printBox('# Looks like everything went fine.', LimePrinter::HAPPY);
   $printer->replay();
   // test
   $output->flush();
@@ -321,7 +321,7 @@ $t = new LimeTest();
   $output->pass('Third test', 'Class', 100, '/test/file', 33);
   $printer->reset();
   $printer->printLine('1..3');
-  $printer->printBox(' Looks like you failed 1 tests of 3.', LimePrinter::ERROR);
+  $printer->printBox('# Looks like you failed 1 tests of 3.', LimePrinter::ERROR);
   $printer->replay();
   // test
   $output->flush();
@@ -333,7 +333,7 @@ $t = new LimeTest();
   $output->skip('First test', 'Class', 100, '/test/file', 11);
   $printer->reset();
   $printer->printLine('1..1');
-  $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
+  $printer->printBox('# Looks like everything went fine.', LimePrinter::HAPPY);
   $printer->replay();
   // test
   $output->flush();
@@ -346,7 +346,7 @@ $t = new LimeTest();
   $output->error(new LimeError('Some error', '/test/file', 11));
   $printer->reset();
   $printer->printLine('1..1');
-  $printer->printBox(' Looks like some errors occurred.', LimePrinter::ERROR);
+  $printer->printBox('# Looks like some errors occurred.', LimePrinter::ERROR);
   $printer->replay();
   // test
   $output->flush();
@@ -359,7 +359,7 @@ $t = new LimeTest();
   $output->todo('TODO', 'Class', '/test/file', 11);
   $printer->reset();
   $printer->printLine('1..2');
-  $printer->printBox(' Looks like there are 2 TODOs open.', LimePrinter::HAPPY);
+  $printer->printBox('# Looks like there are 2 TODOs open.', LimePrinter::HAPPY);
   $printer->replay();
   // test
   $output->flush();

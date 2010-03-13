@@ -79,7 +79,7 @@ Before
 Test 2
 ok 2
 1..2
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -99,7 +99,7 @@ Test 2
 After
 ok 2
 1..2
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -118,7 +118,7 @@ ok 1
 Test 2
 ok 2
 1..2
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -137,7 +137,7 @@ Test 2
 ok 2
 After All
 1..2
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -155,7 +155,7 @@ Before
 Test
 ok 1
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -174,7 +174,7 @@ If is not matched
 ok 2
 ok 3
 1..3
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF
 ;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -191,7 +191,7 @@ $root/$file~annotated
 Test
 ok 1
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF
 ;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -218,7 +218,7 @@ BeforeTest
 BeforeTestAfter
 ok 1
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -236,7 +236,7 @@ GlobalBefore
 GlobalBeforeTest
 GlobalBeforeTestAfter
 1..0
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
 
@@ -252,7 +252,7 @@ Is not set
 Is not set
 ok 1
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -270,7 +270,7 @@ ok 1
 Test 2
 ok 2 - This test is commented with "double" and 'single' quotes
 1..2
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -303,7 +303,7 @@ Source code:
 Test 2
 ok 2
 1..2
- Looks like you failed 1 tests of 2.
+# Looks like you failed 1 tests of 2.
 EOF
 , '/')).'/';
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -350,7 +350,7 @@ Source code:
 Test 3
 ok 3
 1..3
- Looks like you failed 1 tests of 3.
+# Looks like you failed 1 tests of 3.
 EOF
     , '/')).'/';
     $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -389,7 +389,7 @@ Source code:
 Test 3
 ok 3
 1..3
- Looks like you failed 1 tests of 3.
+# Looks like you failed 1 tests of 3.
 EOF
     , '/')).'/';
   }
@@ -426,7 +426,7 @@ Source code:
   %ANY%
 
 1..2
- Looks like you failed 1 tests of 2.
+# Looks like you failed 1 tests of 2.
 EOF
 , '/')).'/';
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -445,7 +445,7 @@ ok 1
 Test 3
 ok 2
 1..2
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -512,7 +512,7 @@ $root/$file~annotated
 Test
 ok 1
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -532,7 +532,7 @@ Before
 Test 2
 ok 2
 1..2
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
@@ -550,7 +550,7 @@ $root/$file~annotated
 Test 1
 ok 1
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.
 EOF;
     $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
     $t->isOutput($command->getOutput(), $expected);
