@@ -167,6 +167,9 @@ class LimeTest
     try
     {
       $constraint->evaluate($value);
+
+      // for BC
+      return true;
     }
     catch (LimeConstraintException $e)
     {
