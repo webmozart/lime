@@ -169,11 +169,13 @@ class LimeMock
         $namespace = substr($classOrInterface, 0, $pos);
         $interface = substr($classOrInterface, $pos+1);
 
-        eval(sprintf('namespace %s { interface %s {} }', $namespace, $interface));
+        $code = sprintf('namespace %s { interface %s {} }', $namespace, $interface);
+        eval($code);
       }
       else
       {
-        eval(sprintf('interface %s {}', $classOrInterface));
+      	$code = sprintf('interface %s {}', $classOrInterface);
+        eval($code);
       }
     }
 
@@ -254,12 +256,12 @@ class LimeMock
     }
 
     $template = new LimeMockTemplate(dirname(__FILE__).'/template/mocked_class.tpl');
-
-    eval($template->render(array(
+    $code = $template->render(array(
       'class_declaration'   =>  $declaration,
       'methods'             =>  $methods,
       'generate_controls'   =>  $generateControls,
-    )));
+    ));
+    eval($code);
 
     return $name;
   }

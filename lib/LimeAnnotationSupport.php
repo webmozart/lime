@@ -204,7 +204,8 @@ class LimeAnnotationSupport
 
     if (!is_null($this->lexer->getTestVariable()))
     {
-      eval(sprintf('$this->test = %s;', $this->lexer->getTestVariable()));
+      $code = sprintf('$this->test = %s;', $this->lexer->getTestVariable());
+      eval($code);
     }
   }
 }
