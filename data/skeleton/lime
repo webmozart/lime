@@ -19,4 +19,4 @@ require_once '<?php echo $absoluteLimeDir.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SE
 LimeAutoloader::register();
 
 $cli = new LimeCli();
-return $cli->run(isset($argv) ? $argv : array());
+exit($cli->run(isset($argv) ? $argv : array()));
