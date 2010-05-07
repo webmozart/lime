@@ -19,8 +19,8 @@ class lime_test extends LimeTest
 {
   public function __construct($plan = null, $options = array())
   {
-    // the options are dropped because they are not compatible anymore
-    parent::__construct($plan);
+    // the options and plan are dropped because they are not compatible anymore
+    parent::__construct();
   }
 
   static public function to_array()
@@ -154,6 +154,11 @@ class lime_test extends LimeTest
     }
 
     return $result;
+  }
+
+  public function pass($message)
+  {
+  	$this->ok(true, $message);
   }
 }
 
