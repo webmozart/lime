@@ -61,6 +61,8 @@ class LimeLexerTestVariable extends LimeLexer
     }
     else if ($id == T_STRING && $this->state == self::INSTANTIATION)
     {
+      // problem: test classes defined in the test script itself are not
+      // recognized here
       if (class_exists($text))
       {
         $class = new ReflectionClass($text);
